@@ -1,0 +1,1 @@
+- `2026-08-04 12:38:44` | ERROR | OTHER | Bash | Exit code 137

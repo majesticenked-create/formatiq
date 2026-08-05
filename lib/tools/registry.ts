@@ -1,0 +1,399 @@
+import JsonFormatter from '@/components/tools/JsonFormatter';
+import Base64Tool from '@/components/tools/Base64Tool';
+import UuidGenerator from '@/components/tools/UuidGenerator';
+import WordCounter from '@/components/tools/WordCounter';
+import JsonToCsv from '@/components/tools/JsonToCsv';
+import CsvJsonConverter from '@/components/tools/CsvJsonConverter';
+import XmlFormatter from '@/components/tools/XmlFormatter';
+import UrlEncoderDecoder from '@/components/tools/UrlEncoderDecoder';
+import EmailValidator from '@/components/tools/EmailValidator';
+import UrlValidator from '@/components/tools/UrlValidator';
+import CronValidator from '@/components/tools/CronValidator';
+import type { CategoryDefinition, ToolDefinition } from './types';
+
+/**
+ * CATEGORIES
+ * Each category becomes a hub page at /tools/[category].
+ * Add new categories here as the tool taxonomy grows (see PROJECT_PLAN.md §3).
+ */
+export const categories: CategoryDefinition[] = [
+  {
+    slug: 'formatters',
+    title: 'Formatters & Beautifiers',
+    description: 'Clean up messy JSON, XML, HTML, CSS, JS, and SQL into readable, indented output.',
+  },
+  {
+    slug: 'encoders-decoders',
+    title: 'Encoders & Decoders',
+    description: 'Base64, URL encoding, HTML entities, JWTs, and hash generation.',
+  },
+  {
+    slug: 'generators',
+    title: 'Generators',
+    description: 'UUIDs, passwords, Lorem Ipsum, QR codes, and other on-demand data.',
+  },
+  {
+    slug: 'text-tools',
+    title: 'Text Tools',
+    description: 'Counters, case converters, diff checkers, and other plain-text utilities.',
+  },
+  {
+    slug: 'converters',
+    title: 'Converters',
+    description: 'Move data between formats: JSON, CSV, YAML, XML, and more.',
+  },
+  {
+    slug: 'validators',
+    title: 'Validators',
+    description: 'Check JSON, XML, HTML, emails, URLs, and cron expressions for correctness.',
+  },
+];
+
+/**
+ * TOOLS
+ * This is the single source of truth for every tool page on the site.
+ * Each entry drives: routing, SEO metadata, structured data, and the rendered component.
+ *
+ * To add a tool:
+ *   1. Build the component in components/tools/
+ *   2. Add an entry below with a unique (category, slug) pair
+ *   3. That's it — the dynamic route and category hub pick it up automatically
+ */
+export const tools: ToolDefinition[] = [
+  {
+    slug: 'json-formatter',
+    category: 'formatters',
+    title: 'JSON Formatter & Validator',
+    shortDescription: 'Beautify, validate, and minify JSON instantly in your browser.',
+    longDescription:
+      'Paste any JSON and get clean, indented output in real time, with syntax validation that points out exactly what\u2019s wrong when the input doesn\u2019t parse. Everything runs client-side, so your data never leaves the browser. Use it to debug API responses, clean up config files, or prep JSON for documentation.',
+    metaTitle: 'JSON Formatter & Validator \u2014 Free Online Tool | Formatiq',
+    metaDescription:
+      'Format, validate, and minify JSON online for free. Instant syntax checking, adjustable indentation, and one-click copy. No data leaves your browser.',
+    keywords: ['json formatter', 'json validator', 'json beautifier', 'json pretty print', 'minify json'],
+    faqs: [
+      {
+        question: 'Is my JSON data uploaded anywhere?',
+        answer:
+          'No. This tool runs entirely in your browser using JavaScript \u2014 your JSON is never sent to a server, which makes it safe to use with sensitive or private data.',
+      },
+      {
+        question: 'What does it mean if my JSON is invalid?',
+        answer:
+          'The validator shows the specific parsing error and its position, most commonly a missing comma, an unclosed bracket, or a trailing comma before a closing brace.',
+      },
+      {
+        question: 'Can I minify JSON instead of formatting it?',
+        answer:
+          'Yes \u2014 use the "Minify input" button to collapse your JSON to a single compact line, useful for reducing payload size before sending it over the wire.',
+      },
+    ],
+    Component: JsonFormatter,
+  },
+  {
+    slug: 'base64-encoder-decoder',
+    category: 'encoders-decoders',
+    title: 'Base64 Encoder & Decoder',
+    shortDescription: 'Convert text to and from Base64 encoding instantly.',
+    longDescription:
+      'Encode plain text into Base64 or decode Base64 back into readable text. Commonly used for embedding data in URLs, email attachments, and API payloads that require ASCII-safe encoding. Runs fully client-side.',
+    metaTitle: 'Base64 Encoder & Decoder \u2014 Free Online Tool | Formatiq',
+    metaDescription:
+      'Encode and decode Base64 online for free. Fast, accurate, and runs entirely in your browser \u2014 no data is uploaded.',
+    keywords: ['base64 encode', 'base64 decode', 'base64 converter', 'base64 to text'],
+    faqs: [
+      {
+        question: 'What is Base64 encoding used for?',
+        answer:
+          'Base64 converts binary or text data into an ASCII string, commonly used to embed images in HTML/CSS, attach files to emails, or pass data safely through URLs and JSON.',
+      },
+      {
+        question: 'Why did decoding fail?',
+        answer:
+          'Base64 decoding fails when the input contains characters outside the standard Base64 alphabet or has incorrect padding \u2014 double check you copied the full encoded string.',
+      },
+    ],
+    Component: Base64Tool,
+  },
+  {
+    slug: 'uuid-generator',
+    category: 'generators',
+    title: 'UUID Generator',
+    shortDescription: 'Generate random UUID v4 identifiers, one or many at a time.',
+    longDescription:
+      'Generate cryptographically random UUID v4 identifiers for use as database keys, request IDs, or unique tokens. Generate up to 100 at once and copy them all in one click.',
+    metaTitle: 'UUID Generator (v4) \u2014 Free Online Tool | Formatiq',
+    metaDescription:
+      'Generate random UUID v4 identifiers online for free. Create one or many at once, copy instantly. Runs entirely in your browser.',
+    keywords: ['uuid generator', 'guid generator', 'uuid v4', 'random uuid'],
+    faqs: [
+      {
+        question: 'What is a UUID?',
+        answer:
+          'A UUID (Universally Unique Identifier) is a 128-bit value used to uniquely identify information without requiring a central authority, commonly used as database primary keys.',
+      },
+      {
+        question: 'Are these UUIDs guaranteed unique?',
+        answer:
+          'UUID v4 values are generated using random or pseudo-random numbers. The chance of a collision is astronomically small \u2014 practically negligible for real-world use.',
+      },
+    ],
+    Component: UuidGenerator,
+  },
+  {
+    slug: 'word-counter',
+    category: 'text-tools',
+    title: 'Word & Character Counter',
+    shortDescription: 'Count words, characters, sentences, and estimated reading time.',
+    longDescription:
+      'Paste any text to instantly see word count, character count (with and without spaces), sentence count, paragraph count, and estimated reading time \u2014 useful for essays, meta descriptions, social posts, and word-limited submissions.',
+    metaTitle: 'Word Counter & Character Counter \u2014 Free Online Tool | Formatiq',
+    metaDescription:
+      'Count words, characters, sentences, and reading time online for free. Instant results as you type, right in your browser.',
+    keywords: ['word counter', 'character counter', 'reading time calculator', 'text counter'],
+    faqs: [
+      {
+        question: 'How is reading time calculated?',
+        answer:
+          'Reading time is estimated at an average adult reading speed of about 200 words per minute, rounded up to the nearest minute.',
+      },
+      {
+        question: 'Does this count words in other languages?',
+        answer:
+          'Word counting works by splitting on whitespace, so it works well for space-separated languages. Languages without spaces between words (like Chinese or Japanese) will show character count as the more meaningful metric.',
+      },
+    ],
+    Component: WordCounter,
+  },
+  {
+    slug: 'json-to-csv',
+    category: 'converters',
+    title: 'JSON to CSV Converter',
+    shortDescription: 'Convert a JSON array or object into CSV, ready to open in a spreadsheet.',
+    longDescription:
+      'Paste a JSON object or an array of flat objects and get clean, spreadsheet-ready CSV in real time, with column headers derived automatically from your keys. Choose between comma, semicolon, or tab delimiters to match the tool you’re importing into. Everything runs client-side, so your data never leaves the browser. Use it to export API responses, prep data for Excel or Google Sheets, or convert log/config data into a tabular format.',
+    metaTitle: 'JSON to CSV Converter — Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert JSON to CSV online for free. Supports comma, semicolon, and tab delimiters, with instant validation and one-click download. No data leaves your browser.',
+    keywords: ['json to csv', 'json to csv converter', 'convert json to csv', 'json csv export'],
+    faqs: [
+      {
+        question: 'Is my JSON data uploaded anywhere?',
+        answer:
+          'No. This tool runs entirely in your browser using JavaScript — your JSON is never sent to a server, which makes it safe to use with sensitive or private data.',
+      },
+      {
+        question: 'What JSON shapes are supported?',
+        answer:
+          'A single flat object becomes a one-row CSV, and an array of flat objects becomes one row per object. Nested objects or arrays inside a field are preserved as a JSON string in that cell rather than being flattened.',
+      },
+      {
+        question: 'What happens if my objects have different keys?',
+        answer:
+          'The converter collects every unique key across all objects to build the column headers, so rows missing a given key simply get an empty cell in that column.',
+      },
+      {
+        question: 'Can I change the delimiter?',
+        answer:
+          'Yes — switch between comma, semicolon, or tab using the delimiter buttons above the input, useful for spreadsheet tools or locales that expect a different separator than the standard comma.',
+      },
+    ],
+    Component: JsonToCsv,
+  },
+  {
+    slug: 'csv-json-converter',
+    category: 'converters',
+    title: 'CSV ⇄ JSON Converter',
+    shortDescription: 'Convert CSV to JSON or JSON to CSV in either direction, in your browser.',
+    longDescription:
+      'Switch between CSV → JSON and JSON → CSV with a single click and get live output as you type. The CSV parser correctly handles quoted fields containing commas and doubled-quote escapes (""), so real-world exports from Excel, Google Sheets, or a database dump won’t break the conversion. Converting CSV to JSON also infers types automatically — "true"/"false" become booleans and numeric-looking cells become numbers — so you get usable JSON instead of a wall of strings. Runs entirely client-side, so spreadsheet exports never leave your machine.',
+    metaTitle: 'CSV to JSON & JSON to CSV Converter — Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert CSV to JSON or JSON to CSV online for free, in either direction. Handles quoted fields and type inference. No data leaves your browser.',
+    keywords: ['csv to json', 'json to csv', 'csv json converter', 'convert csv to json online'],
+    faqs: [
+      {
+        question: 'How does the converter handle commas inside a CSV field?',
+        answer:
+          'Fields wrapped in double quotes can safely contain commas or line breaks — the parser only treats a comma as a column separator when it’s outside an open pair of quotes, matching standard CSV escaping rules.',
+      },
+      {
+        question: 'Why are some values in my converted JSON numbers or booleans instead of strings?',
+        answer:
+          'When converting CSV to JSON, the tool inspects each cell: "true" and "false" become real booleans, and text that parses cleanly as a number becomes a JSON number. Everything else is kept as a plain string.',
+      },
+      {
+        question: 'What JSON structure does JSON to CSV expect?',
+        answer:
+          'An array of objects. The converter scans every object in the array to build the full set of column headers, so objects with missing fields just produce an empty cell for that column instead of causing an error.',
+      },
+    ],
+    Component: CsvJsonConverter,
+  },
+  {
+    slug: 'xml-formatter',
+    category: 'formatters',
+    title: 'XML Formatter & Validator',
+    shortDescription: 'Beautify and check XML for well-formedness instantly in your browser.',
+    longDescription:
+      'Paste any XML and get cleanly indented output with elements and nesting easy to scan, using the browser’s own XML parser to catch malformed markup as you type. This checks well-formedness — unclosed tags, mismatched elements, invalid characters — not conformance to a specific DTD or XSD schema, so validly-structured XML that violates a particular schema will still format successfully. Everything runs client-side, so your data never leaves the browser. Use it to clean up SOAP payloads, RSS/Atom feeds, config files, or API responses for readability.',
+    metaTitle: 'XML Formatter & Validator — Free Online Tool | Formatiq',
+    metaDescription:
+      'Format and validate XML online for free. Instant well-formedness checking, adjustable indentation, and one-click copy. No data leaves your browser.',
+    keywords: ['xml formatter', 'xml validator', 'xml beautifier', 'xml pretty print', 'format xml online'],
+    faqs: [
+      {
+        question: 'Does this validate against an XSD or DTD schema?',
+        answer:
+          'No — this tool checks that your XML is well-formed (properly nested, closed tags, valid syntax), not that it conforms to a specific schema. XML that passes here can still fail validation against a particular XSD or DTD.',
+      },
+      {
+        question: 'What counts as "not well-formed" XML?',
+        answer:
+          'Common causes include an unclosed or mismatched tag, an attribute value missing quotes, multiple root elements, or invalid characters like a bare "&" that isn’t part of an entity reference.',
+      },
+      {
+        question: 'Are comments and processing instructions preserved?',
+        answer:
+          'The formatter re-serializes the parsed element tree, so the output focuses on element structure and text content — comments and processing instructions outside the document element may not be reproduced in the formatted output.',
+      },
+    ],
+    Component: XmlFormatter,
+  },
+  {
+    slug: 'url-encoder-decoder',
+    category: 'encoders-decoders',
+    title: 'URL Encoder & Decoder',
+    shortDescription: 'Percent-encode or decode text and URLs instantly in your browser.',
+    longDescription:
+      'Encode text into a percent-escaped format safe for use in query strings, path segments, and form values, or decode a percent-encoded string back into readable text. This tool uses encodeURIComponent/decodeURIComponent rather than encodeURI, so it escapes every reserved character (including &, =, ?, and /) — the right choice when you’re encoding a single value to drop into a query parameter, not a full URL that already contains its own structure. Everything runs client-side, so your data never leaves the browser. Use it to debug query parameters, build API request URLs by hand, or clean up double-encoded links.',
+    metaTitle: 'URL Encoder & Decoder — Free Online Tool | Formatiq',
+    metaDescription:
+      'Encode and decode URLs online for free. Percent-encoding for query strings and form values, with error handling for malformed input. No data leaves your browser.',
+    keywords: ['url encoder', 'url decoder', 'percent encoding', 'encodeuricomponent', 'url encode online'],
+    faqs: [
+      {
+        question: 'Why encodeURIComponent instead of encodeURI?',
+        answer:
+          'encodeURIComponent escapes every character that isn’t valid inside a single URL component — including &, =, ?, #, and / — which is what you want when encoding one value (like a query parameter) to embed inside a larger URL. encodeURI leaves those characters alone because it assumes you’re encoding a whole URL that already relies on them for structure, so it would under-encode a single value.',
+      },
+      {
+        question: 'Why did decoding fail?',
+        answer:
+          'Decoding throws when the input contains a "%" that isn’t followed by two valid hexadecimal digits, or a percent-encoded sequence that doesn’t form a valid UTF-8 byte sequence — this usually means the string was cut off, edited by hand, or wasn’t percent-encoded to begin with.',
+      },
+      {
+        question: 'Is my data uploaded anywhere?',
+        answer:
+          'No. This tool runs entirely in your browser using JavaScript — your input is never sent to a server, which makes it safe to use with sensitive URLs or tokens.',
+      },
+    ],
+    Component: UrlEncoderDecoder,
+  },
+  {
+    slug: 'email-validator',
+    category: 'validators',
+    title: 'Email Validator',
+    shortDescription: 'Check whether an email address is correctly formatted, with a plain-English reason when it isn’t.',
+    longDescription:
+      'Paste an email address to check its structure against the rules a real mail system expects: exactly one "@", a non-empty local part, and a domain containing at least one "." in a sensible position. Rather than a single pass/fail regex result, this tool walks the string step by step so the error message tells you specifically what’s wrong — a missing "@", a stray space, or a domain with no dot — instead of a generic "invalid" verdict. It checks formatting only; it can’t tell you whether the mailbox actually exists or accepts mail, since that requires contacting the receiving mail server. Runs entirely client-side.',
+    metaTitle: 'Email Validator — Free Online Tool | Formatiq',
+    metaDescription:
+      'Validate email address format online for free. Get a specific reason when an address is invalid, plus a breakdown of the local part and domain. No data leaves your browser.',
+    keywords: ['email validator', 'validate email address', 'check email format', 'email syntax checker'],
+    faqs: [
+      {
+        question: 'Does this confirm the email address actually exists?',
+        answer:
+          'No — this only checks that the address is well-formed (correct placement of "@" and ".", no spaces, non-empty local part and domain). Confirming a mailbox actually exists requires either sending a message or performing an SMTP handshake with the receiving mail server, which isn’t possible from a browser-based tool.',
+      },
+      {
+        question: 'Why does a valid-looking address still fail here?',
+        answer:
+          'The most common causes are a trailing space copied in from another document, a domain missing its top-level part (like "user@company" instead of "user@company.com"), or more than one "@" symbol in the string.',
+      },
+      {
+        question: 'Are internationalized or unusual email formats supported?',
+        answer:
+          'This validator targets the common ASCII local-part@domain.tld shape used by the overwhelming majority of real addresses. Exotic but technically legal forms — quoted local parts, IP-literal domains — may be flagged as invalid even though some mail servers would accept them.',
+      },
+    ],
+    Component: EmailValidator,
+  },
+  {
+    slug: 'url-validator',
+    category: 'validators',
+    title: 'URL Validator',
+    shortDescription: 'Check whether a string is a valid URL and see it broken into protocol, host, path, and more.',
+    longDescription:
+      'Paste any string to check whether it parses as a valid, well-structured URL, using the browser’s native URL() constructor rather than a hand-rolled regex — the same parsing logic browsers use to navigate. On success, the URL is broken into its component parts (protocol, hostname, port, path, query string, and fragment) so you can immediately see how a link will actually resolve, which is especially useful for spotting a typo’d protocol or an unexpected extra path segment. On failure, the message distinguishes a missing scheme (no "https://" or similar) from a structurally broken URL. Runs entirely client-side.',
+    metaTitle: 'URL Validator — Free Online Tool | Formatiq',
+    metaDescription:
+      'Validate a URL online for free and see it broken into protocol, host, path, query, and fragment. Uses the browser’s native URL parser. No data leaves your browser.',
+    keywords: ['url validator', 'validate url', 'url parser', 'check url format', 'url structure checker'],
+    faqs: [
+      {
+        question: 'Why do I need to include "https://" for the URL to validate?',
+        answer:
+          'A URL is only fully specified once it has a scheme (protocol) telling a client how to interpret the rest of the string — without one, "formatiq.com/tools" is ambiguous between a URL and a plain path or filename, so the parser rejects it rather than guessing.',
+      },
+      {
+        question: 'Does a valid result mean the URL is reachable?',
+        answer:
+          'No — this only confirms the string is structurally a valid URL according to the URL standard. A URL can be perfectly well-formed and still point to a domain that doesn’t resolve or a page that returns a 404; checking reachability would require actually fetching it, which a client-side tool intentionally doesn’t do.',
+      },
+      {
+        question: 'What’s the difference between "Host" and "Hostname" in the breakdown?',
+        answer:
+          'Hostname is just the domain or IP address, while Host includes the port number too when a non-default one is specified (e.g. "formatiq.com:8080" vs. "formatiq.com") — useful for spotting when a URL is pointing at an unusual port.',
+      },
+    ],
+    Component: UrlValidator,
+  },
+  {
+    slug: 'cron-validator',
+    category: 'validators',
+    title: 'Cron Expression Validator',
+    shortDescription: 'Validate a 5-field cron expression and see its schedule described in plain English.',
+    longDescription:
+      'Paste a standard 5-field cron expression (minute, hour, day of month, month, day of week) to check that each field uses a legal value, range, list, or step for its position — a "13" in the month field or a "70" in the minute field gets flagged with the specific field and reason, rather than a generic syntax error. Once the expression checks out, it’s translated into a plain-English sentence describing when it actually fires, so you can confirm "0 2 * * *" really does mean "every day at 2:00 AM" without mentally decoding five asterisk-and-number fields. This targets the common 5-field Unix cron syntax and doesn’t cover vendor-specific extensions like seconds fields, "@daily" shorthand, or "L"/"W" day modifiers.',
+    metaTitle: 'Cron Expression Validator — Free Online Tool | Formatiq',
+    metaDescription:
+      'Validate a cron expression online for free and see its schedule explained in plain English. Field-by-field error messages. No data leaves your browser.',
+    keywords: ['cron validator', 'cron expression checker', 'cron schedule explained', 'validate cron syntax'],
+    faqs: [
+      {
+        question: 'What format does this expect?',
+        answer:
+          'The standard 5-field Unix cron format: minute (0-59), hour (0-23), day of month (1-31), month (1-12), and day of week (0-6, where 0 is Sunday), separated by spaces. Each field accepts "*", a single number, a range like "1-5", a comma-separated list, or a step like "*/15".',
+      },
+      {
+        question: 'Why does my expression fail with only 5 fields?',
+        answer:
+          'The most common cause is a value out of range for its position — for example, putting an hour value like "14" in the minute field, or a day-of-week value above 6. The error message names the specific field and the valid range so you can spot which one is misplaced.',
+      },
+      {
+        question: 'Does this support "@daily", "@hourly", or seconds fields?',
+        answer:
+          'No — this validates the classic 5-field cron syntax used by cron itself and most schedulers. Shorthand macros like "@daily" and 6-field formats with a leading seconds value (used by some libraries) aren’t recognized and will be reported as having the wrong number of fields.',
+      },
+    ],
+    Component: CronValidator,
+  },
+];
+
+export function getToolsByCategory(categorySlug: string) {
+  return tools.filter((t) => t.category === categorySlug);
+}
+
+export function getTool(categorySlug: string, toolSlug: string) {
+  return tools.find((t) => t.category === categorySlug && t.slug === toolSlug);
+}
+
+export function getCategory(categorySlug: string) {
+  return categories.find((c) => c.slug === categorySlug);
+}
+
+export function getRelatedTools(tool: ToolDefinition, limit = 4) {
+  return tools.filter((t) => t.category === tool.category && t.slug !== tool.slug).slice(0, limit);
+}
