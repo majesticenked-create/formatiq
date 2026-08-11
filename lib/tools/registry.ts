@@ -77,6 +77,12 @@ import DigitalStorageConverter from '@/components/tools/DigitalStorageConverter'
 import Utf8EncodeDecode from '@/components/tools/Utf8EncodeDecode';
 import TextCompressDecompress from '@/components/tools/TextCompressDecompress';
 import ColorContrastChecker from '@/components/tools/ColorContrastChecker';
+import JsonTreeViewer from '@/components/tools/JsonTreeViewer';
+import HtmlTableGenerator from '@/components/tools/HtmlTableGenerator';
+import CssBoxShadowGenerator from '@/components/tools/CssBoxShadowGenerator';
+import CurrencyConverter from '@/components/tools/CurrencyConverter';
+import AesEncryptDecrypt from '@/components/tools/AesEncryptDecrypt';
+import IpAddressFormatter from '@/components/tools/IpAddressFormatter';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -5012,6 +5018,414 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: ColorContrastChecker,
+  },
+  {
+    slug: 'json-tree-viewer',
+    category: 'formatters',
+    isNew: true,
+    title: 'JSON Tree Viewer',
+    shortDescription: 'Explore JSON as a collapsible, color-coded tree instead of a flat formatted block.',
+    longDescription:
+      'Paste any JSON and explore it as an interactive, collapsible tree rather than a single scrollable block of formatted text - every object and array node can be expanded or collapsed individually, with keys, strings, numbers, booleans, and null each shown in a distinct color so the shape of the data is visible at a glance. This is a genuinely different tool from json-formatter: that tool\'s job is to produce clean, correctly-indented text output you\'d copy elsewhere, while this one is built for navigating a large or deeply nested structure you\'re trying to understand - collapsing an array of 500 log entries down to one line, or folding away a config section you already know is fine, so you can focus on the part that actually matters. An "Expand all" / "Collapse all" pair resets the whole tree to fully open or fully folded in one click, and collapsed containers show their item count so you know what\'s hidden before you open it. Useful for exploring a large API response, inspecting a deeply nested config file, or getting oriented in unfamiliar JSON before deciding what to extract. Runs entirely client-side.',
+    metaTitle: 'JSON Tree Viewer - Explore JSON Interactively | Formatiq',
+    metaDescription:
+      'Explore JSON as a collapsible, color-coded tree online for free, with expand/collapse all controls. No data leaves your browser.',
+    keywords: ['json tree viewer', 'json viewer online', 'collapsible json viewer', 'explore json structure', 'json explorer'],
+    useCase: 'Navigating a large API response or deeply nested config file to find the part that matters',
+    howItWorks: [
+      {
+        title: 'Paste your JSON',
+        description: 'Any valid JSON — an API response, config file, or log payload.',
+      },
+      {
+        title: 'Click any node to collapse it',
+        description: 'Objects and arrays fold individually, showing their item count while collapsed.',
+      },
+      {
+        title: 'Use expand/collapse all',
+        description: 'Reset the whole tree to fully open or fully folded in one click.',
+      },
+      {
+        title: 'Scan the color-coded structure',
+        description: 'Keys, strings, numbers, booleans, and null each get their own color for fast visual scanning.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Built for exploring, not just formatting',
+        description: 'Unlike json-formatter\'s flat text output, nodes collapse individually so you can focus on one part of a large structure.',
+      },
+      {
+        title: 'Collapsed nodes show item counts',
+        description: 'See how much is hidden inside a folded object or array before deciding to open it.',
+      },
+      {
+        title: 'Type-based color coding',
+        description: 'Keys, strings, numbers, booleans, and null are each visually distinct at a glance.',
+      },
+      {
+        title: 'One-click expand or collapse all',
+        description: 'Jump between fully open and fully folded without clicking through every node.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from json-formatter?',
+        answer:
+          'json-formatter takes JSON and produces cleanly indented text output meant to be copied elsewhere - it\'s a formatting tool. This tool instead renders the same data as a navigable tree where every object and array can be individually collapsed, which is far more useful when you\'re trying to explore or understand a large structure rather than just reformat it for use elsewhere.',
+      },
+      {
+        question: 'What happens to very large arrays or deeply nested objects?',
+        answer:
+          'Every node collapses independently, so a large array or a deeply nested object doesn\'t need to be rendered fully expanded - collapse it down to a single line showing its item count, and only expand the parts you actually need to inspect. This makes it practical to explore JSON that would be unwieldy as a flat formatted block.',
+      },
+      {
+        question: 'Does collapsing a node change the underlying data?',
+        answer:
+          'No - collapsing only affects the display. The tree is built from the exact parsed JSON, and toggling a node\'s visibility doesn\'t modify, reorder, or drop any data; expanding it again shows the identical content every time.',
+      },
+    ],
+    Component: JsonTreeViewer,
+  },
+  {
+    slug: 'html-table-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'HTML Table Generator',
+    shortDescription: 'Build an HTML table by typing directly into a grid, with a live preview and copyable markup.',
+    longDescription:
+      'Set the number of rows and columns, toggle whether the first row is a header, and type content directly into a spreadsheet-like grid to build an HTML table without hand-writing markup. The generated HTML uses semantic <thead>/<tbody> structure when a header row is enabled, with <th> cells for the header and <td> cells for the body, and every cell value is HTML-escaped so pasted content containing "&", "<", or ">" doesn’t break the output or accidentally inject markup. A live rendered preview sits above the code output, updating as you type, so you can confirm the table looks right before copying the markup into a page, email template, or documentation. Resizing rows or columns preserves whatever you’ve already typed into the grid rather than clearing it, so you can start small and expand as needed. Useful for quickly drafting a comparison table, a pricing grid, or a simple data table for a README or email without reaching for a spreadsheet export. Runs entirely client-side.',
+    metaTitle: 'HTML Table Generator - Build Tables Visually | Formatiq',
+    metaDescription:
+      'Generate HTML table markup online for free by typing into a grid, with a live preview and one-click copy. No data leaves your browser.',
+    keywords: ['html table generator', 'table generator online', 'html table maker', 'generate html table code', 'table code generator'],
+    useCase: 'Drafting a quick comparison or pricing table for a page, email, or README',
+    howItWorks: [
+      {
+        title: 'Set rows and columns',
+        description: 'Choose the table dimensions and toggle whether the first row is a header.',
+      },
+      {
+        title: 'Type into the grid',
+        description: 'Fill in each cell directly, spreadsheet-style — resizing preserves what you’ve typed.',
+      },
+      {
+        title: 'Check the live preview',
+        description: 'A rendered table above the code updates as you type, so you see the real result.',
+      },
+      {
+        title: 'Copy the markup',
+        description: 'Semantic HTML with thead/tbody and escaped cell content, ready to paste anywhere.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'No hand-written markup',
+        description: 'Type content into cells directly instead of writing tr/td tags by hand.',
+      },
+      {
+        title: 'Live rendered preview',
+        description: 'See the actual table appearance before copying the code, not just the raw markup.',
+      },
+      {
+        title: 'Semantic, escaped output',
+        description: 'Uses proper thead/tbody structure and escapes special characters so the output is safe to embed.',
+      },
+      {
+        title: 'Resize without losing data',
+        description: 'Changing row or column count keeps existing cell content instead of resetting the grid.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does the generated table include any CSS styling?',
+        answer:
+          'No - the output is bare semantic HTML (table, thead, tbody, tr, th, td) with no inline styles or classes, so it inherits whatever styling your page already applies to tables. This keeps the markup portable across different sites and email clients rather than baking in styling choices that might conflict with your existing CSS.',
+      },
+      {
+        question: 'What happens if I type "&" or "<" into a cell?',
+        answer:
+          'Every cell value is HTML-escaped before being inserted into the output, so "&" becomes "&amp;amp;" and "<" becomes "&amp;lt;" in the generated markup - this prevents special characters from being misread as the start of an HTML tag or entity, and keeps the live preview accurate to what you actually typed.',
+      },
+      {
+        question: 'Can I add or remove rows and columns without losing what I’ve already typed?',
+        answer:
+          'Yes - increasing the row or column count adds new empty cells while keeping all existing content in place, and decreasing it trims from the end rather than clearing the whole grid. This makes it practical to start with a rough size and adjust as you go.',
+      },
+    ],
+    Component: HtmlTableGenerator,
+  },
+  {
+    slug: 'css-box-shadow-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'CSS Box Shadow Generator',
+    shortDescription: 'Build a box-shadow with a live preview, multiple layered shadows, and a copy-ready CSS declaration.',
+    longDescription:
+      'Adjust offset-x, offset-y, blur radius, spread radius, color, and opacity with sliders and a color picker while watching a live preview box update in real time, then copy the finished box-shadow declaration. Unlike a single-shadow tool, this one supports stacking multiple shadow layers - add as many as you need and each gets its own independent set of controls, which is how real depth effects are usually built in practice: a soft, large-blur shadow for ambient depth combined with a tighter, sharper shadow closer to the element for definition. An inset toggle per layer switches between an outer drop shadow and an inner shadow pressed into the element, and layers can be removed individually once you have more than one. Pairs naturally with css-gradient-generator when building a complete card or button style, since gradients and shadows are usually tuned together to get a cohesive look. Useful for prototyping card elevation, button depth, or a subtle inset effect without round-tripping through browser dev tools. Runs entirely client-side.',
+    metaTitle: 'CSS Box Shadow Generator - Layered Shadows | Formatiq',
+    metaDescription:
+      'Generate CSS box-shadow declarations online for free with a live preview, multiple shadow layers, and inset toggle. No data leaves your browser.',
+    keywords: ['css box shadow generator', 'box shadow generator online', 'css shadow generator', 'multiple box shadow css', 'inset shadow generator'],
+    useCase: 'Prototyping card elevation or button depth without round-tripping through browser dev tools',
+    howItWorks: [
+      {
+        title: 'Adjust the shadow controls',
+        description: 'Offset X/Y, blur radius, spread radius, color, and opacity, all with live sliders.',
+      },
+      {
+        title: 'Watch the live preview',
+        description: 'A sample box updates in real time as you adjust any control.',
+      },
+      {
+        title: 'Add more shadow layers',
+        description: 'Stack additional shadows, each with its own independent set of controls and an inset toggle.',
+      },
+      {
+        title: 'Copy the CSS',
+        description: 'The full box-shadow declaration, with all layers comma-separated, ready to paste.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Multiple layered shadows',
+        description: 'Stack ambient and definition shadows together, the way real depth effects are usually built.',
+      },
+      {
+        title: 'Per-layer inset toggle',
+        description: 'Mix outer drop shadows and inner pressed-in shadows within the same box-shadow declaration.',
+      },
+      {
+        title: 'Live visual preview',
+        description: 'See the exact effect on a sample box before committing to the CSS.',
+      },
+      {
+        title: 'Pairs with the gradient generator',
+        description: 'Natural companion to css-gradient-generator when tuning a complete card or button style.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why would I use multiple shadow layers instead of one?',
+        answer:
+          'A single shadow tends to look flat or artificial, while real-world depth is usually achieved by layering a soft, larger-blur shadow for ambient light diffusion underneath a tighter, sharper shadow closer to the element - the same technique used in most design systems\' elevation scales. This tool lets you build and preview that layered effect directly rather than guessing at values in dev tools.',
+      },
+      {
+        question: 'What does the inset toggle actually change?',
+        answer:
+          'By default a shadow is drawn outside the element\'s box, simulating it casting a shadow onto the page - toggling inset flips this to draw the shadow inside the element\'s border instead, simulating the element being pressed in or recessed. Each shadow layer has its own independent inset toggle, so you can combine an outer shadow with an inset one in the same declaration.',
+      },
+      {
+        question: 'Why is opacity controlled separately from the color picker?',
+        answer:
+          'The color picker only handles the RGB hue itself; the separate opacity slider converts that color to an rgba() value with the chosen alpha, since box-shadow color is almost always used at partial opacity to blend naturally with whatever background sits behind the element rather than as a fully solid color.',
+      },
+    ],
+    Component: CssBoxShadowGenerator,
+  },
+  {
+    slug: 'currency-converter',
+    category: 'converters',
+    isNew: true,
+    title: 'Currency Converter',
+    shortDescription: 'Convert between 20 major currencies using daily reference exchange rates.',
+    longDescription:
+      'Convert an amount between 20 major world currencies using real exchange rate data fetched from frankfurter.dev, a free public API built on European Central Bank reference rates. Unlike a hardcoded rate table baked into the page, the rates here are fetched fresh each time you change the source currency, so the conversion reflects the actual current published rate rather than a stale snapshot from whenever the tool was built - important context, though, is that ECB reference rates update once per business day, not continuously through the trading day the way a bank or trading platform\'s live feed would, so this is genuinely current daily data rather than real-time market pricing. That distinction is stated directly in the tool rather than left ambiguous, since the difference between "live" and "daily reference" rates matters if you\'re using the number for anything beyond a rough estimate. Useful for getting a quick, genuinely up-to-date sense of what an amount in one currency is worth in another - budgeting for travel, sanity-checking an invoice, or converting a price for comparison. The conversion math runs client-side against the fetched rates; only the rate lookup itself requires a network request.',
+    metaTitle: 'Currency Converter - Live Reference Exchange Rates | Formatiq',
+    metaDescription:
+      'Convert between 20 major currencies online for free using daily ECB reference exchange rates, fetched fresh each time you use it.',
+    keywords: ['currency converter online', 'exchange rate converter', 'convert currency free', 'usd to eur converter', 'live exchange rates'],
+    useCase: 'Getting a quick, genuinely up-to-date currency conversion for travel budgeting or invoice checks',
+    howItWorks: [
+      {
+        title: 'Enter an amount',
+        description: 'Any non-negative number in the source currency.',
+      },
+      {
+        title: 'Pick source and target currencies',
+        description: '20 major currencies are available, with a swap button to flip the pair.',
+      },
+      {
+        title: 'Rates fetch automatically',
+        description: 'Current daily reference rates load from frankfurter.dev whenever the source currency changes.',
+      },
+      {
+        title: 'Read the converted amount',
+        description: 'The result and the underlying per-unit exchange rate are both shown.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Real fetched rates, not hardcoded',
+        description: 'Exchange rates come from a live API call each time, not a fixed table baked into the page.',
+      },
+      {
+        title: 'Honest about rate freshness',
+        description: 'Clearly labeled as daily ECB reference rates, not continuous real-time market pricing.',
+      },
+      {
+        title: '20 major currencies',
+        description: 'Covers the currencies most likely to come up for travel, invoicing, or price comparison.',
+      },
+      {
+        title: 'One-click swap',
+        description: 'Flip the source and target currencies instantly instead of resetting both dropdowns.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Are these live, real-time exchange rates?',
+        answer:
+          'No - they\'re daily reference rates published by the European Central Bank and served through the frankfurter.dev API, which update once per business day rather than continuously. They\'re genuinely current (fetched fresh from the API each time you change the source currency, not a hardcoded table), but they won\'t match a live trading feed\'s rate down to the minute. For anything beyond a rough estimate - an actual currency exchange or a trade - use your bank\'s or broker\'s live rate.',
+      },
+      {
+        question: 'What happens if the rate service is unreachable?',
+        answer:
+          'The tool shows a clear error message rather than falling back to a stale or guessed rate, since presenting an outdated number as current would be misleading. If this happens, it\'s usually a temporary network issue - changing the source currency again or waiting a moment and retrying typically resolves it.',
+      },
+      {
+        question: 'Why isn\'t every world currency included?',
+        answer:
+          'The 20 currencies included are the ones most commonly needed for everyday conversions - major reserve currencies plus large regional economies - kept to a manageable list rather than the full set the underlying API supports, so the dropdown stays quick to scan instead of listing dozens of rarely-needed currencies.',
+      },
+    ],
+    Component: CurrencyConverter,
+  },
+  {
+    slug: 'aes-encrypt-decrypt',
+    category: 'encoders-decoders',
+    isNew: true,
+    title: 'AES Encrypt/Decrypt',
+    shortDescription: 'Encrypt or decrypt text with a passphrase using AES-GCM via the browser\'s native Web Crypto API.',
+    longDescription:
+      'Encrypt a piece of text with a passphrase using AES-GCM, the authenticated encryption mode built into the browser\'s native Web Crypto API, or decrypt a value this tool previously produced. The passphrase is never used directly as the encryption key - it\'s run through PBKDF2 with 250,000 iterations and a random salt to derive a proper 256-bit AES key, which is the standard defense against an attacker simply trying every dictionary word or common passphrase against a fast, un-stretched hash. Each encryption generates a fresh random salt and initialization vector, both stored alongside the ciphertext in the single base64 output string, so decryption only needs the passphrase and that one string to recover the original text. Being direct about scope: this is built for casual, convenience use - sharing a short secret with someone who knows the passphrase, or keeping a note unreadable at a glance - not as a substitute for proper key management, secret rotation, hardware-backed key storage, or audited cryptographic tooling in a production security context, where passphrase-only encryption has real limitations this tool doesn\'t attempt to solve. Runs entirely client-side; nothing is transmitted anywhere.',
+    metaTitle: 'AES Encrypt/Decrypt - Web Crypto API Tool | Formatiq',
+    metaDescription:
+      'Encrypt or decrypt text with a passphrase online for free using AES-GCM and PBKDF2 via the browser\'s native Web Crypto API. No data leaves your browser.',
+    keywords: ['aes encrypt online', 'aes decrypt tool', 'web crypto api encryption', 'encrypt text with password', 'pbkdf2 aes-gcm'],
+    useCase: 'Sharing a short secret with someone who knows the passphrase, for casual convenience',
+    howItWorks: [
+      {
+        title: 'Choose encrypt or decrypt',
+        description: 'Encrypt plain text with a passphrase, or decrypt a base64 value this tool previously produced.',
+      },
+      {
+        title: 'Enter your text and passphrase',
+        description: 'Both are required — the passphrase never leaves the derivation step as plain text.',
+      },
+      {
+        title: 'A key is derived with PBKDF2',
+        description: '250,000 iterations plus a random salt turn the passphrase into a proper 256-bit AES key.',
+      },
+      {
+        title: 'Copy the result',
+        description: 'Encryption produces one base64 string containing the salt, IV, and ciphertext together.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Native Web Crypto API',
+        description: 'Uses the browser\'s built-in AES-GCM implementation, not a JavaScript reimplementation of the cipher.',
+      },
+      {
+        title: 'Passphrase stretching via PBKDF2',
+        description: '250,000 iterations and a random salt defend against fast dictionary attacks on the passphrase.',
+      },
+      {
+        title: 'Authenticated encryption',
+        description: 'AES-GCM detects tampering or a wrong passphrase on decrypt, rather than silently returning garbage.',
+      },
+      {
+        title: 'Honest about its scope',
+        description: 'Clearly framed as casual/convenience encryption, not a replacement for real key management.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is this safe enough for real secrets, like production credentials?',
+        answer:
+          'No - this is intentionally scoped for casual use, like sharing a short secret with someone who knows the passphrase. Production secrets deserve proper key management: hardware-backed key storage, access-controlled secret managers, key rotation, and audit logging, none of which a browser-based passphrase tool can provide. The cryptography itself (AES-GCM, PBKDF2) is sound, but passphrase-only encryption has inherent limits that this tool doesn\'t try to work around.',
+      },
+      {
+        question: 'What\'s actually inside the base64 output?',
+        answer:
+          'The output concatenates three things before base64-encoding: a random 16-byte salt (used to derive the key from your passphrase), a random 12-byte initialization vector (required by AES-GCM), and the encrypted ciphertext itself. Decryption reads the salt and IV back out of that same string, so no separate metadata needs to be tracked alongside it - the one string is self-contained.',
+      },
+      {
+        question: 'Why do I get an error instead of garbled text when I decrypt with the wrong passphrase?',
+        answer:
+          'AES-GCM is an authenticated encryption mode - it includes a built-in integrity check that fails loudly if the derived key is wrong (which happens automatically with a wrong passphrase, since the key is derived from it) or if the ciphertext has been altered. This is a deliberate security property: silently returning corrupted plaintext on a wrong key would be worse than a clear failure.',
+      },
+    ],
+    Component: AesEncryptDecrypt,
+  },
+  {
+    slug: 'ip-address-formatter',
+    category: 'converters',
+    isNew: true,
+    title: 'IP Address Formatter',
+    shortDescription: 'Convert an IPv4 address between dotted-decimal, integer, hex, and binary representations at once.',
+    longDescription:
+      'Enter an IPv4 address in the familiar dotted-decimal form and see it converted into three other common representations simultaneously: a single 32-bit decimal integer, hexadecimal, and binary split into its four constituent octets. The input is validated as a well-formed IPv4 address first - exactly four dot-separated parts, each a number from 0 to 255 - so a typo like a fifth octet or a value over 255 is caught with a specific error message rather than producing a nonsensical result. This is pure format conversion and intentionally does nothing with subnets or network math: ip-subnet-calculator is the tool for CIDR notation, calculating a network address, broadcast address, or usable host range from an IP/prefix pair. This tool exists for the simpler, more common need of translating one representation of a single address into another - useful when a firewall rule, a database column, or a legacy system stores IPs as a decimal integer or hex value and you need to see what dotted-decimal address that actually corresponds to, or vice versa. Runs entirely client-side.',
+    metaTitle: 'IP Address Formatter - Decimal, Hex, Binary | Formatiq',
+    metaDescription:
+      'Convert an IPv4 address between dotted-decimal, decimal integer, hex, and binary online for free, all shown at once. No data leaves your browser.',
+    keywords: ['ip address converter', 'ip to decimal converter', 'ip address to hex', 'ip address to binary', 'dotted decimal converter'],
+    useCase: 'Translating an IP stored as a decimal integer or hex value in a database or log back to dotted-decimal',
+    howItWorks: [
+      {
+        title: 'Enter an IPv4 address',
+        description: 'Standard dotted-decimal form, like 192.168.1.1.',
+      },
+      {
+        title: 'The address is validated',
+        description: 'Exactly four octets, each 0-255 — anything else produces a specific error message.',
+      },
+      {
+        title: 'See all four formats at once',
+        description: 'Dotted-decimal, 32-bit decimal integer, hexadecimal, and binary all convert together.',
+      },
+      {
+        title: 'Copy any representation',
+        description: 'Each format has its own copy button.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'All four formats together',
+        description: 'See dotted-decimal, decimal, hex, and binary at once instead of converting one pair at a time.',
+      },
+      {
+        title: 'Strict octet validation',
+        description: 'Catches an out-of-range octet or wrong part count with a specific error, not a silent bad result.',
+      },
+      {
+        title: 'Pure format conversion',
+        description: 'Focused on translating one representation to another — no subnet or CIDR math involved.',
+      },
+      {
+        title: 'Complements the subnet calculator',
+        description: 'Use ip-subnet-calculator for network/broadcast/CIDR math; this tool for simple format translation.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from ip-subnet-calculator?',
+        answer:
+          'ip-subnet-calculator takes an IP address with a CIDR prefix (like 192.168.1.0/24) and computes network math: the network address, broadcast address, and usable host range. This tool takes a single plain IP address with no prefix and converts it between different ways of writing the same address - dotted-decimal, decimal integer, hex, and binary - with no subnet or network calculation involved at all.',
+      },
+      {
+        question: 'Why would an IP address be stored as a decimal integer?',
+        answer:
+          'Storing an IPv4 address as a single 32-bit integer is a common database and networking convention, since it\'s more compact than a string and makes range comparisons (like "is this IP between X and Y") a simple numeric comparison rather than a string operation. This tool converts that integer back to the familiar dotted-decimal form, or the reverse, so you can work with whichever representation a given system exposes.',
+      },
+      {
+        question: 'Does this work for IPv6 addresses?',
+        answer:
+          'No - this tool is scoped to IPv4 only, since IPv4\'s four-octet, 32-bit structure maps cleanly onto decimal, hex, and binary in the way shown here. IPv6\'s 128-bit address space and different notation conventions (colon-separated hex groups, zero compression) would need a distinct tool built around those rules rather than an extension of this one.',
+      },
+    ],
+    Component: IpAddressFormatter,
   },
 ];
 

@@ -52,6 +52,19 @@
   color: #1a5fb4;
 }
 
+[data-theme='light'] .jt-key {
+  color: #0f7a5f;
+}
+
+[data-theme='light'] .jt-string {
+  color: #8f6a08;
+}
+
+[data-theme='light'] .jt-number,
+[data-theme='light'] .jt-boolean {
+  color: #1a5fb4;
+}
+
 [data-theme='light'] .site-header {
   background: rgba(255, 255, 255, 0.9);
 }
@@ -455,6 +468,32 @@ textarea.mono,
 .html-comment {
   color: var(--text-tertiary);
   font-style: italic;
+}
+
+/* JSON tree viewer node coloring (JsonTreeViewer) */
+.jt-key {
+  color: #7ee0c3;
+}
+.jt-string {
+  color: #f2b705;
+}
+.jt-number,
+.jt-boolean {
+  color: #79b8ff;
+}
+.jt-null {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+.jt-toggle {
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-tertiary);
+  display: inline-block;
+  width: 14px;
+}
+.jt-punct {
+  color: var(--text-tertiary);
 }
 
 /* Homepage tool-row sections (Popular / New / Trending) */
