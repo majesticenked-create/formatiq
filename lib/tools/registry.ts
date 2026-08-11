@@ -83,6 +83,12 @@ import CssBoxShadowGenerator from '@/components/tools/CssBoxShadowGenerator';
 import CurrencyConverter from '@/components/tools/CurrencyConverter';
 import AesEncryptDecrypt from '@/components/tools/AesEncryptDecrypt';
 import IpAddressFormatter from '@/components/tools/IpAddressFormatter';
+import StringInspector from '@/components/tools/StringInspector';
+import MacAddressGenerator from '@/components/tools/MacAddressGenerator';
+import BarcodeGenerator from '@/components/tools/BarcodeGenerator';
+import DnsLookupExplainer from '@/components/tools/DnsLookupExplainer';
+import HttpStatusCodeLookup from '@/components/tools/HttpStatusCodeLookup';
+import RandomFlagGenerator from '@/components/tools/RandomFlagGenerator';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -5426,6 +5432,410 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: IpAddressFormatter,
+  },
+  {
+    slug: 'string-inspector',
+    category: 'text-tools',
+    isNew: true,
+    title: 'String Inspector',
+    shortDescription: 'Break down text by byte length, character count, encoding quirks, and line ending style.',
+    longDescription:
+      'Paste any text and see a detailed breakdown built for debugging encoding and whitespace problems, not for the word/sentence/reading-time stats word-counter already covers: UTF-8 byte length versus grapheme (visible character) count versus raw UTF-16 code unit length - three numbers that are identical for plain ASCII but diverge the moment emoji, accented letters, or other multi-byte characters are involved, which is exactly the kind of mismatch that causes "off by a few characters" bugs in string-length-limited fields. It also flags whether the text contains non-ASCII characters, emoji, or control characters, checks for a leading byte order mark, flags trailing whitespace on any line, and detects which line ending convention is in use - LF, CRLF, CR, or a mix of more than one, which is a common source of git diff noise and cross-platform file corruption. Useful for tracking down why a string is failing a byte-length validation, confirming a file\'s line endings before a diff, or checking whether pasted text secretly contains a BOM or invisible control character. Runs entirely client-side.',
+    metaTitle: 'String Inspector - Byte Length & Encoding Checker | Formatiq',
+    metaDescription:
+      'Inspect text for UTF-8 byte length, character count, non-ASCII/emoji/control characters, and line ending style online for free. No data leaves your browser.',
+    keywords: ['string inspector', 'utf-8 byte length checker', 'detect line endings', 'crlf vs lf checker', 'character count vs byte length'],
+    useCase: 'Debugging why a string fails a byte-length validation or has unexpected line endings',
+    howItWorks: [
+      {
+        title: 'Paste your text',
+        description: 'Any text — plain, multilingual, or containing emoji and control characters.',
+      },
+      {
+        title: 'See byte, character, and code unit counts',
+        description: 'Three distinct measurements that only diverge once non-ASCII content is involved.',
+      },
+      {
+        title: 'Check encoding-relevant flags',
+        description: 'Non-ASCII, emoji, control characters, BOM, and trailing whitespace are each flagged clearly.',
+      },
+      {
+        title: 'Read the detected line ending style',
+        description: 'LF, CRLF, CR, or mixed — identified automatically from the actual characters present.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Distinct from word-counter',
+        description: 'Focused on encoding and byte-level detail — byte length, code units, control characters — not word/sentence stats.',
+      },
+      {
+        title: 'Three-way length comparison',
+        description: 'Byte length, grapheme count, and UTF-16 code units shown together, revealing exactly where they diverge.',
+      },
+      {
+        title: 'Line ending detection',
+        description: 'Catches CRLF/LF mismatches before they show up as noisy git diffs or cross-platform file issues.',
+      },
+      {
+        title: 'Flags hidden characters',
+        description: 'Surfaces a leading BOM, trailing whitespace, or control characters that are easy to miss by eye.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why do byte length, character count, and code unit length ever differ?',
+        answer:
+          'For plain ASCII text they\'re identical, but UTF-8 encodes any character outside the ASCII range as 2-4 bytes rather than 1, while JavaScript\'s string .length counts UTF-16 code units, which is 1 for most characters but 2 for characters outside the Basic Multilingual Plane (many emoji). A single "☕" emoji, for example, is 3 bytes in UTF-8 but a single UTF-16 code unit - this is exactly the kind of mismatch that breaks a byte-length database column limit or a naive character-count validation.',
+      },
+      {
+        question: 'What counts as a "control character" here?',
+        answer:
+          'Characters with a Unicode code point from 0 to 31 or exactly 127 (DEL), excluding tab, line feed, and carriage return since those are expected in normal multi-line text. These are typically invisible or non-printing characters that sometimes end up in pasted text from a terminal or a poorly sanitized source, and can cause subtle bugs in code that assumes text is "clean."',
+      },
+      {
+        question: 'Why does line ending style matter?',
+        answer:
+          'Windows traditionally uses CRLF (\\r\\n) for line breaks while Unix-based systems (Linux, macOS) use LF (\\n) alone - a file with mixed line endings, or the wrong style for a given tool, can produce confusing full-file diffs in git, break certain parsers, or display incorrectly in some text editors. Detecting a mixed or unexpected line ending style upfront helps catch this before it causes a problem downstream.',
+      },
+    ],
+    Component: StringInspector,
+  },
+  {
+    slug: 'mac-address-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'MAC Address Generator',
+    shortDescription: 'Generate random MAC addresses with colon or hyphen formatting and a locally-administered toggle.',
+    longDescription:
+      'Generate one or more random MAC addresses at once, with the same count control (1-50) as uuid-generator, plus a choice between colon-separated (AA:BB:CC:DD:EE:FF) and hyphen-separated (AA-BB-CC-DD-EE-FF) formatting to match whatever convention your target system expects. A toggle switches the first octet\'s locally-administered bit on or off: universally-administered addresses (the default for real hardware, where the first three bytes are a vendor-assigned OUI) versus locally-administered addresses, which are explicitly reserved for exactly this kind of generated or manually-assigned use and won\'t collide with a real vendor\'s assigned range. Every generated address also has its individual/group bit cleared, so it always represents a single device rather than a multicast group, matching how a real network interface\'s address is structured. Useful for populating test data, mocking network device inventories, or generating placeholder addresses for a VM or container config where a real hardware address doesn\'t apply. Runs entirely client-side using the browser\'s random number generator.',
+    metaTitle: 'MAC Address Generator - Random MAC Addresses | Formatiq',
+    metaDescription:
+      'Generate random MAC addresses online for free, with colon/hyphen formatting and a locally-administered toggle. No data leaves your browser.',
+    keywords: ['mac address generator', 'random mac address', 'generate mac address online', 'locally administered mac address'],
+    useCase: 'Populating test data or mock network device inventories with realistic MAC addresses',
+    howItWorks: [
+      {
+        title: 'Set the count',
+        description: 'Generate 1 to 50 addresses at once.',
+      },
+      {
+        title: 'Choose a separator',
+        description: 'Colon-separated or hyphen-separated, matching the convention your system expects.',
+      },
+      {
+        title: 'Toggle the administration bit',
+        description: 'Locally-administered addresses avoid any collision with real vendor-assigned ranges.',
+      },
+      {
+        title: 'Generate and copy',
+        description: 'All addresses are listed together with a one-click "copy all."',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Batch generation',
+        description: 'Generate up to 50 addresses at once instead of one at a time.',
+      },
+      {
+        title: 'Matches your formatting convention',
+        description: 'Colon or hyphen separators, whichever your target system or tool expects.',
+      },
+      {
+        title: 'Collision-safe by default toggle',
+        description: 'The locally-administered option is reserved specifically for generated/test addresses.',
+      },
+      {
+        title: 'Structurally valid output',
+        description: 'The individual/group bit is always cleared, matching how a real single-device address is structured.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What does the locally-administered toggle actually do?',
+        answer:
+          'It sets or clears the second-least-significant bit of the first octet, known as the U/L (universal/local) bit. Real network hardware normally has this bit cleared, with the first three bytes forming an OUI (Organizationally Unique Identifier) assigned to a specific vendor - setting the bit instead marks the address as locally administered, a range explicitly set aside by the IEEE for exactly this kind of manually-assigned or generated address, so it can\'t collide with any real vendor\'s assigned range.',
+      },
+      {
+        question: 'Are these MAC addresses guaranteed to be unique?',
+        answer:
+          'No - each address is generated independently using random bytes, so while a collision within a single batch is extremely unlikely given the address space size, this tool does not track previously generated addresses or guarantee global uniqueness the way a real vendor-assigned MAC address is. For test data or mock inventories this is not a practical concern, but it\'s not suitable for anything requiring a formal uniqueness guarantee.',
+      },
+      {
+        question: 'Can I use a generated MAC address on real hardware?',
+        answer:
+          'Some operating systems and network drivers do allow manually overriding an interface\'s MAC address, and using a locally-administered address for that purpose is the technically correct choice, since it\'s specifically reserved for this. That said, spoofing a MAC address can violate network policy in some environments (like corporate or campus networks that filter by MAC), so check your network\'s acceptable use policy before doing so.',
+      },
+    ],
+    Component: MacAddressGenerator,
+  },
+  {
+    slug: 'barcode-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Barcode Generator',
+    shortDescription: 'Generate a Code 128 or EAN-13 barcode from text or a number, rendered as SVG with PNG download.',
+    longDescription:
+      'Enter text or a number and generate a scannable barcode in either Code 128 (which supports arbitrary letters, numbers, and most symbols) or EAN-13 (the standard 13-digit retail product barcode format, which requires exactly 12 or 13 digits and validates its own check digit). The barcode renders as a crisp SVG, so it stays sharp at any size rather than pixelating, and a download button exports it as a PNG for use in documents, labels, or anywhere SVG isn\'t accepted. This uses JsBarcode, a well-established, dependency-free barcode rendering library, rather than a from-scratch symbol-pattern implementation - Code 128 and EAN-13 both rely on precise bar-width tables and checksum logic where a small transcription error would produce a barcode that looks plausible but silently fails to scan, and getting that right without the ability to test against a real barcode scanner isn\'t a risk worth taking for a tool whose entire purpose is producing a working barcode. Useful for generating a product barcode for a small catalog, a tracking code for an internal inventory system, or a scannable label for physical assets. Runs entirely client-side.',
+    metaTitle: 'Barcode Generator - Code 128 & EAN-13 | Formatiq',
+    metaDescription:
+      'Generate a Code 128 or EAN-13 barcode online for free from text or a number, as SVG with PNG download. No data leaves your browser.',
+    keywords: ['barcode generator online', 'code 128 generator', 'ean-13 barcode generator', 'generate barcode free', 'barcode maker'],
+    useCase: 'Generating a product barcode for a small catalog or a scannable label for physical assets',
+    howItWorks: [
+      {
+        title: 'Choose Code 128 or EAN-13',
+        description: 'Code 128 accepts arbitrary text; EAN-13 requires exactly 12 or 13 digits.',
+      },
+      {
+        title: 'Enter your text or number',
+        description: 'The barcode regenerates live as you type, with a clear error if the input doesn\'t fit the chosen format.',
+      },
+      {
+        title: 'View the rendered barcode',
+        description: 'A crisp SVG barcode with the encoded value printed underneath.',
+      },
+      {
+        title: 'Download as PNG',
+        description: 'Export a high-resolution PNG for use anywhere SVG isn\'t accepted.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Two widely-used formats',
+        description: 'Code 128 for arbitrary text and numbers, EAN-13 for standard 13-digit retail product codes.',
+      },
+      {
+        title: 'Crisp SVG rendering',
+        description: 'Vector output stays sharp at any print or display size, unlike a fixed-resolution image.',
+      },
+      {
+        title: 'Built on a proven library',
+        description: 'Uses JsBarcode\'s tested symbol tables and checksum logic rather than an unverified from-scratch implementation.',
+      },
+      {
+        title: 'PNG export included',
+        description: 'One click converts the SVG to a downloadable PNG for documents or labels.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'When should I use Code 128 instead of EAN-13?',
+        answer:
+          'Use Code 128 when you need to encode arbitrary text, mixed letters and numbers, or a number that isn\'t exactly 12-13 digits - it\'s a general-purpose format used for internal tracking codes, shipping labels, and inventory systems. Use EAN-13 specifically when you need a standard retail product barcode, since that\'s the format most point-of-sale scanners and product databases expect, and it requires exactly 12 or 13 digits with a valid check digit.',
+      },
+      {
+        question: 'Why does EAN-13 reject some 13-digit numbers?',
+        answer:
+          'EAN-13\'s last digit is a check digit mathematically derived from the first 12 - it\'s not arbitrary, so a 13-digit number with an incorrect final digit will fail validation. If you enter exactly 12 digits, the correct check digit is calculated and appended automatically; entering 13 requires the last digit to already be correct.',
+      },
+      {
+        question: 'Why use a library instead of a from-scratch barcode implementation?',
+        answer:
+          'Both Code 128 and EAN-13 depend on precise bar-width pattern tables and checksum algorithms defined by their respective standards - a single wrong value in either would produce a barcode that renders and looks correct but fails to scan, and that failure mode isn\'t verifiable without testing against real scanning hardware. JsBarcode is a widely used, actively maintained library with those tables already correct and tested, which is a more reliable foundation for a tool whose only job is producing a barcode that actually works.',
+      },
+    ],
+    Component: BarcodeGenerator,
+  },
+  {
+    slug: 'dns-record-explainer',
+    category: 'text-tools',
+    isNew: true,
+    title: 'DNS Record Type Explainer',
+    shortDescription: 'Look up what each DNS record type (A, AAAA, CNAME, MX, TXT, NS) does, with a typical example.',
+    longDescription:
+      'Select a DNS record type - A, AAAA, CNAME, MX, TXT, or NS - and see a plain-language explanation of what it does, along with a realistically formatted example of that record in the wild and a note on typical TTL (time-to-live, or caching duration) behavior for that type. To be upfront about scope: this is a reference and educational tool, not a live DNS lookup - actually querying a domain\'s real DNS records requires sending a request to a DNS resolver, which needs a server or a third-party API and can\'t be done entirely within the browser the way the rest of this site\'s tools work, so this tool intentionally doesn\'t claim to do something it can\'t. What it does instead is explain the record types themselves: what an MX record\'s priority number means, why a CNAME can\'t coexist with other records on the same name, or what SPF/DKIM/DMARC TXT records are actually for. Useful for understanding DNS configuration you\'re looking at elsewhere, learning what record type you need before setting up email authentication or a subdomain, or refreshing your memory on a record type you don\'t touch often. Runs entirely client-side with no network requests.',
+    metaTitle: 'DNS Record Type Explainer - A, MX, CNAME, TXT | Formatiq',
+    metaDescription:
+      'Look up what A, AAAA, CNAME, MX, TXT, and NS DNS records do, with real-world examples, online for free. Explains record types — does not perform live lookups.',
+    keywords: ['dns record types explained', 'what is a mx record', 'cname vs a record', 'dns txt record explained', 'dns record reference'],
+    useCase: 'Understanding a DNS configuration before setting up email authentication or a subdomain',
+    howItWorks: [
+      {
+        title: 'Choose a record type',
+        description: 'A, AAAA, CNAME, MX, TXT, or NS.',
+      },
+      {
+        title: 'Read the plain-language explanation',
+        description: 'What that record type does and when it\'s used, without jargon-heavy RFC language.',
+      },
+      {
+        title: 'See a realistic example',
+        description: 'A correctly formatted sample record showing the type in context.',
+      },
+      {
+        title: 'Check the typical TTL behavior',
+        description: 'How long that record type is usually cached, and why.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Honest about scope',
+        description: 'Clearly a reference/explainer tool, not a live DNS lookup — no false claim of doing something a browser-only tool can\'t.',
+      },
+      {
+        title: 'Plain-language explanations',
+        description: 'Explains what each record type actually does, not just its RFC-style technical definition.',
+      },
+      {
+        title: 'Realistic examples',
+        description: 'Each record type shows a correctly formatted sample, not just an abstract description.',
+      },
+      {
+        title: 'Covers the 6 most commonly encountered types',
+        description: 'A, AAAA, CNAME, MX, TXT, and NS cover the vast majority of everyday DNS configuration.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why doesn\'t this tool perform an actual DNS lookup for my domain?',
+        answer:
+          'A real DNS lookup requires sending a query to a DNS resolver over the network, which needs either a server-side component or a third-party API - something a static, fully client-side browser tool genuinely cannot do on its own. Rather than fake this or silently fail, this tool is built and labeled honestly as a record-type reference and explainer instead, which is something it can actually deliver reliably.',
+      },
+      {
+        question: 'What\'s the difference between a CNAME and an A record?',
+        answer:
+          'An A record points a domain name directly at an IPv4 address. A CNAME instead points one domain name at another domain name, which then gets resolved in turn - so www.example.com might CNAME to example.com, which then resolves via its own A record. This indirection is useful when the target\'s IP address might change, since only the target\'s A record needs updating, not every CNAME pointing at it.',
+      },
+      {
+        question: 'What does the priority number on an MX record mean?',
+        answer:
+          'Lower numbers indicate higher priority - mail servers are tried in ascending order of their priority value, so an MX record with priority 10 is tried before one with priority 20. This lets a domain configure a primary mail server plus one or more fallback servers that only receive mail if the higher-priority server is unreachable.',
+      },
+    ],
+    Component: DnsLookupExplainer,
+  },
+  {
+    slug: 'http-status-code-lookup',
+    category: 'text-tools',
+    isNew: true,
+    title: 'HTTP Status Code Lookup',
+    shortDescription: 'Look up any HTTP status code\'s meaning, or browse/search the full reference table by category.',
+    longDescription:
+      'Enter a status code like 404 or 503 to see its exact meaning, a plain-language explanation of when it\'s actually used, and whether it\'s something you\'ll commonly run into or a rare/obscure one you might not recognize - or skip the search entirely and browse the full reference table, filterable by category (2xx success, 3xx redirection, 4xx client error, 5xx server error) and searchable by code, name, or keyword. Beyond the well-known ones like 200, 404, and 500, this covers the codes that come up constantly in API and web development but are easy to mix up - the difference between 301 and 308 redirects, why 401 is about authentication while 403 is about authorization, or what 429 rate limiting actually signals to a client. Each entry is tagged by how commonly you\'d actually encounter it in practice, so a genuinely obscure code like 511 isn\'t presented with the same weight as something you\'ll see in server logs every day. Useful for quickly understanding an unfamiliar status code in an API response, choosing the right code to return from your own API, or double-checking the difference between two similar-sounding codes. Runs entirely client-side against a static reference table - no live requests are made.',
+    metaTitle: 'HTTP Status Code Lookup - Full Reference | Formatiq',
+    metaDescription:
+      'Look up any HTTP status code\'s meaning online for free, or browse/search the full reference table by category (2xx, 3xx, 4xx, 5xx).',
+    keywords: ['http status codes list', 'what does 404 mean', 'http status code lookup', '401 vs 403', 'http error code reference'],
+    useCase: 'Understanding an unfamiliar status code in an API response, or choosing the right one to return',
+    howItWorks: [
+      {
+        title: 'Search or browse',
+        description: 'Type a code, name, or keyword, or filter by category (2xx/3xx/4xx/5xx).',
+      },
+      {
+        title: 'See the exact meaning',
+        description: 'A plain-language explanation of what the code means and when it\'s actually used.',
+      },
+      {
+        title: 'Check commonality',
+        description: 'Each code is tagged common, occasional, or rare so you know if it\'s expected or unusual.',
+      },
+      {
+        title: 'Scan the full reference table',
+        description: 'Every code stays visible below the search, filterable and searchable together.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Search and browse together',
+        description: 'Look up a specific code instantly, or explore the full table by category without leaving the search.',
+      },
+      {
+        title: 'Explains commonly confused pairs',
+        description: 'Covers distinctions like 401 vs 403 or 301 vs 308 that are easy to mix up.',
+      },
+      {
+        title: 'Commonality tagging',
+        description: 'Flags whether a code is one you\'ll see constantly or a rare edge case, not just its definition.',
+      },
+      {
+        title: 'Full category coverage',
+        description: '2xx success, 3xx redirection, 4xx client error, and 5xx server error codes all included.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What\'s the actual difference between 401 and 403?',
+        answer:
+          '401 Unauthorized means authentication is missing or invalid - despite the name, it\'s specifically about who you are, and the correct response is to authenticate (e.g. log in). 403 Forbidden means the server knows who you are but you\'re not allowed to access this resource regardless - the correct response is that no amount of re-authenticating as the same user will help, since it\'s a permissions issue rather than an identity one.',
+      },
+      {
+        question: 'Why are there so many different redirect codes (301, 302, 307, 308)?',
+        answer:
+          'They differ along two independent axes: permanence (301/308 signal a permanent move that clients should remember; 302/307 signal a temporary one) and method preservation (307/308 strictly preserve the original HTTP method, like keeping a POST as a POST, while 301/302 have historically been inconsistently reinterpreted by clients as allowing a method change to GET). 308 and 307 were introduced specifically to remove that ambiguity for cases where preserving the method matters.',
+      },
+      {
+        question: 'How is "commonly seen" versus "rare" determined?',
+        answer:
+          'It\'s based on how often a status code actually shows up in typical web and API development - codes like 200, 404, and 500 appear constantly in day-to-day work and logs, while codes like 511 or 418 are technically valid and occasionally implemented but rarely encountered outside specific niche situations. This is a practical, not formal, distinction meant to help you gauge whether an unfamiliar code you\'ve encountered is expected or genuinely unusual.',
+      },
+    ],
+    Component: HttpStatusCodeLookup,
+  },
+  {
+    slug: 'random-flag-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Random Flag Generator',
+    shortDescription: 'Generate a random country flag with its name and continent — click to see another.',
+    longDescription:
+      'Click "Generate another" to see a random country\'s flag, name, and continent, drawn from a curated list of 50 countries spanning every inhabited continent. Flags render as native Unicode flag emoji rather than image files or SVGs, so they display crisply at any size using whatever flag emoji set the visiting device already supports, with zero image assets to load. A running history of the 8 most recently shown flags stays visible below, so you can glance back at what came up without losing track mid-session. This is a simple, no-frills tool by design - no API calls, no external flag image sets, just a hardcoded reference list and the browser\'s own emoji rendering doing the work, which keeps it instant and completely offline-capable. Useful as a quick trivia or guessing-game prompt, a random icebreaker for a team activity, or just a bit of low-stakes fun between using the site\'s more practical developer tools. Runs entirely client-side.',
+    metaTitle: 'Random Flag Generator - Country Flags | Formatiq',
+    metaDescription:
+      'Generate a random country flag with its name and continent online for free, using native emoji flags. No data leaves your browser.',
+    keywords: ['random flag generator', 'random country generator', 'flag emoji generator', 'guess the flag', 'random country flag'],
+    useCase: 'A quick trivia prompt, icebreaker, or bit of fun between using more practical tools',
+    howItWorks: [
+      {
+        title: 'Click "Generate another"',
+        description: 'A random country from the list of 50 is chosen, different from the one currently shown.',
+      },
+      {
+        title: 'See the flag, name, and continent',
+        description: 'Rendered as a native emoji flag at large size, with the country code and continent underneath.',
+      },
+      {
+        title: 'Check recent history',
+        description: 'The last 8 flags shown stay visible in a strip below, so you don\'t lose track.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Instant, no loading',
+        description: 'Native emoji flags render immediately with no image files or API calls to wait on.',
+      },
+      {
+        title: 'Works fully offline',
+        description: 'A hardcoded country list plus the browser\'s built-in emoji rendering — no network dependency at all.',
+      },
+      {
+        title: 'Spans every continent',
+        description: '50 countries curated for a genuine geographic spread, not clustered in one region.',
+      },
+      {
+        title: 'Keeps recent history',
+        description: 'See the last several flags generated without them disappearing the moment you click again.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why does the flag look like a colored box or two letters on some devices?',
+        answer:
+          'Flag emoji are rendered by the operating system or browser\'s own emoji font, not by this site - most modern platforms (recent iOS, Android, Windows, macOS) render them as proper flag images, but some older systems or certain Linux emoji fonts fall back to showing the two-letter country code instead, since they don\'t include region flag glyphs. This is a platform-level emoji support limitation, not something this tool can control.',
+      },
+      {
+        question: 'How were the 50 countries chosen?',
+        answer:
+          'They\'re a curated list aiming for a genuine spread across every inhabited continent - North America, South America, Europe, Africa, Asia, and Oceania - rather than an exhaustive list of all ~195 recognized countries. This keeps the pool varied without being so large that well-known countries feel diluted among many rarely-recognized ones.',
+      },
+      {
+        question: 'Can the same flag appear twice in a row?',
+        answer:
+          'No - each "Generate another" click explicitly excludes the currently shown country from the random selection, so you\'ll always see a different flag than the one you just had, even though which one comes up next is otherwise fully random.',
+      },
+    ],
+    Component: RandomFlagGenerator,
   },
 ];
 
