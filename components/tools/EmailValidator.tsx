@@ -13,12 +13,12 @@ function tryValidate(input: string) {
     return { ok: false as const, message: 'Enter an email address.' };
   }
   if (!value.includes('@')) {
-    return { ok: false as const, message: 'Missing "@" — an email needs a local part and a domain.' };
+    return { ok: false as const, message: 'Missing "@" - an email needs a local part and a domain.' };
   }
 
   const parts = value.split('@');
   if (parts.length > 2) {
-    return { ok: false as const, message: 'Too many "@" characters — only one is allowed.' };
+    return { ok: false as const, message: 'Too many "@" characters - only one is allowed.' };
   }
 
   const [local, domain] = parts;
@@ -29,7 +29,7 @@ function tryValidate(input: string) {
     return { ok: false as const, message: 'Missing the domain after "@".' };
   }
   if (!domain.includes('.')) {
-    return { ok: false as const, message: 'Domain is missing a "." — e.g. "example.com" instead of "examplecom".' };
+    return { ok: false as const, message: 'Domain is missing a "." - e.g. "example.com" instead of "examplecom".' };
   }
   if (domain.endsWith('.') || domain.startsWith('.')) {
     return { ok: false as const, message: 'Domain has a "." in the wrong place (leading or trailing).' };

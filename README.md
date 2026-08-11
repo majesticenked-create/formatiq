@@ -45,7 +45,28 @@ The `.claude/` directory has the merged Claudify core (9 agents, 21 commands, ho
 1. Create `components/tools/YourTool.tsx` (client component, follow the existing 4 as a pattern).
 2. Add an entry to `lib/tools/registry.ts` — category, slug, title, descriptions, keywords, FAQs, and the component reference.
 3. Add unique SEO content in the `longDescription` and `faqs` fields — this is required, not optional (see PROJECT_PLAN.md §4 on thin-content risk).
-4. That's it — `/tools/[category]/[slug]` and the category hub both pick it up automatically.
+4. Add a test entry (see **Testing** below) covering the tool's core logic.
+5. That's it — `/tools/[category]/[slug]` and the category hub both pick it up automatically.
+
+## Testing
+
+Tool logic is tested with [Vitest](https://vitest.dev). Tests live in `__tests__/tools/`, one file per tool category (`formatters.test.ts`, `converters.test.ts`, etc.), matching the categories in `lib/tools/registry.ts`.
+
+```bash
+npm run test       # run the full suite once
+```
+
+Most tools keep their core logic directly in the component file rather than exporting it separately. When adding a test for a new tool:
+
+- **If the logic is easy to extract**, pull the pure function(s) out into the component so they can be imported directly by the test.
+- **Otherwise**, copy the pure logic verbatim into the relevant `__tests__/tools/*.test.ts` file (matching its category) rather than modifying the component — this is the pattern used throughout the existing suite, chosen to avoid risking working components for the sake of testability.
+
+For each tool, cover:
+- A known-good valid input, asserting the expected correct output.
+- A known-bad/invalid input, asserting it returns an error state rather than crashing or silently failing.
+- One edge case specific to the tool (empty input, a boundary value, a malformed-but-not-empty case, etc.).
+
+Logic that depends on browser-only APIs unavailable in Node (Canvas, `FileReader`, `DOMParser`, `<iframe>`/`postMessage`) can't be exercised by this suite — note that in a comment near the test and verify those tools manually in a browser instead.
 
 ## Deployment
 

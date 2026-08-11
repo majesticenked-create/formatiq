@@ -27,7 +27,7 @@ function tryConvert(input: string, delimiter: string) {
 
   const rows = Array.isArray(parsed) ? parsed : [parsed];
   if (rows.length === 0) {
-    return { ok: false as const, message: 'JSON array is empty — nothing to convert.' };
+    return { ok: false as const, message: 'JSON array is empty - nothing to convert.' };
   }
   if (!rows.every((row) => typeof row === 'object' && row !== null && !Array.isArray(row))) {
     return { ok: false as const, message: 'JSON must be an object or an array of flat objects.' };

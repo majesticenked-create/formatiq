@@ -41,21 +41,13 @@ export default function Base64Tool() {
     <div>
       <div className="control-row">
         <button
-          className="icon-btn"
-          style={{
-            borderColor: mode === 'encode' ? 'var(--accent-dim)' : undefined,
-            color: mode === 'encode' ? 'var(--text-primary)' : undefined,
-          }}
+          className={`icon-btn${mode === 'encode' ? ' is-active' : ''}`}
           onClick={() => setMode('encode')}
         >
           Encode
         </button>
         <button
-          className="icon-btn"
-          style={{
-            borderColor: mode === 'decode' ? 'var(--accent-dim)' : undefined,
-            color: mode === 'decode' ? 'var(--text-primary)' : undefined,
-          }}
+          className={`icon-btn${mode === 'decode' ? ' is-active' : ''}`}
           onClick={() => setMode('decode')}
         >
           Decode

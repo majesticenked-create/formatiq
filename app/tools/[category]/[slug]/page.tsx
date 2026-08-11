@@ -14,10 +14,25 @@ export function generateMetadata({
 }): Metadata {
   const tool = getTool(params.category, params.slug);
   if (!tool) return {};
+  const canonicalUrl = `https://formatiq.tools/tools/${tool.category}/${tool.slug}`;
   return {
     title: tool.metaTitle,
     description: tool.metaDescription,
     keywords: tool.keywords,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: tool.metaTitle,
+      description: tool.metaDescription,
+      type: 'website',
+      url: canonicalUrl,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: tool.metaTitle,
+      description: tool.metaDescription,
+    },
   };
 }
 

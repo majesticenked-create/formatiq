@@ -6,22 +6,27 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest run"
   },
   "dependencies": {
-    "next": "^14.2.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "js-beautify": "^1.15.1",
     "js-yaml": "^4.1.0",
+    "next": "^14.2.5",
+    "qrcode": "^1.5.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/js-beautify": "^1.14.3",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.14.0",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@types/js-beautify": "^1.14.3",
     "@types/uuid": "^9.0.8",
-    "typescript": "^5.5.0"
+    "typescript": "^5.5.0",
+    "vitest": "^4.1.10"
   }
 }

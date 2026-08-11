@@ -113,7 +113,7 @@ function jsonToCsv(input: string) {
     return { ok: false as const, message: 'JSON input must be an array of objects.' };
   }
   if (parsed.length === 0) {
-    return { ok: false as const, message: 'JSON array is empty — nothing to convert.' };
+    return { ok: false as const, message: 'JSON array is empty - nothing to convert.' };
   }
   if (!parsed.every((row) => typeof row === 'object' && row !== null && !Array.isArray(row))) {
     return { ok: false as const, message: 'Every array item must be a flat object.' };

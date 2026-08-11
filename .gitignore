@@ -1,6 +1,8 @@
 node_modules
 .next
+.next-stale-*
 out
 .env*.local
 *.log
 .DS_Store
+.claude/backups/

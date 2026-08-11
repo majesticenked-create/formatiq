@@ -41,11 +41,7 @@ export default function JsonFormatter() {
         {[2, 4].map((n) => (
           <button
             key={n}
-            className="icon-btn"
-            style={{
-              borderColor: indent === n ? 'var(--accent-dim)' : undefined,
-              color: indent === n ? 'var(--text-primary)' : undefined,
-            }}
+            className={`icon-btn${indent === n ? ' is-active' : ''}`}
             onClick={() => setIndent(n)}
           >
             {n} spaces

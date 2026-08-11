@@ -27,8 +27,8 @@ function tryValidate(input: string) {
     return {
       ok: false as const,
       message: value.includes('://')
-        ? 'Not a valid URL — check the characters after the protocol.'
-        : 'Missing a protocol — URLs need a scheme like "https://" at the start.',
+        ? 'Not a valid URL - check the characters after the protocol.'
+        : 'Missing a protocol - URLs need a scheme like "https://" at the start.',
     };
   }
 }

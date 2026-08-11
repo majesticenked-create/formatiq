@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
   return (
@@ -14,6 +15,7 @@ export default function Header() {
           <Link href="/tools/converters">Converters</Link>
           <Link href="/tools/generators">Generators</Link>
           <Link href="/tools/text-tools">Text Tools</Link>
+          <ThemeToggle />
         </nav>
       </div>
     </header>

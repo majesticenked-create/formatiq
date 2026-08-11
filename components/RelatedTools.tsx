@@ -7,13 +7,14 @@ export default function RelatedTools({ tools }: { tools: ToolDefinition[] }) {
   return (
     <div className="related-tools">
       <h2 className="section-title">Related tools</h2>
-      <ul>
+      <div className="related-tools-grid">
         {tools.map((tool) => (
-          <li key={tool.slug}>
-            <Link href={`/tools/${tool.category}/${tool.slug}`}>{tool.title}</Link>
-          </li>
+          <Link key={tool.slug} href={`/tools/${tool.category}/${tool.slug}`} className="category-card">
+            <h3>{tool.title}</h3>
+            <p>{tool.shortDescription}</p>
+          </Link>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

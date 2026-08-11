@@ -16,7 +16,7 @@ function decode(input: string) {
   try {
     return { ok: true as const, output: decodeURIComponent(input) };
   } catch {
-    return { ok: false as const, message: 'Malformed percent-encoding — check for stray "%" characters.' };
+    return { ok: false as const, message: 'Malformed percent-encoding - check for stray "%" characters.' };
   }
 }
 
