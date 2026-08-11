@@ -89,6 +89,12 @@ import BarcodeGenerator from '@/components/tools/BarcodeGenerator';
 import DnsLookupExplainer from '@/components/tools/DnsLookupExplainer';
 import HttpStatusCodeLookup from '@/components/tools/HttpStatusCodeLookup';
 import RandomFlagGenerator from '@/components/tools/RandomFlagGenerator';
+import RandomAddressGenerator from '@/components/tools/RandomAddressGenerator';
+import IsbnValidatorGenerator from '@/components/tools/IsbnValidatorGenerator';
+import WordpressPasswordHashGenerator from '@/components/tools/WordpressPasswordHashGenerator';
+import TsvJsonConverter from '@/components/tools/TsvJsonConverter';
+import TextToBinaryConverter from '@/components/tools/TextToBinaryConverter';
+import TimeZoneNowClock from '@/components/tools/TimeZoneNowClock';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -5836,6 +5842,414 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: RandomFlagGenerator,
+  },
+  {
+    slug: 'random-address-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Random Address Generator',
+    shortDescription: 'Generate realistic fake mailing addresses for the US, UK, or a generic international format.',
+    longDescription:
+      'Generate 1-20 realistic-looking fake mailing addresses at once, formatted correctly for the region you choose: US addresses with a state abbreviation and 5-digit ZIP code, UK addresses with a properly formatted postcode and county, or a generic international format with a city and country. This is a more focused, region-aware counterpart to fake-data-generator\'s address field - that tool includes a single-line, US-only address as one column among several unrelated fields (name, email, phone, company), while this tool is dedicated entirely to addresses, produces properly multi-line formatted output matching each region\'s real postal conventions, and supports three distinct regional formats rather than one. Each address uses a genuinely random combination of street name, street type, city, and region-appropriate postal code rather than a small fixed set of full addresses, so repeated generation produces meaningfully varied results. Useful for populating test data in a form, seeding a database with placeholder shipping addresses, or mocking up a UI that displays address data. Runs entirely client-side.',
+    metaTitle: 'Random Address Generator - US, UK, International | Formatiq',
+    metaDescription:
+      'Generate realistic fake mailing addresses online for free for the US, UK, or international format, 1-20 at once. No data leaves your browser.',
+    keywords: ['random address generator', 'fake address generator', 'generate test address', 'random uk address', 'random us address'],
+    useCase: 'Populating test data or seeding a database with placeholder shipping addresses',
+    howItWorks: [
+      {
+        title: 'Choose a region',
+        description: 'US, UK, or a generic international format, each with its own realistic postal structure.',
+      },
+      {
+        title: 'Set the count',
+        description: 'Generate 1 to 20 addresses at once.',
+      },
+      {
+        title: 'Generate',
+        description: 'Each address combines random street, city, and region-appropriate postal code details.',
+      },
+      {
+        title: 'Copy all',
+        description: 'Every generated address copies together, one per block.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Region-aware formatting',
+        description: 'US ZIP codes, UK postcodes, and international city/country pairs each follow their real format.',
+      },
+      {
+        title: 'Distinct from fake-data-generator',
+        description: 'Dedicated entirely to addresses with proper multi-line formatting, not a single flattened field.',
+      },
+      {
+        title: 'Batch generation',
+        description: 'Generate up to 20 addresses at once instead of one at a time.',
+      },
+      {
+        title: 'Genuinely varied output',
+        description: 'Random street, city, and postal code combinations, not a small fixed pool of full addresses.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the address field in fake-data-generator?',
+        answer:
+          'fake-data-generator produces a single-line, US-only address as one field among several unrelated ones (name, email, phone, company) in a row of mixed fake data. This tool is dedicated entirely to addresses, supports three distinct regional formats (US, UK, international) rather than just one, and outputs properly multi-line addresses matching each region\'s real postal conventions rather than a single flattened line.',
+      },
+      {
+        question: 'Are these real addresses?',
+        answer:
+          'No - street names, house numbers, cities, and postal codes are all randomly combined and don\'t correspond to real, deliverable addresses. They\'re structured to look realistic and follow the correct format for each region, but should only be used for test data, mockups, or placeholder purposes, never for anything requiring an actual valid mailing address.',
+      },
+      {
+        question: 'Why does the UK format include a county but the international format doesn\'t?',
+        answer:
+          'UK postal addresses conventionally include a county alongside the town and postcode, so that\'s reflected here for realism. The generic international format is intentionally simpler - just a street, city, and country - since address conventions vary widely across countries (some use postal codes before the city, some have region/state fields, others don\'t), and a single generic format can\'t accurately represent every country\'s specific convention the way the dedicated US and UK formats do.',
+      },
+    ],
+    Component: RandomAddressGenerator,
+  },
+  {
+    slug: 'isbn-validator',
+    category: 'validators',
+    isNew: true,
+    title: 'ISBN Validator & Converter',
+    shortDescription: 'Validate ISBN-10 and ISBN-13 checksums with auto-detection, plus convert between the two formats.',
+    longDescription:
+      'Enter an ISBN and this tool automatically detects whether it\'s the older 10-digit or current 13-digit format based on length, then validates its check digit using the correct algorithm for that format - ISBN-10 uses a weighted sum with an "X" representing 10 in the final position, while ISBN-13 uses the same alternating 1-3 weighting as a UPC/EAN barcode, since ISBN-13 was specifically designed to be barcode-compatible. When validation fails, the tool identifies whether the problem is an invalid character at a specific position or a checksum mismatch, rather than just reporting "invalid" - a check digit that doesn\'t match its expected value usually means a single mistyped digit somewhere in the number. As a bonus, a valid ISBN-10 is automatically converted to its ISBN-13 equivalent (by prefixing "978" and recomputing the check digit) and vice versa, when the conversion is possible - not every ISBN-13 has an ISBN-10 equivalent, since only the "978" prefix range maps back to the original 10-digit system. Useful for verifying a book\'s ISBN before entering it into a catalog, or converting between formats when a system expects one or the other. Runs entirely client-side.',
+    metaTitle: 'ISBN Validator & Converter - ISBN-10/13 | Formatiq',
+    metaDescription:
+      'Validate ISBN-10 and ISBN-13 checksums online for free with auto-detection, and convert between the two formats. No data leaves your browser.',
+    keywords: ['isbn validator', 'isbn checksum checker', 'isbn-10 to isbn-13 converter', 'validate isbn online', 'isbn check digit'],
+    useCase: 'Verifying a book\'s ISBN before entering it into a catalog or database',
+    howItWorks: [
+      {
+        title: 'Enter an ISBN',
+        description: 'ISBN-10 or ISBN-13, with or without hyphens — the format is detected automatically by length.',
+      },
+      {
+        title: 'The check digit is validated',
+        description: 'Using the correct algorithm for the detected format — weighted-sum for ISBN-10, alternating 1-3 for ISBN-13.',
+      },
+      {
+        title: 'See exactly what failed',
+        description: 'An invalid character position or a checksum mismatch is identified specifically, not just flagged as "invalid."',
+      },
+      {
+        title: 'Get the equivalent format',
+        description: 'A valid ISBN converts automatically to its ISBN-10 or ISBN-13 counterpart, when one exists.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Auto-detects the format',
+        description: 'No need to specify ISBN-10 vs ISBN-13 — the correct validation algorithm is chosen automatically.',
+      },
+      {
+        title: 'Specific failure diagnosis',
+        description: 'Distinguishes an invalid character from a checksum mismatch instead of a generic error.',
+      },
+      {
+        title: 'Built-in format conversion',
+        description: 'Get the ISBN-10 or ISBN-13 equivalent of a valid ISBN without a separate conversion step.',
+      },
+      {
+        title: 'Handles the "X" check digit',
+        description: 'Correctly treats an "X" as the value 10 in ISBN-10\'s final position, per the actual standard.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why does ISBN-10 use "X" as a check digit sometimes?',
+        answer:
+          'ISBN-10\'s check digit algorithm can produce a computed value of 10, but a single digit can only represent 0-9 - the standard resolves this by using the letter "X" to represent that value of 10 in the final position. It\'s a valid, standard part of the format, not an error, and this tool handles it correctly on both validation and generation.',
+      },
+      {
+        question: 'Why doesn\'t every ISBN-13 have an ISBN-10 equivalent?',
+        answer:
+          'ISBN-13 was introduced as an extension of the existing 10-digit system by adding a "978" prefix (and later "979" for expanded capacity as the 978 range filled up), making it compatible with EAN/UPC barcodes. Only ISBNs in the "978" range map back to a valid 10-digit ISBN, since that\'s the range that originally was the 10-digit system; a "979"-prefixed ISBN-13 has no ISBN-10 equivalent because no such book ever existed in the older format.',
+      },
+      {
+        question: 'What does it mean if the checksum fails but the length and characters look right?',
+        answer:
+          'It almost always means a single digit was mistyped somewhere in the number - both ISBN-10 and ISBN-13\'s check digit is mathematically derived from the other digits, so any transposition or typo in those digits, or in the check digit itself, will cause the computed checksum not to match. Double-check the number against its original source (like the book\'s copyright page or back cover) rather than assuming the tool is wrong.',
+      },
+    ],
+    Component: IsbnValidatorGenerator,
+  },
+  {
+    slug: 'wordpress-password-hash-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'WordPress Password Hash Generator',
+    shortDescription: 'Generate a WordPress-compatible phpass ($P$) password hash from a plaintext password, client-side.',
+    longDescription:
+      'Enter a plaintext password and generate a WordPress-compatible hash using the phpass portable hash framework - the same MD5-based, salted, stretched hashing scheme WordPress has historically used to store passwords in the wp_users table\'s user_pass column, recognizable by its "$P$" prefix. The implementation runs the full algorithm: an 8-byte random salt, a cost factor controlling the iteration count, and repeated MD5 hashing of the salt and password together, all encoded with phpass\'s own base64-like alphabet rather than standard base64. Each generated hash is immediately self-verified by re-running the same check WordPress\'s own wp_check_password function would perform, confirming the password actually validates against the hash before it\'s shown. Be clear about scope: this exists for local development and testing convenience - like manually inserting a test user row directly into a dev database\'s wp_users table without going through the full WordPress signup flow - and is not a substitute for WordPress\'s own registration or password-reset process in a production context; newer WordPress versions also default to bcrypt for new passwords, with phpass retained mainly for verifying older legacy hashes. Runs entirely client-side.',
+    metaTitle: 'WordPress Password Hash Generator - phpass $P$ | Formatiq',
+    metaDescription:
+      'Generate a WordPress-compatible phpass password hash online for free, for local dev/testing use. No data leaves your browser.',
+    keywords: ['wordpress password hash generator', 'phpass hash generator', 'wp_users password hash', 'wordpress dev password hash'],
+    useCase: 'Manually inserting a test user into a dev database without the full WordPress signup flow',
+    howItWorks: [
+      {
+        title: 'Enter a plaintext password',
+        description: 'Any password you want hashed for a test/dev user row.',
+      },
+      {
+        title: 'Click "Generate hash"',
+        description: 'A random 8-byte salt is generated and the phpass algorithm runs against it.',
+      },
+      {
+        title: 'The hash is self-verified',
+        description: 'The same check WordPress would perform confirms the password validates against the output.',
+      },
+      {
+        title: 'Copy into wp_users.user_pass',
+        description: 'Paste the resulting $P$-prefixed hash directly into a dev database row.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Matches WordPress\'s legacy format exactly',
+        description: 'Implements the real phpass algorithm — salt, cost factor, iterated MD5, custom base64 alphabet — not an approximation.',
+      },
+      {
+        title: 'Self-verifying output',
+        description: 'Every hash is checked against the password it was generated from before being shown.',
+      },
+      {
+        title: 'Skips the signup flow for test data',
+        description: 'Useful for seeding a dev database without running through WordPress\'s actual registration process.',
+      },
+      {
+        title: 'Honest about production scope',
+        description: 'Clearly labeled for dev/testing convenience, not a replacement for WordPress\'s real auth flow.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Will this hash work if I paste it directly into my WordPress database?',
+        answer:
+          'For a WordPress installation still using the phpass format (identified by "$P$"-prefixed hashes in wp_users), yes - this generates a hash using the same algorithm and cost factor WordPress itself uses, and wp_check_password will validate it correctly. Newer WordPress versions (6.8+) default to bcrypt for newly created passwords, though phpass verification is typically still supported for existing legacy hashes, so check which format your specific WordPress version and database actually expect.',
+      },
+      {
+        question: 'Why does the hash look different every time I generate it for the same password?',
+        answer:
+          'A fresh random 8-byte salt is generated on every hash, and the salt is embedded directly in the output string - this is by design, since including a random salt is what prevents identical passwords from producing identical hashes (which would otherwise leak information via a rainbow table or simple comparison). Both hashes will still correctly validate the same password despite looking completely different.',
+      },
+      {
+        question: 'Is this safe to use for real user accounts in production?',
+        answer:
+          'No - this tool is scoped for local development and testing convenience, like quickly seeding a dev database with test users. Production password handling should always go through WordPress\'s own registration and authentication flow, which includes additional safeguards (proper server-side random salt generation, session handling, and in modern WordPress, bcrypt by default) that a standalone client-side hash generator doesn\'t attempt to replicate.',
+      },
+    ],
+    Component: WordpressPasswordHashGenerator,
+  },
+  {
+    slug: 'tsv-json-converter',
+    category: 'converters',
+    isNew: true,
+    title: 'TSV to JSON Converter',
+    shortDescription: 'Convert TSV (tab-separated values) to JSON and back, bidirectionally.',
+    longDescription:
+      'Convert tab-separated values to a JSON array of objects, or the reverse, using the first row as headers the same way csv-json-converter treats a CSV header row. TSV\'s parsing logic is meaningfully simpler than CSV\'s: because a literal tab character rarely appears inside real-world tabular data (unlike a comma, which shows up constantly in ordinary text), TSV doesn\'t need CSV\'s quoting and escaping rules for fields that contain the delimiter - a field is just whatever text sits between two tab characters, with no quote-aware parser required to correctly split rows. On the JSON-to-TSV direction, any literal tab or newline character that does show up inside a value is replaced with a space rather than escaped, since TSV has no standard escaping convention the way CSV\'s double-quote rule does. Values are type-inferred the same way as the CSV converter - "true"/"false" become booleans, numeric strings become numbers - so round-tripping data preserves its types rather than flattening everything to strings. Useful for converting data copied from a spreadsheet (which pastes as TSV by default) into JSON, or exporting JSON as TSV for a quick paste back into a spreadsheet. Runs entirely client-side.',
+    metaTitle: 'TSV to JSON Converter - Convert TSV & JSON | Formatiq',
+    metaDescription:
+      'Convert TSV (tab-separated values) to JSON and back online for free, with automatic type inference. No data leaves your browser.',
+    keywords: ['tsv to json converter', 'json to tsv converter', 'tab separated values to json', 'convert tsv online'],
+    useCase: 'Converting spreadsheet data (which pastes as TSV) into JSON, or exporting JSON back to TSV',
+    howItWorks: [
+      {
+        title: 'Choose a direction',
+        description: 'TSV to JSON, or JSON to TSV.',
+      },
+      {
+        title: 'Paste your data',
+        description: 'Tab-separated rows with a header row, or a JSON array of flat objects.',
+      },
+      {
+        title: 'Values are type-inferred',
+        description: '"true"/"false" become booleans and numeric strings become numbers automatically.',
+      },
+      {
+        title: 'Copy the result',
+        description: 'The converted output is ready to copy, with row and column counts shown.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Simpler parsing than CSV',
+        description: 'No quoting/escaping rules needed — a tab rarely appears inside real data the way a comma does.',
+      },
+      {
+        title: 'Spreadsheet-friendly',
+        description: 'Matches the format most spreadsheet apps use when you copy and paste cells directly.',
+      },
+      {
+        title: 'Automatic type inference',
+        description: 'Booleans and numbers convert to their real JSON types instead of staying as strings.',
+      },
+      {
+        title: 'Bidirectional',
+        description: 'Convert TSV to JSON or JSON back to TSV from the same tool.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from csv-json-converter?',
+        answer:
+          'The core conversion logic is the same - first row as headers, values type-inferred into booleans/numbers/strings - but the delimiter and escaping rules differ. CSV needs a quote-aware parser to correctly handle fields containing commas, quotes, or newlines; TSV skips all of that since a literal tab is uncommon inside real data, making the parser simpler and the format a natural fit for data copied straight out of a spreadsheet, which pastes as tab-separated by default.',
+      },
+      {
+        question: 'What happens if a value contains a literal tab character?',
+        answer:
+          'When converting JSON to TSV, any tab or newline character inside a value is replaced with a space, since TSV has no standard quoting or escaping convention the way CSV does with double quotes. This means a value containing an intentional tab character won\'t round-trip perfectly - if that\'s a concern for your data, CSV\'s quote-based escaping is the more robust format.',
+      },
+      {
+        question: 'Why does copying from a spreadsheet paste as TSV instead of CSV?',
+        answer:
+          'Most spreadsheet applications (Excel, Google Sheets, Numbers) use tab-separated values as their internal clipboard format when you copy a range of cells, since it avoids any ambiguity with commas that might appear inside cell content. This is exactly why a TSV-specific converter is useful — pasting spreadsheet data directly into this tool works without needing to first re-save it as a CSV file.',
+      },
+    ],
+    Component: TsvJsonConverter,
+  },
+  {
+    slug: 'text-binary-converter',
+    category: 'encoders-decoders',
+    isNew: true,
+    title: 'Text to Binary Converter',
+    shortDescription: 'Convert text to its 8-bit binary representation and back, space-separated byte by byte.',
+    longDescription:
+      'Convert text into its binary representation - each byte shown as an 8-digit sequence of 0s and 1s, space-separated for readability - or decode a string of space-separated binary bytes back into text. This works at the same byte level as utf8-encode-decode, but shows the raw bits of each byte directly rather than hex or decimal, which is the representation most people picture when they think of "binary" and is useful for teaching or demonstrating how text is actually stored as bits. Multi-byte UTF-8 characters (accented letters, emoji, and other non-ASCII text) correctly expand into multiple 8-bit bytes using the browser\'s native TextEncoder, exactly as utf8-encode-decode does - so an emoji shows up as three or four separate 8-bit groups rather than one, reflecting how it\'s genuinely stored. Decoding validates that the input is well-formed - each token must be 1-8 binary digits representing a valid byte, and the resulting byte sequence must form valid UTF-8 - with a specific error if either check fails. Useful for a classroom demonstration of binary encoding, a puzzle or cipher involving binary text, or just satisfying curiosity about what a piece of text actually looks like in bits. Runs entirely client-side.',
+    metaTitle: 'Text to Binary Converter - Text/Binary Both Ways | Formatiq',
+    metaDescription:
+      'Convert text to 8-bit binary and back online for free, space-separated byte by byte. No data leaves your browser.',
+    keywords: ['text to binary converter', 'binary to text converter', 'ascii to binary', 'convert text to binary code', 'binary code translator'],
+    useCase: 'A classroom demonstration of binary encoding, or a binary-based puzzle or cipher',
+    howItWorks: [
+      {
+        title: 'Choose a direction',
+        description: 'Text to binary, or binary back to text.',
+      },
+      {
+        title: 'Enter your input',
+        description: 'Any text to encode, or space-separated 8-bit binary bytes to decode.',
+      },
+      {
+        title: 'See the byte-by-byte result',
+        description: 'Each byte is shown as an 8-digit binary group, space-separated for readability.',
+      },
+      {
+        title: 'Copy the output',
+        description: 'The full binary string or decoded text, ready to copy.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'The literal bit representation',
+        description: 'Shows actual 0s and 1s, the representation most people picture as "binary," not hex or decimal.',
+      },
+      {
+        title: 'Correct multi-byte handling',
+        description: 'Emoji and accented characters expand into multiple 8-bit bytes, matching how UTF-8 really stores them.',
+      },
+      {
+        title: 'Validated decoding',
+        description: 'Malformed byte tokens or invalid UTF-8 sequences produce a specific error, not silent garbage.',
+      },
+      {
+        title: 'Space-separated readability',
+        description: 'Each byte is clearly delimited rather than run together as one long unbroken bit string.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from utf8-encode-decode?',
+        answer:
+          'Both tools work at the same UTF-8 byte level, but display the bytes differently: utf8-encode-decode shows each byte as hex or decimal, while this tool shows the literal binary digits (0s and 1s) that make up each byte. Binary is the more visual, intuitive representation for teaching or demonstration purposes, while hex is more compact and common in actual debugging contexts - pick whichever representation fits what you\'re doing.',
+      },
+      {
+        question: 'Why does one character sometimes become more than one 8-bit group?',
+        answer:
+          'UTF-8 is a variable-width encoding - plain ASCII characters (English letters, digits, basic punctuation) take exactly 1 byte, but characters outside that range take 2 to 4 bytes. An accented letter like "é" typically becomes two 8-bit binary groups, and many emoji become four, which is exactly why a piece of text with special characters produces more binary groups than it has visible characters.',
+      },
+      {
+        question: 'What happens if I enter binary that doesn\'t decode to valid text?',
+        answer:
+          'The tool checks two things: that each space-separated token is a valid 8-bit binary byte (only 0s and 1s), and that the resulting byte sequence forms valid UTF-8 once decoded. If either check fails - a stray non-binary character, or a byte sequence that doesn\'t correspond to any valid UTF-8 text - a specific error explains which part failed, rather than showing corrupted or partial output.',
+      },
+    ],
+    Component: TextToBinaryConverter,
+  },
+  {
+    slug: 'world-clock',
+    category: 'text-tools',
+    isNew: true,
+    title: 'World Clock',
+    shortDescription: 'See the current time right now across 11 major world cities, updating live every second.',
+    longDescription:
+      'See the current time simultaneously across 11 major world cities - spanning the Americas, Europe, Africa, the Middle East, Asia, and Australia - in a simple glanceable grid that updates every second using the browser\'s native Intl.DateTimeFormat with each city\'s IANA timezone. This is a genuinely different tool from timezone-converter: that tool answers "what time does this specific date/time I\'m entering become in other zones," while this one answers a simpler, live question - "what time is it right now, everywhere" - with no input required at all, just an always-current reference. A simple sun/moon indicator next to each city gives an instant visual sense of whether it\'s roughly daytime or nighttime there, useful for quickly gauging whether it\'s a reasonable time to reach someone. Daylight saving time is handled automatically and correctly for each zone via the same Intl API, so the displayed times stay accurate year-round without any manual offset adjustment. Useful for a distributed team checking who\'s likely awake right now, or just a quick glance at what time it is somewhere else in the world. Runs entirely client-side.',
+    metaTitle: 'World Clock - Live Time in Major Cities | Formatiq',
+    metaDescription:
+      'See the current live time across 11 major world cities online for free, updating every second. No data leaves your browser.',
+    keywords: ['world clock', 'current time in cities', 'live world time', 'what time is it around the world', 'multiple timezone clock'],
+    useCase: 'A distributed team checking who\'s likely awake right now, at a glance',
+    howItWorks: [
+      {
+        title: 'Just open the tool',
+        description: 'No input needed — the current time in each city loads immediately.',
+      },
+      {
+        title: 'Watch it update live',
+        description: 'Every clock ticks forward every second, staying continuously accurate.',
+      },
+      {
+        title: 'Check the day/night indicator',
+        description: 'A sun or moon icon gives an instant sense of roughly what time of day it is there.',
+      },
+      {
+        title: 'Scan the grid',
+        description: '11 major cities laid out together for a quick global glance.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Distinct from timezone-converter',
+        description: 'No date/time input needed — this answers "what time is it right now, everywhere," live.',
+      },
+      {
+        title: 'Updates every second',
+        description: 'Genuinely live clocks, not a static snapshot that goes stale the moment you load the page.',
+      },
+      {
+        title: 'Day/night at a glance',
+        description: 'A simple visual indicator helps you judge whether it\'s a reasonable time to reach someone.',
+      },
+      {
+        title: 'Automatic DST handling',
+        description: 'Uses the real IANA timezone database, so daylight saving shifts are always reflected correctly.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from timezone-converter?',
+        answer:
+          'timezone-converter takes a specific date and time you enter and converts it into what that same moment looks like across other timezones - useful for scheduling a future meeting or checking a past log timestamp. This tool has no input at all; it\'s a live, continuously updating display of the current moment across several major cities, meant for glancing at "what time is it right now" rather than converting a specific point in time.',
+      },
+      {
+        question: 'Why do only 11 cities show, and can I add more?',
+        answer:
+          'The 11 cities are curated to give a representative geographic spread across every major populated region and time offset, kept deliberately small so the grid stays glanceable rather than becoming a long scrollable list. This tool doesn\'t currently support customizing the city list - if you need a different specific pair of timezones, timezone-converter\'s source dropdown covers additional zones.',
+      },
+      {
+        question: 'What does the sun/moon icon actually indicate?',
+        answer:
+          'It\'s a simple heuristic based on local hour - roughly 6am to 7pm shows a sun, and the remaining hours show a moon - meant to give a fast, rough sense of whether it\'s daytime or nighttime in that city, not an astronomically precise sunrise/sunset calculation. It\'s a convenience cue for questions like "is it too late to call this person," not a scientific tool.',
+      },
+    ],
+    Component: TimeZoneNowClock,
   },
 ];
 
