@@ -233,6 +233,12 @@ export default function JsonRepair() {
           <div className="output mono">{result.notes.map((note) => `• ${note}`).join('\n')}</div>
         </div>
       )}
+
+      <div className="status-line status-neutral" style={{ marginTop: 12 }}>
+        Not sure the JSON is actually broken? Check it first with the{' '}
+        <a href="/tools/validators/json-validator">JSON Validator</a>. Once repaired, paste the output into the{' '}
+        <a href="/tools/formatters/json-formatter">JSON Formatter</a> for indentation and readability.
+      </div>
     </div>
   );
 }

@@ -200,6 +200,11 @@ export default function JsonTreeViewer() {
           </div>
         </div>
       </div>
+
+      <div className="status-line status-neutral" style={{ marginTop: 12 }}>
+        For raw text formatting rather than a collapsible tree view, use the{' '}
+        <a href="/tools/formatters/json-formatter">JSON Formatter</a>.
+      </div>
     </div>
   );
 }

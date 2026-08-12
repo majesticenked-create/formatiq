@@ -165,6 +165,12 @@ export default function JwtDecoder() {
           </div>
         </div>
       )}
+
+      <div className="status-line status-neutral" style={{ marginTop: 12 }}>
+        Like the <a href="/tools/encoders-decoders/aes-encrypt-decrypt">AES Encrypt/Decrypt</a> and{' '}
+        <a href="/tools/validators/iban-validator">IBAN Validator</a> tools, this runs entirely client-side - your
+        token never touches a server.
+      </div>
     </div>
   );
 }

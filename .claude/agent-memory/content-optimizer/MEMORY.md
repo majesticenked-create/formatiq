@@ -1,0 +1,2 @@
+- [getRelatedTools is category-only, no relevance scoring](getrelatedtools-limitation.md) — structural fix needed for cross-category clusters like JSON tools
+- [Internal linking on formatiq.tools lives in registry.ts prose fields](formatiq-linking-model.md) — no CMS, insertions = edits to longDescription/useCase/faqs

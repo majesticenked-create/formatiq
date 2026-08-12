@@ -165,6 +165,12 @@ export default function TotpGenerator() {
           </div>
         </div>
       )}
+
+      <div className="status-line status-neutral" style={{ marginTop: 12 }}>
+        Working on WordPress auth instead? The{' '}
+        <a href="/tools/generators/wordpress-password-hash-generator">WordPress Password Hash Generator</a> uses
+        the same client-side, nothing-sent-to-a-server approach.
+      </div>
     </div>
   );
 }

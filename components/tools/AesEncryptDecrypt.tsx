@@ -185,6 +185,11 @@ export default function AesEncryptDecrypt() {
         not a substitute for proper key management, secret rotation, or audited cryptographic tooling in a
         production security context.
       </div>
+
+      <div className="status-line status-neutral" style={{ marginTop: 8 }}>
+        For inspecting tokens rather than encrypting data, see the{' '}
+        <a href="/tools/encoders-decoders/jwt-decoder">JWT Decoder</a> - also fully client-side.
+      </div>
     </div>
   );
 }

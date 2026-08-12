@@ -104,6 +104,11 @@ export default function CreditCardValidator() {
           {result.ok ? `✓ Passes Luhn checksum - detected network: ${result.network}` : `✗ ${result.message}`}
         </div>
       </div>
+
+      <div className="status-line status-neutral" style={{ marginTop: 12 }}>
+        For international bank account numbers, see the{' '}
+        <a href="/tools/validators/iban-validator">IBAN Validator</a> - same no-data-sent approach.
+      </div>
     </div>
   );
 }

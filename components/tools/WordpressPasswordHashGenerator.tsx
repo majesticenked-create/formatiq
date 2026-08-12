@@ -217,6 +217,11 @@ export default function WordpressPasswordHashGenerator() {
         a substitute for WordPress's own registration or password-reset flow in production, and newer WordPress
         versions default to bcrypt for new passwords rather than this legacy phpass format.
       </div>
+
+      <div className="status-line status-neutral" style={{ marginTop: 8 }}>
+        Need two-factor codes instead of password hashes? See the{' '}
+        <a href="/tools/generators/totp-generator">TOTP Generator</a>, also generated entirely client-side.
+      </div>
     </div>
   );
 }

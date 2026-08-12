@@ -163,6 +163,12 @@ export default function IbanValidator() {
           </div>
         </div>
       )}
+
+      <div className="status-line status-neutral" style={{ marginTop: 12 }}>
+        Validating card numbers instead of bank accounts? Try the{' '}
+        <a href="/tools/validators/credit-card-validator">Credit Card Validator</a>, which runs the same way -
+        entirely in your browser.
+      </div>
     </div>
   );
 }
