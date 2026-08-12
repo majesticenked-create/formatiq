@@ -168,6 +168,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'json-formatter',
     category: 'formatters',
+    relatedSlugs: ['json-validator', 'json-diff-checker', 'json-repair', 'json-tree-viewer'],
     isPopular: true,
     title: 'JSON Formatter & Validator',
     shortDescription: 'Beautify, validate, and minify JSON instantly in your browser.',
@@ -236,6 +237,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'json-repair',
     category: 'formatters',
+    relatedSlugs: ['json-validator', 'json-formatter'],
     isNew: true,
     title: 'JSON Repair Tool',
     shortDescription: 'Fix common JSON syntax mistakes automatically and see exactly what was changed, all client-side.',
@@ -493,6 +495,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'json-to-csv',
     category: 'converters',
+    relatedSlugs: ['json-yaml-converter', 'json-formatter'],
     title: 'JSON to CSV Converter',
     shortDescription: 'Convert a JSON array or object into CSV, ready to open in a spreadsheet - done entirely in your browser.',
     longDescription:
@@ -836,6 +839,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'xml-formatter',
     category: 'formatters',
+    relatedSlugs: ['json-yaml-converter', 'json-formatter'],
     title: 'XML Formatter & Validator',
     shortDescription: 'Beautify and check XML for well-formedness instantly in your browser.',
     longDescription:
@@ -1038,6 +1042,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'json-validator',
     category: 'validators',
+    relatedSlugs: ['json-formatter', 'json-repair', 'json-diff-checker'],
     isNew: true,
     title: 'JSON Validator',
     shortDescription: 'Check whether JSON is syntactically valid, with the line and column of the error when the browser can pinpoint one.',
@@ -1501,6 +1506,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'jwt-decoder',
     category: 'encoders-decoders',
+    relatedSlugs: ['aes-encrypt-decrypt', 'iban-validator'],
     title: 'JWT Decoder',
     shortDescription: 'Decode a JWT into its header and payload, entirely in your browser - the token never leaves your device. Decoding only, signature is not verified.',
     longDescription:
@@ -1816,6 +1822,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'json-yaml-converter',
     category: 'converters',
+    relatedSlugs: ['json-to-csv', 'xml-formatter', 'json-formatter'],
     title: 'JSON ⇄ YAML Converter',
     shortDescription: 'Convert JSON to YAML or YAML to JSON in either direction, in your browser.',
     longDescription:
@@ -2759,6 +2766,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'credit-card-validator',
     category: 'validators',
+    relatedSlugs: ['iban-validator'],
     title: 'Credit Card Number Validator',
     shortDescription: 'Check a card number’s format with the Luhn checksum and detect its likely network.',
     longDescription:
@@ -2826,6 +2834,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'json-diff-checker',
     category: 'validators',
+    relatedSlugs: ['json-formatter', 'json-validator'],
     isNew: true,
     title: 'JSON Diff Checker',
     shortDescription: 'Compare two JSON values and see exactly which keys were added, removed, or changed - all client-side.',
@@ -4335,6 +4344,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'iban-validator',
     category: 'validators',
+    relatedSlugs: ['credit-card-validator', 'jwt-decoder'],
     title: 'IBAN Validator',
     shortDescription: 'Check an IBAN’s format and mod-97 checksum, with country/length and checksum shown separately.',
     longDescription:
@@ -4561,6 +4571,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'totp-generator',
     category: 'generators',
+    relatedSlugs: ['wordpress-password-hash-generator'],
     isNew: true,
     title: 'TOTP Generator',
     shortDescription: 'Generate a live, auto-refreshing 6-digit TOTP code from a Base32 secret key.',
@@ -5123,6 +5134,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'json-tree-viewer',
     category: 'formatters',
+    relatedSlugs: ['json-formatter', 'json-validator'],
     isNew: true,
     title: 'JSON Tree Viewer',
     shortDescription: 'Explore JSON as a collapsible, color-coded tree instead of a flat formatted block - rendered entirely in your browser.',
@@ -5395,6 +5407,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'aes-encrypt-decrypt',
     category: 'encoders-decoders',
+    relatedSlugs: ['jwt-decoder'],
     isNew: true,
     title: 'AES Encrypt/Decrypt',
     shortDescription: 'Encrypt or decrypt text with a passphrase using AES-GCM via the browser\'s native Web Crypto API.',
@@ -6071,6 +6084,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'wordpress-password-hash-generator',
     category: 'generators',
+    relatedSlugs: ['totp-generator'],
     isNew: true,
     title: 'WordPress Password Hash Generator',
     shortDescription: 'Generate a WordPress-compatible phpass ($P$) password hash from a plaintext password, client-side.',
@@ -6763,5 +6777,15 @@ export function getCategory(categorySlug: string) {
 }
 
 export function getRelatedTools(tool: ToolDefinition, limit = 4) {
+  if (tool.relatedSlugs && tool.relatedSlugs.length > 0) {
+    const manual = tool.relatedSlugs
+      .map((slug) => tools.find((t) => t.slug === slug))
+      .filter((t): t is ToolDefinition => Boolean(t));
+    if (manual.length >= limit) return manual.slice(0, limit);
+    const filler = tools
+      .filter((t) => t.category === tool.category && t.slug !== tool.slug && !manual.some((m) => m.slug === t.slug))
+      .slice(0, limit - manual.length);
+    return [...manual, ...filler];
+  }
   return tools.filter((t) => t.category === tool.category && t.slug !== tool.slug).slice(0, limit);
 }

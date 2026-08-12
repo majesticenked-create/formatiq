@@ -44,6 +44,14 @@ export interface ToolDefinition {
   isNew?: boolean;
   /** Marks a tool as a manually curated high-value pick, shown in the homepage "Popular Tools" section */
   isPopular?: boolean;
+  /**
+   * Manual override for the "Related tools" section, as exact tool slugs (any category).
+   * getRelatedTools() defaults to same-category matches, which misses topically-related tools
+   * that span categories (e.g. json-formatter/json-validator/json-diff-checker span
+   * formatters/validators). Set this when a tool has a stronger cross-category relationship
+   * than its same-category siblings.
+   */
+  relatedSlugs?: string[];
   /** The React component implementing the tool's interactive UI */
   Component: ComponentType;
 }
