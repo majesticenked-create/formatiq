@@ -1185,8 +1185,8 @@ export const tools: ToolDefinition[] = [
       'cron expression checker',
       'cron schedule explained',
       'validate cron syntax',
-      'cron expression generator',
-      'cron builder',
+      'what does this cron expression mean',
+      'crontab validator',
     ],
     useCase: 'Double-checking a deployment\'s cron schedule before it ships',
     howItWorks: [
@@ -3598,7 +3598,14 @@ export const tools: ToolDefinition[] = [
     metaTitle: 'IP Subnet Calculator - Free Online Tool | Formatiq',
     metaDescription:
       'Calculate network address, broadcast address, subnet mask, and usable host range from CIDR notation online for free. No data leaves your browser.',
-    keywords: ['ip subnet calculator', 'cidr calculator', 'subnet mask calculator', 'network address calculator'],
+    keywords: [
+      'ip subnet calculator',
+      'cidr calculator',
+      'subnet mask calculator',
+      'network address calculator',
+      'usable host calculator',
+      'broadcast address calculator',
+    ],
     useCase: 'Planning subnet ranges before configuring a network',
     howItWorks: [
       {
