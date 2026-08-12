@@ -51,7 +51,7 @@ async function encryptText(text: string, passphrase: string): Promise<string> {
 async function decryptText(payload: string, passphrase: string): Promise<string> {
   const combined = base64ToBytes(payload);
   if (combined.length < SALT_LENGTH + IV_LENGTH + 1) {
-    throw new Error('This doesn’t look like a value produced by this tool — too short to contain salt, IV, and ciphertext.');
+    throw new Error('This doesn’t look like a value produced by this tool - too short to contain salt, IV, and ciphertext.');
   }
   const salt = combined.slice(0, SALT_LENGTH);
   const iv = combined.slice(SALT_LENGTH, SALT_LENGTH + IV_LENGTH);
@@ -103,7 +103,7 @@ export default function AesEncryptDecrypt() {
       setError(
         mode === 'encrypt'
           ? 'Could not encrypt this input.'
-          : 'Could not decrypt — the passphrase may be wrong, or this isn’t a valid encrypted value.'
+          : 'Could not decrypt - the passphrase may be wrong, or this isn’t a valid encrypted value.'
       );
     } finally {
       setBusy(false);
@@ -181,7 +181,7 @@ export default function AesEncryptDecrypt() {
       )}
 
       <div className="status-line status-neutral" style={{ marginTop: 12 }}>
-        For casual, convenience use only — sharing a short secret with someone who knows the passphrase. This is
+        For casual, convenience use only - sharing a short secret with someone who knows the passphrase. This is
         not a substitute for proper key management, secret rotation, or audited cryptographic tooling in a
         production security context.
       </div>

@@ -15,7 +15,7 @@ const RECORD_TYPES: RecordType[] = [
     type: 'A',
     name: 'Address record',
     description:
-      'Maps a domain name to an IPv4 address. This is the most common DNS record type — when a browser resolves example.com, it\'s almost always looking up an A record to find the IPv4 address to connect to.',
+      'Maps a domain name to an IPv4 address. This is the most common DNS record type - when a browser resolves example.com, it\'s almost always looking up an A record to find the IPv4 address to connect to.',
     example: 'example.com.    3600  IN  A      93.184.216.34',
     ttlNote: 'Typically cached for minutes to a few hours (TTL commonly 300-3600 seconds).',
   },
@@ -39,7 +39,7 @@ const RECORD_TYPES: RecordType[] = [
     type: 'MX',
     name: 'Mail exchange record',
     description:
-      'Specifies which mail servers accept email on behalf of a domain, along with a priority value — lower numbers are tried first. A domain can have multiple MX records for redundancy, with mail delivery falling back to the next one if the highest-priority server is unavailable.',
+      'Specifies which mail servers accept email on behalf of a domain, along with a priority value - lower numbers are tried first. A domain can have multiple MX records for redundancy, with mail delivery falling back to the next one if the highest-priority server is unavailable.',
     example: 'example.com.    3600  IN  MX  10 mail.example.com.',
     ttlNote: 'Often cached longer than A records since mail routing changes infrequently.',
   },
@@ -69,7 +69,7 @@ export default function DnsLookupExplainer() {
   return (
     <div>
       <div className="status-line status-neutral" style={{ marginBottom: 16 }}>
-        This tool explains what each DNS record type does and shows a typical example — it does not perform a
+        This tool explains what each DNS record type does and shows a typical example - it does not perform a
         live DNS lookup, since that requires a server-side resolver rather than something a browser can do
         entirely on its own.
       </div>
@@ -89,7 +89,7 @@ export default function DnsLookupExplainer() {
       <div className="panel" style={{ marginTop: 16 }}>
         <div className="panel-bar">
           <span>
-            {record.type} — {record.name}
+            {record.type} - {record.name}
           </span>
         </div>
         <div style={{ padding: '16px' }}>

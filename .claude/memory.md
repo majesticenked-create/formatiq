@@ -1,7 +1,7 @@
 # Memory
 
 ## Now
-- Formatiq tool site (Next.js). 104 registered tools / 119 static pages, build and tests clean (369 tests).
+- Formatiq tool site (Next.js). 103 registered tools (via `tools.length`) / 125 static pages, build and tests clean (381 tests). All em dashes swept from user-visible text site-wide.
 - No active task in flight — awaiting next direction.
 
 ## Open Threads
@@ -15,6 +15,10 @@
 - 08/11/26: For a barcode/QR-style tool, ask before hand-rolling symbol/checksum tables from scratch — a small transcription error produces output that looks plausible but silently fails to scan/decode, and can't be verified without real hardware. Used `jsbarcode` for `barcode-generator`, matching the `qrcode` precedent from `qr-code-generator.tsx`.
 - 08/11/26: Before building a new "fake data" generator, check whether an existing tool (e.g. `fake-data-generator.tsx`) already covers the field — if so, build the new one as a more focused/detailed standalone (e.g. `random-address-generator.tsx`'s region-aware, multi-line addresses vs. the single-line US-only field on the existing tool) and state the distinction directly in its longDescription, rather than duplicating.
 - 08/11/26: For a hash algorithm needing MD5 (e.g. WordPress phpass `$P$` hashes) — `crypto.subtle` doesn't support MD5, but `hash-generator.tsx` already has a from-scratch MD5 implementation verified against known RFC test vectors in `__tests__/tools/encoders-decoders.test.ts`; reuse that algorithm (adapted to return raw bytes) rather than re-deriving it, and self-verify generated hashes by round-tripping through the corresponding check function before showing them.
+
+- 08/11/26: Never count `tools[]` entries via `grep -c "slug: '"` in registry.ts — the `categories[]` array also has a `slug` field per entry (7 of them), inflating the count by exactly 7. Every "final tool count" reported across the 08/11/26 tool-building sessions was wrong by this offset (claimed 104, actual 97). Verify via a quick vitest check importing `tools.length` directly, or trust the homepage's live-computed stat.
+- 08/11/26: When sweeping for a banned character (em dash, etc.) across a growing tool site, `grep -rlP '\x{2014}' --include='*.tsx' --include='*.ts'` finds every candidate file fast, but each match still needs per-line triage: code comments and functional data (e.g. `HtmlStripper.tsx`'s `&mdash;`→`—` entity map, `RemovePunctuation.tsx`'s "other symbols" char set) must be preserved even though they contain the literal character — only prose/labels/messages actually rendered to the user should be swapped.
+- 08/11/26: Restart the dev server proactively after each multi-tool build round, not reactively after it breaks — it hit the stale-webpack-cache "Cannot find module './NNN.js'" error 3 times this session, always after a long stretch of file edits with no restart. Fix each time: kill the process, `mv .next .next-stale-$(date +%s)` (plain `rm -rf` gets soft-blocked by a safety hook — use `find <dir> -delete` if actually deleting), restart `npm run dev`.
 
 ## Blockers
 - (none)

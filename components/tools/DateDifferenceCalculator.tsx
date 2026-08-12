@@ -114,7 +114,7 @@ export default function DateDifferenceCalculator() {
         <div className="output mono">
           {result.ok
             ? [
-                result.reversed ? '(Note: start date is after end date — showing absolute difference)\n' : '',
+                result.reversed ? '(Note: start date is after end date - showing absolute difference)\n' : '',
                 `Total days:        ${result.totalDays.toLocaleString()}`,
                 `Total weeks:       ${result.totalWeeks.toFixed(2)}`,
                 `Months + days:     ${result.months} months, ${result.remDaysAfterMonths} days`,

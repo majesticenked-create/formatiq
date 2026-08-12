@@ -72,7 +72,7 @@ function tryValidate(input: string) {
   if (!checksumValid) {
     return {
       ok: false as const,
-      message: 'Country code and length look correct, but the checksum (mod-97) failed — likely a typo in one of the digits.',
+      message: 'Country code and length look correct, but the checksum (mod-97) failed - likely a typo in one of the digits.',
       countryValid: true,
       checksumValid: false,
     };
@@ -131,7 +131,7 @@ export default function IbanValidator() {
               : '✗ Country code or length is invalid'
             : result.ok
             ? '✓ Country code and length are valid'
-            : '— Enter an IBAN to check'}
+            : '- Enter an IBAN to check'}
         </div>
       </div>
 
@@ -144,7 +144,7 @@ export default function IbanValidator() {
             ? '✓ Checksum passed'
             : 'checksumValid' in result
             ? '✗ Checksum failed'
-            : '— Not checked (fix format issues first)'}
+            : '- Not checked (fix format issues first)'}
         </div>
       </div>
 

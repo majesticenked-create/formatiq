@@ -32,3 +32,27 @@ cat /tmp/dev.log
 - `2026-08-11 14:10:52` | FAILURE | ERROR | OTHER | Bash | Exit code 1
 - `2026-08-11 14:12:31` | FAILURE | ERROR | OTHER | Bash | Exit code 1
 - `2026-08-11 14:27:17` | FAILURE | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-11 14:57:29` | FAILURE | ERROR | BUILD | Bash | Exit code 1
+- `2026-08-11 15:02:35` | GUARD | LOW | WARNING: rm command allowed → rm /Users/beyouenked/projects/formatiq/__tests__/zzz-debug-count.test.ts
+npm run build 2>&1 | tail -15
+- `2026-08-11 15:06:07` | FAILURE | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-11 15:06:11` | GUARD | LOW | WARNING: mv command allowed → mv .next ".next-stale-$(date +%s)" 2>&1
+- `2026-08-11 18:45:00` | GUARD | LOW | WARNING: rm command allowed → cat > /Users/beyouenked/projects/formatiq/__tests__/zzz-debug-count.test.ts << 'EOF'
+import { describe, it, expect } from 'vitest';
+import { tools } from '../lib/tools/registry';
+
+describe('debug', () => {
+  it('count', () => {
+    expect(`total=${tools.length}`).toBe('SHOW');
+  });
+});
+EOF
+npx vitest run __tests__/zzz-debug-count.test.ts 2>&1 | grep "AssertionError\|Received"
+rm /Users/beyouenked/projects/formatiq/__tests__/zzz-debug-count.test.ts
+- `2026-08-11 18:50:18` | FAILURE | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-11 18:50:22` | GUARD | LOW | WARNING: mv command allowed → mv .next ".next-stale-$(date +%s)" 2>&1
+- `2026-08-11 18:52:46` | GUARD | MEDIUM | SOFT BLOCKED: recursive/force rm → rm -rf .next-stale-1786005556 .next-stale-1786440996 .next-stale-1786454428
+ls -d .next-stale-* 2>/dev/null; echo "done"
+- `2026-08-11 18:53:06` | GUARD | MEDIUM | SOFT BLOCKED: recursive/force rm → rm -rf /Users/beyouenked/projects/formatiq/.next-stale-1786005556 /Users/beyouenked/projects/formatiq/.next-stale-1786440996 /Users/beyouenked/projects/formatiq/.next-stale-1786454428
+ls -d /Users/beyouenked/projects/formatiq/.next-stale-* 2>&1
+- `2026-08-11 18:53:16` | FAILURE | ERROR | OTHER | Bash | Exit code 1

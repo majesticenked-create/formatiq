@@ -12,7 +12,7 @@ interface FormState {
 }
 
 const SAMPLE: FormState = {
-  title: 'Formatiq — Free Browser-Based Developer Tools',
+  title: 'Formatiq - Free Browser-Based Developer Tools',
   description: 'Free formatters, converters, validators, and generators for developers. Everything runs in your browser.',
   url: 'https://formatiq.tools',
   imageUrl: 'https://formatiq.tools/og-image.png',

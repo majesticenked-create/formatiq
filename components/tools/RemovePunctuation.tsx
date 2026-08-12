@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 
-const SAMPLE = `Hello, world! Isn't this great? "Formatiq" is free — no sign-up (really).`;
+const SAMPLE = `Hello, world! Isn't this great? "Formatiq" is free - no sign-up (really).`;
 
 interface Category {
   key: string;

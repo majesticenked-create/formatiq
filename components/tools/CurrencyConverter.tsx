@@ -132,7 +132,7 @@ export default function CurrencyConverter() {
       )}
 
       {state.status === 'error' && (
-        <div className="status-line status-invalid">✗ {state.message} — try again in a moment.</div>
+        <div className="status-line status-invalid">✗ {state.message} - try again in a moment.</div>
       )}
 
       {state.status === 'ok' && amountValid && converted !== null && (
@@ -151,7 +151,7 @@ export default function CurrencyConverter() {
 
       <div className="status-line status-neutral" style={{ marginTop: 12 }}>
         Rates are daily reference rates from the European Central Bank (via frankfurter.app), updated once per
-        business day{state.date ? ` — last updated ${state.date}` : ''}. Not real-time market/trading rates.
+        business day{state.date ? ` - last updated ${state.date}` : ''}. Not real-time market/trading rates.
       </div>
     </div>
   );

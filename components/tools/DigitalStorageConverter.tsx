@@ -32,7 +32,7 @@ const BINARY_UNITS: Unit[] = [
 ];
 
 function formatResult(n: number): string {
-  if (!Number.isFinite(n)) return '—';
+  if (!Number.isFinite(n)) return '-';
   if (n === 0) return '0';
   if (Math.abs(n) < 0.0001 || Math.abs(n) >= 1e15) return n.toExponential(6);
   return n.toLocaleString('en-US', { maximumFractionDigits: 8 });

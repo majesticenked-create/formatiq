@@ -84,7 +84,7 @@ export default function RandomFlagGenerator() {
           {country.name}
         </div>
         <div className="mono" style={{ fontSize: 13, color: 'var(--text-tertiary)', marginTop: 4 }}>
-          {country.code} — {country.continent}
+          {country.code} - {country.continent}
         </div>
         <button className="btn btn-primary" style={{ marginTop: 20 }} onClick={generateAnother}>
           Generate another

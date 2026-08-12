@@ -10,7 +10,7 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { category: string } }): Metadata {
   const category = getCategory(params.category);
   if (!category) return {};
-  const title = `${category.title} — Free Online Tools | Formatiq`;
+  const title = `${category.title} - Free Online Tools | Formatiq`;
   const canonicalUrl = `https://formatiq.tools/tools/${category.slug}`;
   return {
     title,
@@ -43,7 +43,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `${category.title} — Free Online Tools`,
+    name: `${category.title} - Free Online Tools`,
     description: category.description,
     url: `${baseUrl}/tools/${category.slug}`,
     mainEntity: {

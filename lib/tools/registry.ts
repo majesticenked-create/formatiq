@@ -95,6 +95,12 @@ import WordpressPasswordHashGenerator from '@/components/tools/WordpressPassword
 import TsvJsonConverter from '@/components/tools/TsvJsonConverter';
 import TextToBinaryConverter from '@/components/tools/TextToBinaryConverter';
 import TimeZoneNowClock from '@/components/tools/TimeZoneNowClock';
+import Crc32Checksum from '@/components/tools/Crc32Checksum';
+import TipCalculator from '@/components/tools/TipCalculator';
+import GpaCalculator from '@/components/tools/GpaCalculator';
+import Base32EncodeDecode from '@/components/tools/Base32EncodeDecode';
+import RandomDateGenerator from '@/components/tools/RandomDateGenerator';
+import WordFrequencyCounter from '@/components/tools/WordFrequencyCounter';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -148,7 +154,7 @@ export const categories: CategoryDefinition[] = [
  * To add a tool:
  *   1. Build the component in components/tools/
  *   2. Add an entry below with a unique (category, slug) pair
- *   3. That's it — the dynamic route and category hub pick it up automatically
+ *   3. That's it - the dynamic route and category hub pick it up automatically
  */
 export const tools: ToolDefinition[] = [
   {
@@ -175,11 +181,11 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Choose your indent',
-        description: 'Pick 2 or 4 spaces — the switch applies instantly without re-pasting anything.',
+        description: 'Pick 2 or 4 spaces - the switch applies instantly without re-pasting anything.',
       },
       {
         title: 'Copy the result',
-        description: 'Grab the formatted output with one click — nothing was ever sent to a server.',
+        description: 'Grab the formatted output with one click - nothing was ever sent to a server.',
       },
     ],
     benefits: [
@@ -189,7 +195,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Instant feedback',
-        description: 'Validation runs live as you type, with the exact error position — no submit button to wait on.',
+        description: 'Validation runs live as you type, with the exact error position - no submit button to wait on.',
       },
       {
         title: 'No account required',
@@ -235,7 +241,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Paste the broken JSON',
-        description: 'Trailing commas, single quotes, unquoted keys, comments, or missing commas — any combination is fine.',
+        description: 'Trailing commas, single quotes, unquoted keys, comments, or missing commas - any combination is fine.',
       },
       {
         title: 'Fixes are applied automatically',
@@ -243,7 +249,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Read the "what was fixed" summary',
-        description: 'A plain list shows exactly which categories of fix were applied — nothing changes invisibly.',
+        description: 'A plain list shows exactly which categories of fix were applied - nothing changes invisibly.',
       },
       {
         title: 'Copy the repaired JSON',
@@ -253,7 +259,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Fixes five common mistake categories',
-        description: 'Trailing commas, single quotes, unquoted keys, JS comments, and missing commas — the ones that actually happen.',
+        description: 'Trailing commas, single quotes, unquoted keys, JS comments, and missing commas - the ones that actually happen.',
       },
       {
         title: 'Transparent about what changed',
@@ -261,7 +267,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Never guesses wrong silently',
-        description: 'The repaired output is re-validated with a real JSON parse before being shown — if it still doesn\'t parse, you get an error, not broken output.',
+        description: 'The repaired output is re-validated with a real JSON parse before being shown - if it still doesn\'t parse, you get an error, not broken output.',
       },
       {
         title: 'Different job than the formatter',
@@ -307,7 +313,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Paste your text',
-        description: 'Drop in the string you want converted — an API token, a config value, anything.',
+        description: 'Drop in the string you want converted - an API token, a config value, anything.',
       },
       {
         title: 'Read the result instantly',
@@ -321,11 +327,11 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Runs entirely offline-safe',
-        description: 'Encoding and decoding happen in your browser — nothing you paste is ever transmitted anywhere.',
+        description: 'Encoding and decoding happen in your browser - nothing you paste is ever transmitted anywhere.',
       },
       {
         title: 'One tool, both directions',
-        description: 'No need to hunt for separate encode and decode tools — switch instantly with a single toggle.',
+        description: 'No need to hunt for separate encode and decode tools - switch instantly with a single toggle.',
       },
       {
         title: 'Live as you type',
@@ -396,7 +402,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Nothing logged',
-        description: 'Generated values are never sent anywhere — each one exists only in your browser tab.',
+        description: 'Generated values are never sent anywhere - each one exists only in your browser tab.',
       },
     ],
     faqs: [
@@ -433,7 +439,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Watch the counts update live',
-        description: 'Word, character, sentence, and paragraph counts refresh as you type — no button to click.',
+        description: 'Word, character, sentence, and paragraph counts refresh as you type - no button to click.',
       },
       {
         title: 'Check the reading time estimate',
@@ -451,7 +457,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Updates as you type',
-        description: 'No "count" button to press — every keystroke refreshes the numbers immediately.',
+        description: 'No "count" button to press - every keystroke refreshes the numbers immediately.',
       },
       {
         title: 'Built for real limits',
@@ -459,7 +465,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Works on any text',
-        description: 'No formatting requirements — paste plain text, markdown, or copied web content directly.',
+        description: 'No formatting requirements - paste plain text, markdown, or copied web content directly.',
       },
     ],
     faqs: [
@@ -509,7 +515,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Automatic header detection',
-        description: 'Column headers are derived from your JSON keys — no manual mapping required.',
+        description: 'Column headers are derived from your JSON keys - no manual mapping required.',
       },
       {
         title: 'Handles inconsistent objects',
@@ -528,7 +534,7 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Is my JSON data uploaded anywhere?',
         answer:
-          'No — the conversion to CSV happens entirely in your browser, with nothing sent over the network. This is worth knowing specifically for a spreadsheet export tool, since the JSON people convert here is often a full dump of customer records, order data, or an internal report pulled straight from a database or API — exactly the kind of thing you wouldn’t want passing through a third-party server on its way to becoming a CSV.',
+          'No - the conversion to CSV happens entirely in your browser, with nothing sent over the network. This is worth knowing specifically for a spreadsheet export tool, since the JSON people convert here is often a full dump of customer records, order data, or an internal report pulled straight from a database or API - exactly the kind of thing you wouldn’t want passing through a third-party server on its way to becoming a CSV.',
       },
       {
         question: 'What JSON shapes are supported?',
@@ -567,7 +573,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Paste your data',
-        description: 'Drop in a CSV export or a JSON array — quoted fields and escaped commas are handled correctly.',
+        description: 'Drop in a CSV export or a JSON array - quoted fields and escaped commas are handled correctly.',
       },
       {
         title: 'Check the type inference',
@@ -589,7 +595,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Works in both directions',
-        description: 'One tool instead of two — no need to find a separate converter depending on which way you’re going.',
+        description: 'One tool instead of two - no need to find a separate converter depending on which way you’re going.',
       },
       {
         title: 'Spreadsheet exports stay private',
@@ -699,7 +705,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Upload an image',
-        description: 'JPG, PNG, or WebP — read locally, never uploaded.',
+        description: 'JPG, PNG, or WebP - read locally, never uploaded.',
       },
       {
         title: 'Choose an output format and quality',
@@ -949,7 +955,7 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Is my data uploaded anywhere?',
         answer:
-          'No — encoding and decoding both happen locally in your browser. This is particularly relevant here because query strings frequently carry things you wouldn’t want logged on a third-party server: session tokens, API keys, password-reset codes, or a signed URL with embedded credentials. Pasting one into this tool to decode it is no different from decoding it in your own browser console — it never leaves your machine.',
+          'No - encoding and decoding both happen locally in your browser. This is particularly relevant here because query strings frequently carry things you wouldn’t want logged on a third-party server: session tokens, API keys, password-reset codes, or a signed URL with embedded credentials. Pasting one into this tool to decode it is no different from decoding it in your own browser console - it never leaves your machine.',
       },
     ],
     Component: UrlEncoderDecoder,
@@ -987,7 +993,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Specific failure reasons',
-        description: 'Points to exactly what’s wrong — a missing "@", a bad domain — instead of a generic invalid verdict.',
+        description: 'Points to exactly what’s wrong - a missing "@", a bad domain - instead of a generic invalid verdict.',
       },
       {
         title: 'Local part / domain breakdown',
@@ -1199,7 +1205,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Safe on real markup',
-        description: 'Only touches comments and whitespace — attribute values and script/style content stay intact.',
+        description: 'Only touches comments and whitespace - attribute values and script/style content stay intact.',
       },
       {
         title: 'No build step required',
@@ -1257,7 +1263,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Selectors and values untouched',
-        description: 'Only whitespace and comments are removed — property values and the cascade stay exactly as written.',
+        description: 'Only whitespace and comments are removed - property values and the cascade stay exactly as written.',
       },
       {
         title: 'Visible size savings',
@@ -1301,7 +1307,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Paste your JavaScript',
-        description: 'A snippet or full file — strings and template literals are handled safely.',
+        description: 'A snippet or full file - strings and template literals are handled safely.',
       },
       {
         title: 'Character-by-character scan runs',
@@ -1313,7 +1319,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Copy the result',
-        description: 'Grab the trimmed script — safe whitespace minification only, no renaming or logic changes.',
+        description: 'Grab the trimmed script - safe whitespace minification only, no renaming or logic changes.',
       },
     ],
     benefits: [
@@ -1323,11 +1329,11 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Behavior-preserving',
-        description: 'Only removes comments and whitespace — no variable renaming or dead-code elimination that could change behavior.',
+        description: 'Only removes comments and whitespace - no variable renaming or dead-code elimination that could change behavior.',
       },
       {
         title: 'Honest about its scope',
-        description: 'Clearly labeled as safe whitespace minification, not a Terser-level replacement — no surprises.',
+        description: 'Clearly labeled as safe whitespace minification, not a Terser-level replacement - no surprises.',
       },
       {
         title: 'Instant, no bundler required',
@@ -1382,7 +1388,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Four algorithms, one input',
-        description: 'No need to run the same text through four separate tools — all hashes appear together.',
+        description: 'No need to run the same text through four separate tools - all hashes appear together.',
       },
       {
         title: 'Native Web Crypto for SHA',
@@ -1425,7 +1431,7 @@ export const tools: ToolDefinition[] = [
       'Paste a JWT to split it into its three dot-separated segments and base64url-decode the header and payload into readable JSON, with iat and exp claims additionally converted into human-readable UTC dates. This tool decodes only - it does not verify the signature, and it can’t, since checking a signature requires the secret key or public key the token was signed with, something a browser-based decoder never has access to. A successful decode here only proves the token is structurally a well-formed JWT with valid JSON in its header and payload; it says nothing about whether the token was actually issued by a trusted server or has since been tampered with. Never treat a token as authentic based on this tool - signature verification has to happen server-side with the correct key. Everything runs client-side, so pasted tokens never leave your browser.',
     metaTitle: 'JWT Decoder with Expiry & Claims Viewer | Formatiq',
     metaDescription:
-      'Decode a JWT online for free and see its header, payload, and expiry/issued-at claims as human-readable dates — not just raw JSON. Signature is not verified.',
+      'Decode a JWT online for free and see its header, payload, and expiry/issued-at claims as human-readable dates - not just raw JSON. Signature is not verified.',
     keywords: ['jwt decoder', 'decode jwt', 'jwt parser', 'json web token decoder', 'jwt expiry checker', 'jwt claims viewer'],
     useCase: 'Inspecting a JWT\'s claims while debugging an auth flow',
     howItWorks: [
@@ -1443,13 +1449,13 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Remember: decode only',
-        description: 'A visible warning makes clear the signature isn’t verified — use this for reading claims, not trust decisions.',
+        description: 'A visible warning makes clear the signature isn’t verified - use this for reading claims, not trust decisions.',
       },
     ],
     benefits: [
       {
         title: 'Both segments at once',
-        description: 'Header and payload decode side by side — no need to split and decode each part manually.',
+        description: 'Header and payload decode side by side - no need to split and decode each part manually.',
       },
       {
         title: 'Readable expiry dates',
@@ -1506,7 +1512,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'A password generates automatically',
-        description: 'The result regenerates instantly whenever you change a setting — no button needed.',
+        description: 'The result regenerates instantly whenever you change a setting - no button needed.',
       },
       {
         title: 'Check the strength cue',
@@ -1622,7 +1628,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Type or paste your text',
-        description: 'A phrase, a variable name, or a full sentence — any casing style works as input.',
+        description: 'A phrase, a variable name, or a full sentence - any casing style works as input.',
       },
       {
         title: 'Word boundaries are detected',
@@ -1634,13 +1640,13 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Copy the one you need',
-        description: 'Each result has its own copy button — grab exactly the variant your code or style guide requires.',
+        description: 'Each result has its own copy button - grab exactly the variant your code or style guide requires.',
       },
     ],
     benefits: [
       {
         title: 'Seven formats simultaneously',
-        description: 'No need to run text through separate tools for each casing style — every variant shows at once.',
+        description: 'No need to run text through separate tools for each casing style - every variant shows at once.',
       },
       {
         title: 'Smart word detection',
@@ -1750,7 +1756,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Paste your content',
-        description: 'A config file, a manifest, or a JSON object — js-yaml handles the real parsing.',
+        description: 'A config file, a manifest, or a JSON object - js-yaml handles the real parsing.',
       },
       {
         title: 'Get spec-compliant output',
@@ -1812,7 +1818,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'The format is auto-detected',
-        description: 'Digit count determines whether a numeric input is seconds or milliseconds — no unit to pick manually.',
+        description: 'Digit count determines whether a numeric input is seconds or milliseconds - no unit to pick manually.',
       },
       {
         title: 'See every format at once',
@@ -1826,7 +1832,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Auto-detects seconds vs. milliseconds',
-        description: 'No more guessing why a timestamp looks 1000x too large or small — digit count handles it automatically.',
+        description: 'No more guessing why a timestamp looks 1000x too large or small - digit count handles it automatically.',
       },
       {
         title: 'Six formats at once',
@@ -1870,7 +1876,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Select the input base',
-        description: 'Choose Binary, Octal, Decimal, or Hexadecimal explicitly — it’s never guessed.',
+        description: 'Choose Binary, Octal, Decimal, or Hexadecimal explicitly - it’s never guessed.',
       },
       {
         title: 'Enter your number',
@@ -2151,7 +2157,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Safe on scraped markup',
-        description: 'Only whitespace and indentation change — tag content, including inline scripts, stays intact.',
+        description: 'Only whitespace and indentation change - tag content, including inline scripts, stays intact.',
       },
       {
         title: 'Reversible with the HTML Minifier',
@@ -2279,7 +2285,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Live results',
-        description: 'No calculate button — the answer updates as soon as you finish typing either number.',
+        description: 'No calculate button - the answer updates as soon as you finish typing either number.',
       },
     ],
     faqs: [
@@ -2341,7 +2347,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Live as you type',
-        description: 'No convert button — results update immediately as you type or change a unit.',
+        description: 'No convert button - results update immediately as you type or change a unit.',
       },
     ],
     faqs: [
@@ -2391,7 +2397,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Covers the syntax people actually use',
-        description: 'Headers, bold, italic, links, lists, and code — the common cases, not an attempt at every edge case.',
+        description: 'Headers, bold, italic, links, lists, and code - the common cases, not an attempt at every edge case.',
       },
       {
         title: 'Both directions in one tool',
@@ -2403,7 +2409,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Honest about its limits',
-        description: 'Clearly scoped to common syntax, not a full CommonMark implementation — no surprises on complex input.',
+        description: 'Clearly scoped to common syntax, not a full CommonMark implementation - no surprises on complex input.',
       },
     ],
     faqs: [
@@ -2435,7 +2441,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Choose the input format',
-        description: 'HEX, RGB, or HSL — selected explicitly, matching how the value was given to you.',
+        description: 'HEX, RGB, or HSL - selected explicitly, matching how the value was given to you.',
       },
       {
         title: 'Enter the color value',
@@ -2498,7 +2504,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Choose your input unit',
-        description: 'PX, REM, or EM — whichever unit your starting value is already in.',
+        description: 'PX, REM, or EM - whichever unit your starting value is already in.',
       },
       {
         title: 'Enter the value and base font size',
@@ -2587,7 +2593,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Digit-by-digit decimals',
-        description: 'Decimals read the way people actually say them aloud — "point one four," not a guessed fraction.',
+        description: 'Decimals read the way people actually say them aloud - "point one four," not a guessed fraction.',
       },
       {
         title: 'Correct grammar throughout',
@@ -2595,7 +2601,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Instant, no formula needed',
-        description: 'No need to remember how to write a number out by hand — the conversion is immediate.',
+        description: 'No need to remember how to write a number out by hand - the conversion is immediate.',
       },
     ],
     faqs: [
@@ -2645,7 +2651,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Names the specific failure',
-        description: 'Tells you exactly which rule broke — a capital letter, a double hyphen — instead of a generic error.',
+        description: 'Tells you exactly which rule broke - a capital letter, a double hyphen - instead of a generic error.',
       },
       {
         title: 'Auto-generates a fix',
@@ -2700,7 +2706,7 @@ export const tools: ToolDefinition[] = [
         description: 'Visa, Mastercard, Amex, or Discover is identified from the prefix and length pattern.',
       },
       {
-        title: 'Read the result — and the disclaimer',
+        title: 'Read the result - and the disclaimer',
         description: 'A pass means correctly formatted, not verified as a real, active, funded card.',
       },
     ],
@@ -2966,7 +2972,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Live as you type',
-        description: 'No generate button — the slug updates immediately with every keystroke.',
+        description: 'No generate button - the slug updates immediately with every keystroke.',
       },
       {
         title: 'Proper accent handling',
@@ -3010,7 +3016,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Paste your list',
-        description: 'One item per line — emails, keywords, or any plain-text list.',
+        description: 'One item per line - emails, keywords, or any plain-text list.',
       },
       {
         title: 'Choose an operation',
@@ -3028,7 +3034,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Seven operations in one tool',
-        description: 'Alphabetical, length, numerical, reverse, dedupe, and shuffle — no need for separate tools.',
+        description: 'Alphabetical, length, numerical, reverse, dedupe, and shuffle - no need for separate tools.',
       },
       {
         title: 'Visible line counts',
@@ -3073,7 +3079,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Paste your numbers',
-        description: 'One per line or comma-separated — the separator is detected automatically.',
+        description: 'One per line or comma-separated - the separator is detected automatically.',
       },
       {
         title: 'Choose a direction',
@@ -3144,7 +3150,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Toggle the cleanup options',
-        description: 'Trim lines, collapse spaces, remove blank lines, and convert tabs — enable any combination.',
+        description: 'Trim lines, collapse spaces, remove blank lines, and convert tabs - enable any combination.',
       },
       {
         title: 'See the change happen live',
@@ -3170,7 +3176,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Live updates',
-        description: 'No process button — toggling any option updates the result immediately.',
+        description: 'No process button - toggling any option updates the result immediately.',
       },
     ],
     faqs: [
@@ -3221,7 +3227,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Two structure modes',
-        description: 'Keep paragraph and list breaks readable, or flatten to a single block — your choice per paste.',
+        description: 'Keep paragraph and list breaks readable, or flatten to a single block - your choice per paste.',
       },
       {
         title: 'Entity decoding included',
@@ -3233,7 +3239,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Works on fragments or full pages',
-        description: 'Paste a full HTML document or just a snippet — both strip down to clean text the same way.',
+        description: 'Paste a full HTML document or just a snippet - both strip down to clean text the same way.',
       },
     ],
     faqs: [
@@ -3417,7 +3423,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Local file processing',
-        description: 'Images are read using the File API entirely in your browser — never uploaded anywhere.',
+        description: 'Images are read using the File API entirely in your browser - never uploaded anywhere.',
       },
       {
         title: 'Instant visual confirmation',
@@ -3588,7 +3594,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Enter A (and B, if needed)',
-        description: 'NOT and shifts use fewer inputs than AND, OR, and XOR — the form adjusts to match.',
+        description: 'NOT and shifts use fewer inputs than AND, OR, and XOR - the form adjusts to match.',
       },
       {
         title: 'Check each input\'s bit pattern',
@@ -3621,7 +3627,7 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Why do some operations only ask for one number?',
         answer:
-          'NOT is a unary operation - it flips every bit of a single value, so a second input wouldn\'t mean anything. The shift operations technically use two inputs (A is the value being shifted, B is how many positions to shift it), while AND, OR, and XOR are binary operations that combine two full values bit by bit — the form only shows the inputs each operation actually uses.',
+          'NOT is a unary operation - it flips every bit of a single value, so a second input wouldn\'t mean anything. The shift operations technically use two inputs (A is the value being shifted, B is how many positions to shift it), while AND, OR, and XOR are binary operations that combine two full values bit by bit - the form only shows the inputs each operation actually uses.',
       },
       {
         question: 'What does the binary output actually represent?',
@@ -3664,7 +3670,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Copy the readable code',
-        description: 'Logic and variable names stay exactly as written — only whitespace changes.',
+        description: 'Logic and variable names stay exactly as written - only whitespace changes.',
       },
     ],
     benefits: [
@@ -3678,7 +3684,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Behavior stays identical',
-        description: 'Only whitespace and indentation change — logic, variable names, and operator precedence are untouched.',
+        description: 'Only whitespace and indentation change - logic, variable names, and operator precedence are untouched.',
       },
       {
         title: 'Reversible with the JS Minifier',
@@ -3719,7 +3725,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Enter the number',
-        description: 'With or without spaces, dashes, or a country code — it’s normalized automatically.',
+        description: 'With or without spaces, dashes, or a country code - it’s normalized automatically.',
       },
       {
         title: 'The right rule is applied',
@@ -3745,7 +3751,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Specific failure reasons',
-        description: 'Names exactly which rule failed — wrong length, wrong prefix — not a generic invalid message.',
+        description: 'Names exactly which rule failed - wrong length, wrong prefix - not a generic invalid message.',
       },
     ],
     faqs: [
@@ -3782,7 +3788,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Enter your weight',
-        description: 'Toggle between kilograms or pounds — units can be mixed freely.',
+        description: 'Toggle between kilograms or pounds - units can be mixed freely.',
       },
       {
         title: 'BMI calculates automatically',
@@ -3808,7 +3814,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Instant, live calculation',
-        description: 'No calculate button — the result updates as soon as height and weight are entered.',
+        description: 'No calculate button - the result updates as soon as height and weight are entered.',
       },
     ],
     faqs: [
@@ -3922,7 +3928,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Choose exactly which fields',
-        description: 'Toggle name, email, phone, address, and company independently — export only what you need.',
+        description: 'Toggle name, email, phone, address, and company independently - export only what you need.',
       },
       {
         title: 'Two export formats',
@@ -3930,7 +3936,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Entirely fictional data',
-        description: 'Every row is randomly assembled — no real personal information is involved or required.',
+        description: 'Every row is randomly assembled - no real personal information is involved or required.',
       },
       {
         title: 'Up to 50 rows at once',
@@ -3993,7 +3999,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Instant most/least common callouts',
-        description: 'No need to scan the whole table — the extremes are highlighted automatically.',
+        description: 'No need to scan the whole table - the extremes are highlighted automatically.',
       },
       {
         title: 'Useful beyond cryptography',
@@ -4093,7 +4099,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Choose a language context',
-        description: 'JavaScript, Java, or Regex — each escapes a different set of characters.',
+        description: 'JavaScript, Java, or Regex - each escapes a different set of characters.',
       },
       {
         title: 'Choose escape or unescape',
@@ -4152,7 +4158,7 @@ export const tools: ToolDefinition[] = [
     title: 'HTML Viewer & Live Preview',
     shortDescription: 'Preview HTML with a responsive viewport switcher, live console output, and basic error linting.',
     longDescription:
-      'Paste HTML and see it rendered live in a sandboxed preview, but this goes well past a basic paste-and-render viewer. Switch the preview between Desktop, Tablet, and Mobile widths to actually check how a layout responds, instead of only ever seeing one fixed-width render. A captured console panel shows console.log/warn/error output — and uncaught runtime errors — from scripts running inside the preview, so you can actually debug broken JavaScript in the pasted page rather than staring at a silently blank result. A lightweight linter scans for unclosed tags, mismatched tags, and duplicate id attributes and lists them as non-blocking warnings above the preview, so markup problems are visible instead of silently swallowed. A "Formatted source" mode shows the HTML with basic tag/attribute/string syntax coloring, and you can export the result as a downloadable .html file or a shareable data URI. The preview iframe runs with sandbox="allow-scripts" only — scripts execute for the preview, but the sandbox blocks the page from accessing the parent site, cookies, or top-level navigation.',
+      'Paste HTML and see it rendered live in a sandboxed preview, but this goes well past a basic paste-and-render viewer. Switch the preview between Desktop, Tablet, and Mobile widths to actually check how a layout responds, instead of only ever seeing one fixed-width render. A captured console panel shows console.log/warn/error output - and uncaught runtime errors - from scripts running inside the preview, so you can actually debug broken JavaScript in the pasted page rather than staring at a silently blank result. A lightweight linter scans for unclosed tags, mismatched tags, and duplicate id attributes and lists them as non-blocking warnings above the preview, so markup problems are visible instead of silently swallowed. A "Formatted source" mode shows the HTML with basic tag/attribute/string syntax coloring, and you can export the result as a downloadable .html file or a shareable data URI. The preview iframe runs with sandbox="allow-scripts" only - scripts execute for the preview, but the sandbox blocks the page from accessing the parent site, cookies, or top-level navigation.',
     metaTitle: 'HTML Viewer with Live Preview \u2014 Formatiq',
     metaDescription:
       'Preview HTML online for free with a responsive Desktop/Tablet/Mobile viewport switcher, live console output, and basic error linting.',
@@ -4161,7 +4167,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Paste your HTML',
-        description: 'Drop in a full page or a snippet — scripts and styles work too.',
+        description: 'Drop in a full page or a snippet - scripts and styles work too.',
       },
       {
         title: 'Check the linter warnings',
@@ -4187,7 +4193,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Sandboxed by default',
-        description: 'Scripts run in an isolated iframe with no access to this site or your data — safe to experiment.',
+        description: 'Scripts run in an isolated iframe with no access to this site or your data - safe to experiment.',
       },
       {
         title: 'Export when you’re done',
@@ -4198,17 +4204,17 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Is it safe to paste HTML with <script> tags into this tool?',
         answer:
-          'Scripts do run, but only inside a sandboxed iframe using sandbox="allow-scripts" with no "allow-same-origin" — that combination means the preview gets an opaque, isolated origin with no access to this site’s cookies, storage, or parent page, and it can’t navigate the top-level page or escape the frame. That said, sandboxing limits what a script can reach, not what it can compute — a malicious script could still, say, try to phish via convincing-looking preview content, so you should still avoid pasting HTML from sources you don’t trust, the same caution you’d apply to running any unfamiliar code.',
+          'Scripts do run, but only inside a sandboxed iframe using sandbox="allow-scripts" with no "allow-same-origin" - that combination means the preview gets an opaque, isolated origin with no access to this site’s cookies, storage, or parent page, and it can’t navigate the top-level page or escape the frame. That said, sandboxing limits what a script can reach, not what it can compute - a malicious script could still, say, try to phish via convincing-looking preview content, so you should still avoid pasting HTML from sources you don’t trust, the same caution you’d apply to running any unfamiliar code.',
       },
       {
         question: 'How does the responsive preview actually check my layout?',
         answer:
-          'The Desktop/Tablet/Mobile buttons resize the preview iframe itself to 100%, 768px, and 375px respectively — common breakpoint reference widths — rather than just shrinking a screenshot, so CSS media queries and responsive layout rules in your HTML genuinely re-evaluate at each width, the same way they would in a real browser resized to that viewport.',
+          'The Desktop/Tablet/Mobile buttons resize the preview iframe itself to 100%, 768px, and 375px respectively - common breakpoint reference widths - rather than just shrinking a screenshot, so CSS media queries and responsive layout rules in your HTML genuinely re-evaluate at each width, the same way they would in a real browser resized to that viewport.',
       },
       {
         question: 'Does the linter catch every possible HTML mistake?',
         answer:
-          'No — it checks a specific, common set of issues (unclosed tags, mismatched open/close tags, duplicate id attributes) using a lightweight tag-stack scan, not a full HTML5 parser or validator. It’s meant to catch the mistakes that most often silently break a layout or a getElementById lookup, not to replace a complete markup validator for spec compliance.',
+          'No - it checks a specific, common set of issues (unclosed tags, mismatched open/close tags, duplicate id attributes) using a lightweight tag-stack scan, not a full HTML5 parser or validator. It’s meant to catch the mistakes that most often silently break a layout or a getElementById lookup, not to replace a complete markup validator for spec compliance.',
       },
     ],
     Component: HtmlViewer,
@@ -4219,8 +4225,8 @@ export const tools: ToolDefinition[] = [
     title: 'Password Strength Checker',
     shortDescription: 'Check a password against length and character-variety rules, with a live strength meter.',
     longDescription:
-      'Type a password to see it checked live against the criteria that actually drive password strength: length (with a bump for 12+ characters), and whether it mixes uppercase, lowercase, numbers, and symbols. Each rule shows as its own checklist item with a checkmark, and an overall Weak/Fair/Good/Strong meter summarizes the result at a glance. A show/hide toggle lets you type it masked by default and reveal it to double-check for typos. This checks pattern strength only — length and character variety — and does not check the password against known data-breach lists, since doing that honestly would require sending the password to a third-party server to compare against a breach database, which a client-side, nothing-leaves-your-browser tool intentionally won’t do. A password can score "Strong" here and still be compromised if it has appeared in a previous breach elsewhere.',
-    metaTitle: 'Password Strength Checker — Free Online Tool | Formatiq',
+      'Type a password to see it checked live against the criteria that actually drive password strength: length (with a bump for 12+ characters), and whether it mixes uppercase, lowercase, numbers, and symbols. Each rule shows as its own checklist item with a checkmark, and an overall Weak/Fair/Good/Strong meter summarizes the result at a glance. A show/hide toggle lets you type it masked by default and reveal it to double-check for typos. This checks pattern strength only - length and character variety - and does not check the password against known data-breach lists, since doing that honestly would require sending the password to a third-party server to compare against a breach database, which a client-side, nothing-leaves-your-browser tool intentionally won’t do. A password can score "Strong" here and still be compromised if it has appeared in a previous breach elsewhere.',
+    metaTitle: 'Password Strength Checker - Free Online Tool | Formatiq',
     metaDescription:
       'Check password strength online for free with a live checklist for length, case, numbers, and symbols. No data leaves your browser.',
     keywords: ['password strength checker', 'check password strength', 'password strength meter', 'is my password strong'],
@@ -4228,7 +4234,7 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Does a "Strong" result mean this password hasn’t been breached?',
         answer:
-          'No — this only measures pattern strength (length and character variety), not whether the exact password has ever appeared in a known data breach. Checking against breach databases requires sending the password to a server to compare it (as breach-checking services do), which this client-side tool deliberately doesn’t do since nothing you type here is ever transmitted anywhere. A common, previously-leaked password can still score well on pattern strength alone.',
+          'No - this only measures pattern strength (length and character variety), not whether the exact password has ever appeared in a known data breach. Checking against breach databases requires sending the password to a server to compare it (as breach-checking services do), which this client-side tool deliberately doesn’t do since nothing you type here is ever transmitted anywhere. A common, previously-leaked password can still score well on pattern strength alone.',
       },
       {
         question: 'Why does 12+ characters get its own separate checklist item from the basic 8-character minimum?',
@@ -4238,7 +4244,7 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Is it safe to type a real password into this tool?',
         answer:
-          'The password is only ever processed in your browser’s local JavaScript — it’s never sent to a server, logged, or stored. That said, as a general habit, treat any password-strength tool the way you’d treat any other webpage: reputable ones (this one included) don’t transmit what you type, but there’s no way for a visitor to verify that with certainty just by looking at the page.',
+          'The password is only ever processed in your browser’s local JavaScript - it’s never sent to a server, logged, or stored. That said, as a general habit, treat any password-strength tool the way you’d treat any other webpage: reputable ones (this one included) don’t transmit what you type, but there’s no way for a visitor to verify that with certainty just by looking at the page.',
       },
     ],
     Component: PasswordStrengthChecker,
@@ -4249,8 +4255,8 @@ export const tools: ToolDefinition[] = [
     title: 'IBAN Validator',
     shortDescription: 'Check an IBAN’s format and mod-97 checksum, with country/length and checksum shown separately.',
     longDescription:
-      'Paste an International Bank Account Number to check it in two distinct steps: first, whether the country code is recognized and the total length matches what that country’s IBAN format requires, then separately, whether the check digits pass the mod-97 checksum defined by the IBAN standard. Splitting these into separate results matters because they fail for different reasons — a wrong length usually means a digit was dropped or an extra one typed, while a checksum failure with correct length usually means a single digit was transposed or mistyped somewhere in an otherwise correctly-structured number. On success, the IBAN is broken into its country code, check digits, and BBAN (Basic Bank Account Number) so you can see exactly what each segment represents. Covers the common European and EEA IBAN-issuing countries. Runs entirely client-side.',
-    metaTitle: 'IBAN Validator — Free Online Tool | Formatiq',
+      'Paste an International Bank Account Number to check it in two distinct steps: first, whether the country code is recognized and the total length matches what that country’s IBAN format requires, then separately, whether the check digits pass the mod-97 checksum defined by the IBAN standard. Splitting these into separate results matters because they fail for different reasons - a wrong length usually means a digit was dropped or an extra one typed, while a checksum failure with correct length usually means a single digit was transposed or mistyped somewhere in an otherwise correctly-structured number. On success, the IBAN is broken into its country code, check digits, and BBAN (Basic Bank Account Number) so you can see exactly what each segment represents. Covers the common European and EEA IBAN-issuing countries. Runs entirely client-side.',
+    metaTitle: 'IBAN Validator - Free Online Tool | Formatiq',
     metaDescription:
       'Validate an IBAN online for free: format, country length, and mod-97 checksum checked separately, with parsed components shown. No data leaves your browser.',
     keywords: ['iban validator', 'validate iban', 'iban checksum checker', 'iban format checker'],
@@ -4258,17 +4264,17 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Why are the country/length check and the checksum check shown as two separate results?',
         answer:
-          'They catch different kinds of mistakes. A country/length mismatch usually means the IBAN was truncated, has extra characters, or the country code itself is wrong — an error you can often spot by eye once it’s called out. A checksum failure on an otherwise correctly-sized IBAN almost always means a single digit was mistyped or two digits were swapped, a much subtler error that the mod-97 calculation is specifically designed to catch. Separating them tells you which kind of mistake to look for.',
+          'They catch different kinds of mistakes. A country/length mismatch usually means the IBAN was truncated, has extra characters, or the country code itself is wrong - an error you can often spot by eye once it’s called out. A checksum failure on an otherwise correctly-sized IBAN almost always means a single digit was mistyped or two digits were swapped, a much subtler error that the mod-97 calculation is specifically designed to catch. Separating them tells you which kind of mistake to look for.',
       },
       {
         question: 'Does a passing checksum mean this is a real, active bank account?',
         answer:
-          'No — the mod-97 checksum only confirms the IBAN is internally consistent according to the standard’s check-digit formula, the same first-line validation a bank’s own systems would run before ever contacting the account-holding institution. It can’t confirm the account actually exists, belongs to a particular person, or is open, since that information lives only inside the issuing bank’s own systems.',
+          'No - the mod-97 checksum only confirms the IBAN is internally consistent according to the standard’s check-digit formula, the same first-line validation a bank’s own systems would run before ever contacting the account-holding institution. It can’t confirm the account actually exists, belongs to a particular person, or is open, since that information lives only inside the issuing bank’s own systems.',
       },
       {
         question: 'What is the BBAN shown in the parsed components?',
         answer:
-          'BBAN stands for Basic Bank Account Number — it’s the country-specific part of the IBAN that comes after the country code and check digits, typically encoding the bank code, branch code, and account number in whatever format that country’s banking system uses internally. The IBAN standard wraps this national format with a consistent country code and checksum so it can be validated and processed internationally.',
+          'BBAN stands for Basic Bank Account Number - it’s the country-specific part of the IBAN that comes after the country code and check digits, typically encoding the bank code, branch code, and account number in whatever format that country’s banking system uses internally. The IBAN standard wraps this national format with a consistent country code and checksum so it can be validated and processed internationally.',
       },
     ],
     Component: IbanValidator,
@@ -4279,8 +4285,8 @@ export const tools: ToolDefinition[] = [
     title: 'Color Palette Generator',
     shortDescription: 'Generate a 5-color palette from a base hex color using complementary, analogous, or triadic color theory.',
     longDescription:
-      'Enter a base hex color and generate a coordinated 5-color palette using one of three classic color-theory relationships: complementary (lightness variations around your base plus its opposite on the color wheel, for high-contrast accents), analogous (neighboring hues 15-30 degrees apart, for a harmonious, low-contrast palette), or triadic (three hues evenly spaced 120 degrees apart, for a balanced but vibrant combination). Each swatch shows its hex value with its own copy button, and a "Randomize base color" button lets you explore palettes starting from a color you didn’t have to pick yourself. The color math converts your hex input to HSL internally to compute hue rotations and lightness variations, then converts back to hex for display — the same underlying approach a designer would use manually with a color wheel, just automated. Runs entirely client-side.',
-    metaTitle: 'Color Palette Generator — Free Online Tool | Formatiq',
+      'Enter a base hex color and generate a coordinated 5-color palette using one of three classic color-theory relationships: complementary (lightness variations around your base plus its opposite on the color wheel, for high-contrast accents), analogous (neighboring hues 15-30 degrees apart, for a harmonious, low-contrast palette), or triadic (three hues evenly spaced 120 degrees apart, for a balanced but vibrant combination). Each swatch shows its hex value with its own copy button, and a "Randomize base color" button lets you explore palettes starting from a color you didn’t have to pick yourself. The color math converts your hex input to HSL internally to compute hue rotations and lightness variations, then converts back to hex for display - the same underlying approach a designer would use manually with a color wheel, just automated. Runs entirely client-side.',
+    metaTitle: 'Color Palette Generator - Free Online Tool | Formatiq',
     metaDescription:
       'Generate a 5-color palette online for free from any hex color using complementary, analogous, or triadic color theory. No data leaves your browser.',
     keywords: ['color palette generator', 'color scheme generator', 'complementary color generator', 'triadic color palette'],
@@ -4293,12 +4299,12 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Why does the tool convert my hex color to HSL instead of working with hex directly?',
         answer:
-          'Hex (and the RGB it represents) encodes color as red/green/blue channel mixtures, which makes "rotate the hue by 120 degrees" or "make this lighter" mathematically awkward to compute directly. HSL separates hue, saturation, and lightness into independent values, so rotating hue for a triadic palette or adjusting lightness for a tint is a simple addition or subtraction — the same reason designers think in terms of a color wheel rather than RGB percentages.',
+          'Hex (and the RGB it represents) encodes color as red/green/blue channel mixtures, which makes "rotate the hue by 120 degrees" or "make this lighter" mathematically awkward to compute directly. HSL separates hue, saturation, and lightness into independent values, so rotating hue for a triadic palette or adjusting lightness for a tint is a simple addition or subtraction - the same reason designers think in terms of a color wheel rather than RGB percentages.',
       },
       {
         question: 'Will the generated palette always look good together?',
         answer:
-          'Color theory relationships (complementary, analogous, triadic) are a reliable starting point that professional designers actually use, but "reliable starting point" isn’t the same as "guaranteed perfect for your specific use case" — the right palette also depends on context like background color, accessibility contrast requirements, and brand tone that this tool doesn’t know about. Treat the output as a solid draft to refine, not a final, unreviewed answer.',
+          'Color theory relationships (complementary, analogous, triadic) are a reliable starting point that professional designers actually use, but "reliable starting point" isn’t the same as "guaranteed perfect for your specific use case" - the right palette also depends on context like background color, accessibility contrast requirements, and brand tone that this tool doesn’t know about. Treat the output as a solid draft to refine, not a final, unreviewed answer.',
       },
     ],
     Component: ColorPaletteGenerator,
@@ -4377,26 +4383,26 @@ export const tools: ToolDefinition[] = [
     title: 'Favicon Generator',
     shortDescription: 'Generate a favicon from an uploaded image or typed initials, previewed and downloadable at 16, 32, and 180px.',
     longDescription:
-      'Upload an image to generate a favicon, or — if you don’t have one ready — type one or two initials to generate a simple colored-square icon instead, with adjustable background and text colors. Both paths render live previews at the three sizes that actually matter in practice: 16×16 and 32×32 for browser tabs and bookmarks, and 180×180 for iOS home-screen icons (the Apple touch icon size). Each preview is produced by drawing onto an HTML canvas at the target resolution and reading it back out with toDataURL(), the same technique used to generate this very site’s own favicon, so what you see in the preview is pixel-for-pixel what downloads. Each size has its own download button producing a ready-to-use .png file. Runs entirely client-side — uploaded images are never sent anywhere.',
-    metaTitle: 'Favicon Generator — Free Online Tool | Formatiq',
+      'Upload an image to generate a favicon, or - if you don’t have one ready - type one or two initials to generate a simple colored-square icon instead, with adjustable background and text colors. Both paths render live previews at the three sizes that actually matter in practice: 16×16 and 32×32 for browser tabs and bookmarks, and 180×180 for iOS home-screen icons (the Apple touch icon size). Each preview is produced by drawing onto an HTML canvas at the target resolution and reading it back out with toDataURL(), the same technique used to generate this very site’s own favicon, so what you see in the preview is pixel-for-pixel what downloads. Each size has its own download button producing a ready-to-use .png file. Runs entirely client-side - uploaded images are never sent anywhere.',
+    metaTitle: 'Favicon Generator - Free Online Tool | Formatiq',
     metaDescription:
       'Generate a favicon online for free from an image or typed initials, previewed and downloadable at 16, 32, and 180px. No data leaves your browser.',
     keywords: ['favicon generator', 'favicon maker', 'generate favicon from image', 'favicon generator from text'],
     faqs: [
       {
-        question: 'Why these three specific sizes — 16, 32, and 180 pixels?',
+        question: 'Why these three specific sizes - 16, 32, and 180 pixels?',
         answer:
           '16×16 is the classic favicon size shown in a browser tab and address bar, 32×32 is used for higher-density displays and browser bookmark bars, and 180×180 is Apple’s specified size for the "apple-touch-icon" used when someone adds a page to their iOS home screen. Covering all three means the icon looks sharp everywhere it’s actually displayed, rather than being one size stretched or shrunk awkwardly.',
       },
       {
         question: 'What happens if I don’t have a logo or image ready?',
         answer:
-          'Switch to "Generate from text" and type one or two initials — the tool draws them centered on a solid color square with colors you can adjust, producing a clean, simple icon without needing any image file. This is the same basic approach many sites use for a placeholder or text-based brand mark before a full logo exists.',
+          'Switch to "Generate from text" and type one or two initials - the tool draws them centered on a solid color square with colors you can adjust, producing a clean, simple icon without needing any image file. This is the same basic approach many sites use for a placeholder or text-based brand mark before a full logo exists.',
       },
       {
         question: 'Is my uploaded image sent anywhere?',
         answer:
-          'No — the image is read and resized entirely in your browser using the Canvas API, and the resulting favicon files are generated locally too. Nothing is uploaded to a server at any point, whether you’re using an uploaded image or the text-based generator.',
+          'No - the image is read and resized entirely in your browser using the Canvas API, and the resulting favicon files are generated locally too. Nothing is uploaded to a server at any point, whether you’re using an uploaded image or the text-based generator.',
       },
     ],
     Component: FaviconGenerator,
@@ -4447,7 +4453,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Plain-text output',
-        description: 'Copy-pasteable as-is into a README, terminal banner, or comment block — no HTML or styling needed.',
+        description: 'Copy-pasteable as-is into a README, terminal banner, or comment block - no HTML or styling needed.',
       },
     ],
     faqs: [
@@ -4459,7 +4465,7 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Why does the output look stretched or squashed if I ignore the width setting\'s effect on height?',
         answer:
-          'A monospace character cell is taller than it is wide, so sampling the same number of rows as a 1:1 pixel aspect ratio would suggest makes the result look vertically stretched. The tool corrects for this automatically by sampling fewer rows than a naive aspect-ratio calculation would give — you only control the width, and height follows from the image\'s proportions with that correction already applied.',
+          'A monospace character cell is taller than it is wide, so sampling the same number of rows as a 1:1 pixel aspect ratio would suggest makes the result look vertically stretched. The tool corrects for this automatically by sampling fewer rows than a naive aspect-ratio calculation would give - you only control the width, and height follows from the image\'s proportions with that correction already applied.',
       },
       {
         question: 'What happens with transparent parts of a PNG?',
@@ -4611,8 +4617,8 @@ export const tools: ToolDefinition[] = [
     title: 'Find and Replace',
     shortDescription: 'Find and replace text with a live highlighted preview before committing, plain text or regex.',
     longDescription:
-      'Paste text and search it with either a plain literal match or a full regular expression, with case-sensitivity and replace-all-versus-replace-first toggles so the search behaves exactly how you need it to. Every match highlights inline in a preview panel before anything is actually replaced, so you can visually confirm the pattern is catching what you expect — and nothing else — before committing to the replacement. Once you click Replace, the result shows the exact count of replacements made and a separate result panel you can copy or feed back into the source for another pass. Plain text mode automatically escapes regex special characters, so searching for something like "a.b" or "$100" behaves as a literal string rather than accidentally being interpreted as a pattern. Runs entirely client-side.',
-    metaTitle: 'Find and Replace — Free Online Tool | Formatiq',
+      'Paste text and search it with either a plain literal match or a full regular expression, with case-sensitivity and replace-all-versus-replace-first toggles so the search behaves exactly how you need it to. Every match highlights inline in a preview panel before anything is actually replaced, so you can visually confirm the pattern is catching what you expect - and nothing else - before committing to the replacement. Once you click Replace, the result shows the exact count of replacements made and a separate result panel you can copy or feed back into the source for another pass. Plain text mode automatically escapes regex special characters, so searching for something like "a.b" or "$100" behaves as a literal string rather than accidentally being interpreted as a pattern. Runs entirely client-side.',
+    metaTitle: 'Find and Replace - Free Online Tool | Formatiq',
     metaDescription:
       'Find and replace text online for free with a live highlighted preview, plain text or regex matching, and case-sensitivity control.',
     keywords: ['find and replace online', 'text replace tool', 'regex find and replace', 'bulk text replace'],
@@ -4620,17 +4626,17 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Why does the preview highlight matches before I click Replace?',
         answer:
-          'Confirming what actually matches before committing is especially important in regex mode, where a small mistake in the pattern — an unescaped special character, a greedy quantifier — can match far more or less than intended. Seeing every match highlighted in place lets you catch that before any text is altered, rather than discovering the problem after the replacement already happened.',
+          'Confirming what actually matches before committing is especially important in regex mode, where a small mistake in the pattern - an unescaped special character, a greedy quantifier - can match far more or less than intended. Seeing every match highlighted in place lets you catch that before any text is altered, rather than discovering the problem after the replacement already happened.',
       },
       {
         question: 'What’s the difference between plain text and regex matching?',
         answer:
-          'Plain text mode treats your search term as a literal string, automatically escaping any characters (like "." or "$") that would otherwise have special meaning in a regular expression — so searching for "3.14" matches exactly that, not any character followed by "14". Regex mode gives you full regular expression power (character classes, quantifiers, groups) for pattern-based find and replace, at the cost of needing to write valid regex syntax.',
+          'Plain text mode treats your search term as a literal string, automatically escaping any characters (like "." or "$") that would otherwise have special meaning in a regular expression - so searching for "3.14" matches exactly that, not any character followed by "14". Regex mode gives you full regular expression power (character classes, quantifiers, groups) for pattern-based find and replace, at the cost of needing to write valid regex syntax.',
       },
       {
         question: 'Why replace first instead of always replacing every match?',
         answer:
-          '"Replace first" is useful when a pattern legitimately matches multiple places in a text but you only want to fix one specific occurrence — for example, correcting the first typo of a repeated word without touching later instances that might be intentional or already correct. "Replace all" is the more common case, but having both avoids the need to manually pick out a single match through workarounds.',
+          '"Replace first" is useful when a pattern legitimately matches multiple places in a text but you only want to fix one specific occurrence - for example, correcting the first typo of a repeated word without touching later instances that might be intentional or already correct. "Replace all" is the more common case, but having both avoids the need to manually pick out a single match through workarounds.',
       },
     ],
     Component: FindAndReplace,
@@ -4655,7 +4661,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Toggle categories on or off',
-        description: 'Periods, commas, exclamation marks, question marks, quotes, and other symbols — each independent.',
+        description: 'Periods, commas, exclamation marks, question marks, quotes, and other symbols - each independent.',
       },
       {
         title: 'Read the result live',
@@ -4669,7 +4675,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Six independent categories',
-        description: 'Strip just quotes, just periods, or any combination — not limited to an all-or-nothing toggle.',
+        description: 'Strip just quotes, just periods, or any combination - not limited to an all-or-nothing toggle.',
       },
       {
         title: 'Live character counts',
@@ -4709,8 +4715,8 @@ export const tools: ToolDefinition[] = [
     title: 'Date Difference Calculator',
     shortDescription: 'Calculate the difference between two dates in days, weeks, months, years, and business days.',
     longDescription:
-      'Enter a start and end date to see the gap between them broken down five different ways at once: total days, total weeks (as a decimal), a months-plus-days breakdown, a full years-months-days breakdown, and business days (weekdays only, excluding Saturday and Sunday). The months and years breakdowns are computed by comparing calendar fields directly rather than dividing by an average day count, so they correctly account for varying month lengths and leap years — the same way you’d work it out by hand, borrowing a month or year when the day-of-month doesn’t divide evenly. If the start date happens to be after the end date, the tool still computes an absolute difference and notes that the order was reversed rather than returning a negative or nonsensical result. Useful for project timelines, calculating someone’s tenure, or figuring out how many working days remain before a deadline. Runs entirely client-side.',
-    metaTitle: 'Date Difference Calculator — Free Online Tool | Formatiq',
+      'Enter a start and end date to see the gap between them broken down five different ways at once: total days, total weeks (as a decimal), a months-plus-days breakdown, a full years-months-days breakdown, and business days (weekdays only, excluding Saturday and Sunday). The months and years breakdowns are computed by comparing calendar fields directly rather than dividing by an average day count, so they correctly account for varying month lengths and leap years - the same way you’d work it out by hand, borrowing a month or year when the day-of-month doesn’t divide evenly. If the start date happens to be after the end date, the tool still computes an absolute difference and notes that the order was reversed rather than returning a negative or nonsensical result. Useful for project timelines, calculating someone’s tenure, or figuring out how many working days remain before a deadline. Runs entirely client-side.',
+    metaTitle: 'Date Difference Calculator - Free Online Tool | Formatiq',
     metaDescription:
       'Calculate the difference between two dates online for free: days, weeks, months, years, and business days, all at once. No data leaves your browser.',
     keywords: ['date difference calculator', 'days between dates', 'business days calculator', 'date duration calculator'],
@@ -4723,12 +4729,12 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Why do the months and years breakdowns sometimes look different from just dividing the total days?',
         answer:
-          'Months have different lengths (28 to 31 days) and years vary with leap years, so a calculation like "total days ÷ 30" would drift and produce a slightly wrong answer for most date ranges. Instead, the breakdown compares the actual calendar fields — year, month, and day — directly, borrowing from the next unit when needed, which is the same method you’d use counting on a calendar by hand and always gives an exact result.',
+          'Months have different lengths (28 to 31 days) and years vary with leap years, so a calculation like "total days ÷ 30" would drift and produce a slightly wrong answer for most date ranges. Instead, the breakdown compares the actual calendar fields - year, month, and day - directly, borrowing from the next unit when needed, which is the same method you’d use counting on a calendar by hand and always gives an exact result.',
       },
       {
         question: 'What happens if I enter the start date after the end date?',
         answer:
-          'The calculator still produces a result — it computes the absolute difference between the two dates and shows a note that the order was reversed, rather than returning a negative number or an error. This makes it forgiving if you swap the two fields by mistake.',
+          'The calculator still produces a result - it computes the absolute difference between the two dates and shows a note that the order was reversed, rather than returning a negative number or an error. This makes it forgiving if you swap the two fields by mistake.',
       },
     ],
     Component: DateDifferenceCalculator,
@@ -4739,8 +4745,8 @@ export const tools: ToolDefinition[] = [
     title: 'Loan Calculator',
     shortDescription: 'Estimate monthly payment, total interest, and total cost for a fixed-rate loan.',
     longDescription:
-      'Enter a loan amount, annual interest rate, and term (in years or months) to estimate the monthly payment using the standard fixed-rate amortization formula — the same formula lenders use to calculate a level payment that pays off both principal and interest by the end of the term. Alongside the monthly payment, the tool shows total interest paid over the life of the loan and the total amount paid (principal plus interest combined), so you can see the full cost picture, not just the monthly number. This is explicitly an estimate for informational purposes, not financial advice: it calculates a standard fixed-rate amortization and does not account for fees, closing costs, taxes, insurance, or a specific lender’s actual terms, all of which can meaningfully change what you’d really pay. Useful for getting a ballpark sense of affordability before talking to a lender, not for finalizing a real loan decision. Runs entirely client-side.',
-    metaTitle: 'Loan Calculator — Free Online Tool | Formatiq',
+      'Enter a loan amount, annual interest rate, and term (in years or months) to estimate the monthly payment using the standard fixed-rate amortization formula - the same formula lenders use to calculate a level payment that pays off both principal and interest by the end of the term. Alongside the monthly payment, the tool shows total interest paid over the life of the loan and the total amount paid (principal plus interest combined), so you can see the full cost picture, not just the monthly number. This is explicitly an estimate for informational purposes, not financial advice: it calculates a standard fixed-rate amortization and does not account for fees, closing costs, taxes, insurance, or a specific lender’s actual terms, all of which can meaningfully change what you’d really pay. Useful for getting a ballpark sense of affordability before talking to a lender, not for finalizing a real loan decision. Runs entirely client-side.',
+    metaTitle: 'Loan Calculator - Free Online Tool | Formatiq',
     metaDescription:
       'Estimate monthly loan payments, total interest, and total cost online for free using standard amortization. Informational estimate only, not financial advice.',
     keywords: ['loan calculator', 'monthly payment calculator', 'loan amortization calculator', 'interest calculator'],
@@ -4748,12 +4754,12 @@ export const tools: ToolDefinition[] = [
       {
         question: 'What formula does this use to calculate the monthly payment?',
         answer:
-          'It uses the standard fixed-rate amortization formula: M = P × [r(1+r)^n] / [(1+r)^n − 1], where P is the loan amount, r is the monthly interest rate (annual rate divided by 12), and n is the total number of monthly payments. This is the same formula used to calculate a level payment — one that stays the same every month — for a traditional fixed-rate loan like most auto loans and standard mortgages.',
+          'It uses the standard fixed-rate amortization formula: M = P × [r(1+r)^n] / [(1+r)^n − 1], where P is the loan amount, r is the monthly interest rate (annual rate divided by 12), and n is the total number of monthly payments. This is the same formula used to calculate a level payment - one that stays the same every month - for a traditional fixed-rate loan like most auto loans and standard mortgages.',
       },
       {
         question: 'Why doesn’t the total include fees, taxes, or insurance?',
         answer:
-          'Those costs vary enormously by lender, loan type, and location — an origination fee, property tax escrow, or required insurance premium isn’t part of the core amortization math, and folding in a guessed number would make the estimate less accurate, not more. This calculator intentionally sticks to the loan itself (principal and interest) so the number it gives you is at least mathematically exact for that piece, with the disclaimer that it’s not your full real-world cost.',
+          'Those costs vary enormously by lender, loan type, and location - an origination fee, property tax escrow, or required insurance premium isn’t part of the core amortization math, and folding in a guessed number would make the estimate less accurate, not more. This calculator intentionally sticks to the loan itself (principal and interest) so the number it gives you is at least mathematically exact for that piece, with the disclaimer that it’s not your full real-world cost.',
       },
       {
         question: 'Can I use this for a real financial decision?',
@@ -4801,7 +4807,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Full range in one view',
-        description: 'Bits through terabytes convert together — no need to chain multiple single-pair conversions.',
+        description: 'Bits through terabytes convert together - no need to chain multiple single-pair conversions.',
       },
       {
         title: 'Matches real-world labeling',
@@ -4929,7 +4935,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Real gzip, no dependency',
-        description: 'Uses the browser\'s built-in CompressionStream API — the same DEFLATE-based gzip format servers use.',
+        description: 'Uses the browser\'s built-in CompressionStream API - the same DEFLATE-based gzip format servers use.',
       },
       {
         title: 'Runs entirely client-side',
@@ -5047,7 +5053,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Paste your JSON',
-        description: 'Any valid JSON — an API response, config file, or log payload.',
+        description: 'Any valid JSON - an API response, config file, or log payload.',
       },
       {
         title: 'Click any node to collapse it',
@@ -5119,7 +5125,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Type into the grid',
-        description: 'Fill in each cell directly, spreadsheet-style — resizing preserves what you’ve typed.',
+        description: 'Fill in each cell directly, spreadsheet-style - resizing preserves what you’ve typed.',
       },
       {
         title: 'Check the live preview',
@@ -5323,7 +5329,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Enter your text and passphrase',
-        description: 'Both are required — the passphrase never leaves the derivation step as plain text.',
+        description: 'Both are required - the passphrase never leaves the derivation step as plain text.',
       },
       {
         title: 'A key is derived with PBKDF2',
@@ -5391,7 +5397,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'The address is validated',
-        description: 'Exactly four octets, each 0-255 — anything else produces a specific error message.',
+        description: 'Exactly four octets, each 0-255 - anything else produces a specific error message.',
       },
       {
         title: 'See all four formats at once',
@@ -5413,7 +5419,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Pure format conversion',
-        description: 'Focused on translating one representation to another — no subnet or CIDR math involved.',
+        description: 'Focused on translating one representation to another - no subnet or CIDR math involved.',
       },
       {
         title: 'Complements the subnet calculator',
@@ -5455,7 +5461,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Paste your text',
-        description: 'Any text — plain, multilingual, or containing emoji and control characters.',
+        description: 'Any text - plain, multilingual, or containing emoji and control characters.',
       },
       {
         title: 'See byte, character, and code unit counts',
@@ -5467,13 +5473,13 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Read the detected line ending style',
-        description: 'LF, CRLF, CR, or mixed — identified automatically from the actual characters present.',
+        description: 'LF, CRLF, CR, or mixed - identified automatically from the actual characters present.',
       },
     ],
     benefits: [
       {
         title: 'Distinct from word-counter',
-        description: 'Focused on encoding and byte-level detail — byte length, code units, control characters — not word/sentence stats.',
+        description: 'Focused on encoding and byte-level detail - byte length, code units, control characters - not word/sentence stats.',
       },
       {
         title: 'Three-way length comparison',
@@ -5653,7 +5659,7 @@ export const tools: ToolDefinition[] = [
       'Select a DNS record type - A, AAAA, CNAME, MX, TXT, or NS - and see a plain-language explanation of what it does, along with a realistically formatted example of that record in the wild and a note on typical TTL (time-to-live, or caching duration) behavior for that type. To be upfront about scope: this is a reference and educational tool, not a live DNS lookup - actually querying a domain\'s real DNS records requires sending a request to a DNS resolver, which needs a server or a third-party API and can\'t be done entirely within the browser the way the rest of this site\'s tools work, so this tool intentionally doesn\'t claim to do something it can\'t. What it does instead is explain the record types themselves: what an MX record\'s priority number means, why a CNAME can\'t coexist with other records on the same name, or what SPF/DKIM/DMARC TXT records are actually for. Useful for understanding DNS configuration you\'re looking at elsewhere, learning what record type you need before setting up email authentication or a subdomain, or refreshing your memory on a record type you don\'t touch often. Runs entirely client-side with no network requests.',
     metaTitle: 'DNS Record Type Explainer - A, MX, CNAME, TXT | Formatiq',
     metaDescription:
-      'Look up what A, AAAA, CNAME, MX, TXT, and NS DNS records do, with real-world examples, online for free. Explains record types — does not perform live lookups.',
+      'Look up what A, AAAA, CNAME, MX, TXT, and NS DNS records do, with real-world examples, online for free. Explains record types - does not perform live lookups.',
     keywords: ['dns record types explained', 'what is a mx record', 'cname vs a record', 'dns txt record explained', 'dns record reference'],
     useCase: 'Understanding a DNS configuration before setting up email authentication or a subdomain',
     howItWorks: [
@@ -5677,7 +5683,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Honest about scope',
-        description: 'Clearly a reference/explainer tool, not a live DNS lookup — no false claim of doing something a browser-only tool can\'t.',
+        description: 'Clearly a reference/explainer tool, not a live DNS lookup - no false claim of doing something a browser-only tool can\'t.',
       },
       {
         title: 'Plain-language explanations',
@@ -5784,7 +5790,7 @@ export const tools: ToolDefinition[] = [
     category: 'generators',
     isNew: true,
     title: 'Random Flag Generator',
-    shortDescription: 'Generate a random country flag with its name and continent — click to see another.',
+    shortDescription: 'Generate a random country flag with its name and continent - click to see another.',
     longDescription:
       'Click "Generate another" to see a random country\'s flag, name, and continent, drawn from a curated list of 50 countries spanning every inhabited continent. Flags render as native Unicode flag emoji rather than image files or SVGs, so they display crisply at any size using whatever flag emoji set the visiting device already supports, with zero image assets to load. A running history of the 8 most recently shown flags stays visible below, so you can glance back at what came up without losing track mid-session. This is a simple, no-frills tool by design - no API calls, no external flag image sets, just a hardcoded reference list and the browser\'s own emoji rendering doing the work, which keeps it instant and completely offline-capable. Useful as a quick trivia or guessing-game prompt, a random icebreaker for a team activity, or just a bit of low-stakes fun between using the site\'s more practical developer tools. Runs entirely client-side.',
     metaTitle: 'Random Flag Generator - Country Flags | Formatiq',
@@ -5813,7 +5819,7 @@ export const tools: ToolDefinition[] = [
       },
       {
         title: 'Works fully offline',
-        description: 'A hardcoded country list plus the browser\'s built-in emoji rendering — no network dependency at all.',
+        description: 'A hardcoded country list plus the browser\'s built-in emoji rendering - no network dependency at all.',
       },
       {
         title: 'Spans every continent',
@@ -5927,11 +5933,11 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Enter an ISBN',
-        description: 'ISBN-10 or ISBN-13, with or without hyphens — the format is detected automatically by length.',
+        description: 'ISBN-10 or ISBN-13, with or without hyphens - the format is detected automatically by length.',
       },
       {
         title: 'The check digit is validated',
-        description: 'Using the correct algorithm for the detected format — weighted-sum for ISBN-10, alternating 1-3 for ISBN-13.',
+        description: 'Using the correct algorithm for the detected format - weighted-sum for ISBN-10, alternating 1-3 for ISBN-13.',
       },
       {
         title: 'See exactly what failed',
@@ -5945,7 +5951,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Auto-detects the format',
-        description: 'No need to specify ISBN-10 vs ISBN-13 — the correct validation algorithm is chosen automatically.',
+        description: 'No need to specify ISBN-10 vs ISBN-13 - the correct validation algorithm is chosen automatically.',
       },
       {
         title: 'Specific failure diagnosis',
@@ -6013,7 +6019,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Matches WordPress\'s legacy format exactly',
-        description: 'Implements the real phpass algorithm — salt, cost factor, iterated MD5, custom base64 alphabet — not an approximation.',
+        description: 'Implements the real phpass algorithm - salt, cost factor, iterated MD5, custom base64 alphabet - not an approximation.',
       },
       {
         title: 'Self-verifying output',
@@ -6081,7 +6087,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Simpler parsing than CSV',
-        description: 'No quoting/escaping rules needed — a tab rarely appears inside real data the way a comma does.',
+        description: 'No quoting/escaping rules needed - a tab rarely appears inside real data the way a comma does.',
       },
       {
         title: 'Spreadsheet-friendly',
@@ -6110,7 +6116,7 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Why does copying from a spreadsheet paste as TSV instead of CSV?',
         answer:
-          'Most spreadsheet applications (Excel, Google Sheets, Numbers) use tab-separated values as their internal clipboard format when you copy a range of cells, since it avoids any ambiguity with commas that might appear inside cell content. This is exactly why a TSV-specific converter is useful — pasting spreadsheet data directly into this tool works without needing to first re-save it as a CSV file.',
+          'Most spreadsheet applications (Excel, Google Sheets, Numbers) use tab-separated values as their internal clipboard format when you copy a range of cells, since it avoids any ambiguity with commas that might appear inside cell content. This is exactly why a TSV-specific converter is useful - pasting spreadsheet data directly into this tool works without needing to first re-save it as a CSV file.',
       },
     ],
     Component: TsvJsonConverter,
@@ -6199,7 +6205,7 @@ export const tools: ToolDefinition[] = [
     howItWorks: [
       {
         title: 'Just open the tool',
-        description: 'No input needed — the current time in each city loads immediately.',
+        description: 'No input needed - the current time in each city loads immediately.',
       },
       {
         title: 'Watch it update live',
@@ -6217,7 +6223,7 @@ export const tools: ToolDefinition[] = [
     benefits: [
       {
         title: 'Distinct from timezone-converter',
-        description: 'No date/time input needed — this answers "what time is it right now, everywhere," live.',
+        description: 'No date/time input needed - this answers "what time is it right now, everywhere," live.',
       },
       {
         title: 'Updates every second',
@@ -6250,6 +6256,414 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: TimeZoneNowClock,
+  },
+  {
+    slug: 'crc32-checksum',
+    category: 'encoders-decoders',
+    isNew: true,
+    title: 'CRC32 Checksum Calculator',
+    shortDescription: 'Compute the CRC32 checksum of text or a small file, for integrity/error-detection checks.',
+    longDescription:
+      'Compute the CRC32 checksum of typed text or an uploaded file (up to 5 MB) using the standard CRC-32/ISO-HDLC algorithm - the same polynomial (0xEDB88320, reflected) and table-driven implementation used by zlib, gzip, and the PNG file format\'s own chunk checksums. This is a meaningfully different tool from hash-generator: MD5 and the SHA family are cryptographic hash functions designed to resist deliberate tampering, while CRC32 is explicitly not cryptographically secure - it\'s fast and effective at catching accidental corruption (a flipped bit from a bad disk sector, a truncated file transfer, a transmission error), but a motivated attacker can construct a different file with the same CRC32 value without much difficulty. That distinction matters because CRC32 and cryptographic hashes solve different problems and aren\'t interchangeable: use CRC32 to verify a download wasn\'t accidentally corrupted, and MD5/SHA (or better, a keyed signature) if you need to detect intentional tampering. Useful for verifying archive integrity, checking a file transfer completed cleanly, or matching a checksum embedded in a file format that uses CRC32 internally. Runs entirely client-side.',
+    metaTitle: 'CRC32 Checksum Calculator - Text & File | Formatiq',
+    metaDescription:
+      'Compute the CRC32 checksum of text or a file online for free, for integrity and error-detection checks. No data leaves your browser.',
+    keywords: ['crc32 calculator', 'crc32 checksum online', 'crc32 of file', 'crc32 vs md5', 'error detection checksum'],
+    useCase: 'Verifying a file transfer or archive extraction completed without accidental corruption',
+    howItWorks: [
+      {
+        title: 'Choose text or file',
+        description: 'Type text directly, or upload a file up to 5 MB.',
+      },
+      {
+        title: 'The checksum computes automatically',
+        description: 'Using the standard CRC-32/ISO-HDLC table-driven algorithm.',
+      },
+      {
+        title: 'Read the 8-digit hex result',
+        description: 'The same format CRC32 values are conventionally displayed in.',
+      },
+      {
+        title: 'Compare against a known value',
+        description: 'Match it against a checksum provided alongside a download or archive.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Distinct from cryptographic hashing',
+        description: 'CRC32 is for catching accidental corruption, not for security - clearly scoped apart from hash-generator.',
+      },
+      {
+        title: 'Standard, widely-compatible algorithm',
+        description: 'Uses the same CRC-32/ISO-HDLC variant as zlib, gzip, and PNG - matches checksums from those tools.',
+      },
+      {
+        title: 'Works on text or files',
+        description: 'Check a pasted string or an uploaded file up to 5 MB from the same tool.',
+      },
+      {
+        title: 'Fast, lightweight computation',
+        description: 'A table-driven implementation processes even larger inputs quickly in the browser.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why use CRC32 instead of MD5 or SHA-256?',
+        answer:
+          'CRC32 is designed purely for error detection - catching accidental data corruption like a bad disk sector or a dropped network packet - and is fast and simple, but it\'s not cryptographically secure: an attacker can deliberately construct different data with the same CRC32 value without much effort. MD5 and SHA-256 (see hash-generator) are built to resist deliberate tampering, at the cost of being more computationally expensive. Use CRC32 for "did this get corrupted by accident," and a cryptographic hash for "can I trust this wasn\'t deliberately altered."',
+      },
+      {
+        question: 'Which CRC32 variant does this use?',
+        answer:
+          'CRC-32/ISO-HDLC, the most common variant - the same one used by zlib, gzip, PKZIP, and the PNG file format\'s internal chunk checksums. It uses the reflected polynomial 0xEDB88320, an initial value of 0xFFFFFFFF, and a final XOR of 0xFFFFFFFF. Other CRC32 variants exist with different initial values or polynomials and will produce different results for the same input, so if you\'re comparing against a checksum from another source, confirm it uses this same standard variant.',
+      },
+      {
+        question: 'Is a CRC32 collision likely to happen by accident?',
+        answer:
+          'For genuinely accidental corruption, a CRC32 mismatch reliably catches the vast majority of real-world errors like bit flips or truncation, which is exactly what it\'s designed for. However, CRC32 only has 32 bits of output (about 4.3 billion possible values), so accidental collisions become non-negligible at large enough data volumes, and deliberate collisions are straightforward to construct - which is why it\'s unsuitable whenever the concern is intentional tampering rather than accidental corruption.',
+      },
+    ],
+    Component: Crc32Checksum,
+  },
+  {
+    slug: 'tip-calculator',
+    category: 'calculators',
+    isNew: true,
+    title: 'Tip Calculator',
+    shortDescription: 'Calculate a tip and split the total between any number of people, with common percentage presets.',
+    longDescription:
+      'Enter a bill amount, pick a tip percentage using either a quick preset (10/15/18/20/25%) or a slider for anything in between, and set how many people are splitting the check - the tip amount, grand total, and per-person amounts for both the tip and the full total update instantly as any value changes. The presets cover the tipping percentages most commonly used in the US for standard, above-average, and generous service, while the slider handles the less common cases without limiting you to a fixed list. Splitting divides evenly across everyone at the table; it doesn\'t currently support itemized splitting where different people order different amounts, since that\'s a meaningfully more complex calculation involving per-item assignment rather than a simple division. Useful for quickly settling a group restaurant bill, figuring out an appropriate tip for a delivery or service, or just double-checking a percentage-based tip without doing the math by hand. Runs entirely client-side.',
+    metaTitle: 'Tip Calculator - Split the Bill & Tip | Formatiq',
+    metaDescription:
+      'Calculate a tip and split the bill between any number of people online for free, with common percentage presets. No data leaves your browser.',
+    keywords: ['tip calculator', 'bill splitter', 'tip calculator online', 'split the bill calculator', 'restaurant tip calculator'],
+    useCase: 'Quickly settling a group restaurant bill with an even split',
+    howItWorks: [
+      {
+        title: 'Enter the bill amount',
+        description: 'The pre-tip total from the check.',
+      },
+      {
+        title: 'Choose a tip percentage',
+        description: 'Tap a preset (10-25%) or drag the slider for any other value.',
+      },
+      {
+        title: 'Set the number of people',
+        description: 'Splits the tip and total evenly across everyone.',
+      },
+      {
+        title: 'Read the results',
+        description: 'Tip amount, grand total, and both per-person amounts update instantly.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Presets and a slider',
+        description: 'Common percentages are one tap away, with a slider covering everything else.',
+      },
+      {
+        title: 'Instant even split',
+        description: 'Per-person tip and total amounts update immediately as the group size changes.',
+      },
+      {
+        title: 'Four numbers at once',
+        description: 'Tip amount, total, per-person tip, and per-person total all shown together.',
+      },
+      {
+        title: 'No sign-up, no ads to dig through',
+        description: 'Open it, type the bill amount, get an answer - nothing else in the way.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this support splitting a bill where people ordered different amounts?',
+        answer:
+          'No - this calculator splits the tip and total evenly across everyone, which covers the common case of a group agreeing to split a check equally. Itemized splitting, where each person pays only for what they ordered plus a proportional share of tax and tip, is a meaningfully different calculation requiring per-item assignment, and isn\'t something this simple, quick tool attempts to handle.',
+      },
+      {
+        question: 'What tip percentage is typical in the US?',
+        answer:
+          'Convention varies by service type and region, but 15-20% is broadly typical for sit-down restaurant service in the US, with 18-20% common for good service and 15% or below sometimes considered a signal of dissatisfaction. The presets here (10/15/18/20/25%) cover that common range plus a below-average and above-average option, and the slider handles anything outside it.',
+      },
+      {
+        question: 'Is the tip calculated before or after tax?',
+        answer:
+          'This calculator applies the tip percentage to whatever number you enter as the "bill amount" - if you enter the pre-tax subtotal, the tip is calculated on that; if you enter the post-tax total, the tip is calculated on that instead. Tipping conventions differ on this point, so enter whichever base amount matches the convention you\'re following.',
+      },
+    ],
+    Component: TipCalculator,
+  },
+  {
+    slug: 'gpa-calculator',
+    category: 'calculators',
+    isNew: true,
+    title: 'GPA Calculator',
+    shortDescription: 'Calculate your overall GPA from course names, credit hours, and letter grades on the standard 4.0 scale.',
+    longDescription:
+      'Add a row for each course with its name, credit hours, and letter grade, and see your overall GPA calculated as a credit-weighted average - each course\'s grade points (on the standard 4.0 scale, with A=4.0 down to F=0.0, including plus/minus gradations like B+ =3.3) are multiplied by its credit hours, summed across all courses, and divided by the total credit hours, exactly matching how most US institutions compute a semester or cumulative GPA. Being upfront about a real limitation: this uses the standard US 4.0 scale with conventional plus/minus grade points, but not every institution uses identical values - some schools don\'t award grade points for A+ beyond 4.0, some have different point values for plus/minus grades, and international grading systems often use entirely different scales - so if your specific institution\'s scale differs from the conventional one used here, the result may not exactly match your official transcript GPA. Rows can be added or removed freely, and credit hours are validated so a course with invalid or missing credits is excluded from the calculation rather than silently breaking the result. Useful for estimating your GPA before an official transcript updates, planning what grades you\'d need in upcoming courses, or double-checking a school\'s calculation. Runs entirely client-side.',
+    metaTitle: 'GPA Calculator - 4.0 Scale | Formatiq',
+    metaDescription:
+      'Calculate your overall GPA online for free from course credit hours and letter grades on the standard US 4.0 scale. No data leaves your browser.',
+    keywords: ['gpa calculator', 'calculate gpa online', '4.0 scale gpa calculator', 'college gpa calculator', 'semester gpa calculator'],
+    useCase: 'Estimating your GPA before an official transcript updates, or planning needed grades',
+    howItWorks: [
+      {
+        title: 'Add your courses',
+        description: 'Course name, credit hours, and letter grade for each one.',
+      },
+      {
+        title: 'Add or remove rows freely',
+        description: 'Build the list to match your actual course load.',
+      },
+      {
+        title: 'GPA calculates automatically',
+        description: 'A credit-weighted average across all valid rows, updating as you edit.',
+      },
+      {
+        title: 'Check for excluded rows',
+        description: 'Any course with invalid credit hours is flagged and excluded rather than breaking the result.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Credit-weighted, not a simple average',
+        description: 'A 4-credit A counts more than a 1-credit A, matching how real GPA calculations work.',
+      },
+      {
+        title: 'Standard plus/minus grading',
+        description: 'Covers the full conventional scale from A+ down to F, not just whole-letter grades.',
+      },
+      {
+        title: 'Flexible course list',
+        description: 'Add or remove rows freely to match any number of courses.',
+      },
+      {
+        title: 'Honest about scale differences',
+        description: 'Clearly notes this uses the conventional US 4.0 scale, which not every institution matches exactly.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why might this not exactly match my school\'s official GPA?',
+        answer:
+          'This calculator uses the conventional US 4.0 scale with standard plus/minus grade points, but institutions vary in real ways: some cap A+ at 4.0 rather than awarding above it, some use slightly different point values for plus/minus grades (a B+ might be 3.3 or 3.5 depending on the school), and some don\'t use plus/minus distinctions at all. Always treat this as a close estimate and check your institution\'s official grading policy if you need an exact figure.',
+      },
+      {
+        question: 'What happens if I leave the credit hours field blank or enter 0?',
+        answer:
+          'A course with missing, zero, or otherwise invalid credit hours is excluded from the GPA calculation rather than causing an error or skewing the result - the tool flags that at least one row was excluded so you\'re aware, but the remaining valid courses still calculate correctly. This matters because including a 0-credit "course" would otherwise be mathematically meaningless in a credit-weighted average.',
+      },
+      {
+        question: 'Can I use this for a cumulative GPA across multiple semesters?',
+        answer:
+          'Yes - just add every course from every semester you want included as its own row with its actual credit hours and grade, and the credit-weighted average works the same way whether the courses span one semester or your entire academic history. There\'s no separate "semester" grouping, so cumulative and single-semester GPA use exactly the same input process.',
+      },
+    ],
+    Component: GpaCalculator,
+  },
+  {
+    slug: 'base32-encode-decode',
+    category: 'encoders-decoders',
+    isNew: true,
+    title: 'Base32 Encoder/Decoder',
+    shortDescription: 'Encode text to Base32 and decode it back, using the standard RFC 4648 alphabet.',
+    longDescription:
+      'Encode text into Base32 or decode a Base32 string back into text, using the standard RFC 4648 alphabet (A-Z and 2-7, with "=" padding) - the same encoding scheme used for things like TOTP secret keys, which is why totp-generator on this site expects its secret input in this exact format. Base32 exists alongside base64-encoder-decoder for a specific reason: it uses a smaller, case-insensitive 32-character alphabet instead of Base64\'s 64-character mixed-case set, which makes it more forgiving to read aloud, type manually, or transcribe without ambiguity between visually similar characters - at the cost of a slightly longer encoded output for the same input, since each character carries 5 bits instead of 6. Encoding output includes standard "=" padding to a multiple of 8 characters, and decoding accepts input with or without that padding, validating that every character belongs to the correct alphabet before attempting to decode. Useful for generating or inspecting a TOTP secret key, working with systems that specifically require Base32 (like certain DNS or file-naming conventions), or converting between Base32 and plain text for debugging. Runs entirely client-side.',
+    metaTitle: 'Base32 Encoder/Decoder - RFC 4648 | Formatiq',
+    metaDescription:
+      'Encode text to Base32 or decode Base32 to text online for free, using the standard RFC 4648 alphabet. No data leaves your browser.',
+    keywords: ['base32 encoder', 'base32 decoder online', 'base32 to text', 'totp secret base32', 'rfc 4648 base32'],
+    useCase: 'Generating or inspecting a TOTP secret key, which is conventionally Base32-encoded',
+    howItWorks: [
+      {
+        title: 'Choose a direction',
+        description: 'Encode text to Base32, or decode a Base32 string back to text.',
+      },
+      {
+        title: 'Enter your input',
+        description: 'Any text to encode, or a Base32 string (with or without "=" padding) to decode.',
+      },
+      {
+        title: 'See the result instantly',
+        description: 'The output updates live as you type.',
+      },
+      {
+        title: 'Copy the result',
+        description: 'The encoded or decoded value is ready to copy with one click.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Standard RFC 4648 alphabet',
+        description: 'Matches the exact encoding used by TOTP secrets and other Base32-based systems.',
+      },
+      {
+        title: 'Pairs with totp-generator',
+        description: 'Generate or inspect a Base32 TOTP secret in the exact format that tool expects.',
+      },
+      {
+        title: 'Human-friendly by design',
+        description: 'A smaller, case-insensitive alphabet makes Base32 easier to read aloud or type by hand than Base64.',
+      },
+      {
+        title: 'Flexible padding on decode',
+        description: 'Accepts input with or without trailing "=" padding, so a manually typed secret still decodes.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why use Base32 instead of Base64?',
+        answer:
+          'Base32 uses a 32-character, case-insensitive alphabet (A-Z, 2-7) instead of Base64\'s 64-character mixed-case alphabet, which avoids visually ambiguous character pairs (like 0/O or 1/l/I, which Base32 excludes entirely) and doesn\'t depend on case sensitivity - making it noticeably easier to read aloud, hand-type, or transcribe correctly. The tradeoff is that Base32 output is about 20% longer than Base64 for the same input, since each character encodes 5 bits instead of 6.',
+      },
+      {
+        question: 'Why is this specifically useful for TOTP secrets?',
+        answer:
+          'The TOTP standard (RFC 6238) conventionally represents its shared secret key as a Base32 string specifically because that secret is often manually typed by a user setting up two-factor authentication - Base32\'s human-friendly alphabet is exactly why it was chosen for this use case over Base64. This tool lets you encode a raw secret into that Base32 format, or decode an existing Base32 secret back to see its raw bytes.',
+      },
+      {
+        question: 'Does the "=" padding matter when decoding?',
+        answer:
+          'Not for this tool - it accepts Base32 input with or without trailing "=" padding characters, since some systems omit padding while the RFC 4648 standard technically requires it for interoperability. Padding is always added when encoding, matching the standard, but decoding is deliberately lenient about it so a copy-pasted secret missing its padding still works correctly.',
+      },
+    ],
+    Component: Base32EncodeDecode,
+  },
+  {
+    slug: 'random-date-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Random Date Generator',
+    shortDescription: 'Generate random dates within a date range, in ISO, US, or EU format.',
+    longDescription:
+      'Set a start and end date, choose how many random dates to generate (1-50), and get back a list of dates picked uniformly at random from that range, sorted chronologically and formatted in whichever convention you need: ISO 8601 (YYYY-MM-DD), US (MM/DD/YYYY), or European (DD/MM/YYYY). Each date is chosen independently and uniformly across the full range down to the second, then normalized to a calendar date, so the distribution isn\'t biased toward the start or end of the range or clustered around any particular point. Sorting the output chronologically makes the results easier to scan and use directly, rather than requiring a separate sort step before pasting them into a spreadsheet or test fixture. Useful for generating realistic-looking test data for a date field, populating a mock dataset with varied dates, or picking a random date for a demo or example without manually typing one out. Runs entirely client-side.',
+    metaTitle: 'Random Date Generator - ISO, US, EU Format | Formatiq',
+    metaDescription:
+      'Generate random dates within a date range online for free, in ISO, US, or EU format, 1-50 at once. No data leaves your browser.',
+    keywords: ['random date generator', 'generate random dates', 'random date picker', 'random date in range', 'test date generator'],
+    useCase: 'Generating realistic test data for a date field or mock dataset',
+    howItWorks: [
+      {
+        title: 'Set a date range',
+        description: 'Pick a start and end date to generate within.',
+      },
+      {
+        title: 'Choose a count and format',
+        description: 'Generate 1 to 50 dates, in ISO, US, or EU format.',
+      },
+      {
+        title: 'Generate',
+        description: 'Dates are picked uniformly at random across the full range.',
+      },
+      {
+        title: 'Copy the sorted list',
+        description: 'Results are sorted chronologically and ready to copy together.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Uniform distribution',
+        description: 'Dates are picked evenly across the range, not clustered toward either end.',
+      },
+      {
+        title: 'Three common formats',
+        description: 'ISO 8601, US, and European date conventions all supported directly.',
+      },
+      {
+        title: 'Chronologically sorted output',
+        description: 'Results come back already sorted, ready to use without an extra step.',
+      },
+      {
+        title: 'Batch generation',
+        description: 'Generate up to 50 dates at once instead of one at a time.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Are the generated dates truly random, or biased toward certain days?',
+        answer:
+          'Each date is selected by picking a uniformly random point in time across the full range (down to the second) and then taking its calendar date, so every day in the range has an equal chance of being selected - there\'s no bias toward the start, end, or any particular day of the week or month.',
+      },
+      {
+        question: 'Can the same date appear more than once in the results?',
+        answer:
+          'Yes - each date is generated independently, so especially with a narrow date range and a higher count, duplicate dates can appear in the results. This matches how random sampling with replacement works and is usually fine for test data purposes; if you need guaranteed-unique dates, you\'d need to deduplicate the results afterward.',
+      },
+      {
+        question: 'Why does the EU format look different from the US format for the same date?',
+        answer:
+          'US date format conventionally orders month before day (MM/DD/YYYY), while most of Europe and much of the rest of the world orders day before month (DD/MM/YYYY) - the same underlying date can look identical or very different depending on which convention is used, which is exactly why picking the right format matters when the output is going into a system that expects one specific convention.',
+      },
+    ],
+    Component: RandomDateGenerator,
+  },
+  {
+    slug: 'word-frequency-counter',
+    category: 'text-tools',
+    isNew: true,
+    title: 'Word Frequency Counter',
+    shortDescription: 'Count how often each word appears in text, sorted by frequency, with an optional stop-word filter.',
+    longDescription:
+      'Paste any text and see a frequency table of the words it contains, sorted from most to least common, along with the total word count, unique word count, and the single most-repeated word. This is a word-level counterpart to character-frequency-counter, not a duplicate of it - that tool counts individual letters and symbols, which is useful for cipher analysis or typography questions, while this one counts whole words, which is what actually reveals a text\'s recurring themes, verbal tics, or overused terms. A toggle can exclude common English stop words - "the," "a," "is," "and," and similar high-frequency function words that carry little topical meaning - which matters because raw word frequency in ordinary English prose is dominated by these words almost every time, burying the actually meaningful repeated words underneath them. With stop words filtered out, the remaining frequency table much more directly reflects what a piece of text is actually about. Useful for checking an essay or article for overused words, doing a rough keyword-density pass on content before publishing, or getting a quick sense of a text\'s recurring vocabulary. Runs entirely client-side.',
+    metaTitle: 'Word Frequency Counter - Count Repeated Words | Formatiq',
+    metaDescription:
+      'Count how often each word appears in text online for free, sorted by frequency, with a stop-word filter. No data leaves your browser.',
+    keywords: ['word frequency counter', 'count word occurrences', 'most repeated word finder', 'word frequency analysis', 'keyword density checker'],
+    useCase: 'Checking an essay or article for overused words, or a rough keyword-density pass before publishing',
+    howItWorks: [
+      {
+        title: 'Paste your text',
+        description: 'Any plain text you want to analyze.',
+      },
+      {
+        title: 'Toggle stop words on or off',
+        description: 'Exclude common function words like "the" and "and" for a more meaningful table.',
+      },
+      {
+        title: 'Read the frequency table',
+        description: 'Every word, sorted from most to least frequent.',
+      },
+      {
+        title: 'Check the summary stats',
+        description: 'Total words analyzed, unique word count, and the single most-repeated word.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Distinct from character-frequency-counter',
+        description: 'Counts whole words, not individual letters - reveals topical repetition, not just letter distribution.',
+      },
+      {
+        title: 'Stop-word filtering',
+        description: 'Strip out "the," "a," "is," and similar words that would otherwise dominate the results without adding insight.',
+      },
+      {
+        title: 'Sorted and summarized',
+        description: 'Results come pre-sorted by frequency, with total and unique word counts shown up front.',
+      },
+      {
+        title: 'Case- and punctuation-insensitive counting',
+        description: 'Words are matched regardless of capitalization or surrounding punctuation, so counts reflect real usage.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from character-frequency-counter?',
+        answer:
+          'character-frequency-counter counts individual letters and symbols - useful for things like analyzing letter distribution in a simple cipher or checking typography. This tool counts whole words instead, which is what actually shows you which topics, terms, or phrases a piece of text repeats - a fundamentally different level of analysis aimed at content and meaning rather than character-level composition.',
+      },
+      {
+        question: 'What counts as a "stop word"?',
+        answer:
+          'Stop words are common function words - articles, conjunctions, prepositions, and pronouns like "the," "a," "and," "is," "in," "of" - that appear extremely frequently in ordinary English text but carry little topical meaning on their own. Because they\'re so common, they almost always dominate a raw word-frequency count; filtering them out surfaces the words that actually reflect what the text is about.',
+      },
+      {
+        question: 'Does capitalization or punctuation affect the count?',
+        answer:
+          'No - words are matched case-insensitively and stripped of surrounding punctuation before counting, so "Fox," "fox," and "fox." are all counted as the same word. This matches how word frequency is meant to be measured in practice, since capitalization at the start of a sentence or trailing punctuation shouldn\'t split what is meaningfully the same word into separate counts.',
+      },
+    ],
+    Component: WordFrequencyCounter,
   },
 ];
 

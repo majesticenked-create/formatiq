@@ -46,10 +46,10 @@ interface ThresholdRow {
 }
 
 const THRESHOLDS: ThresholdRow[] = [
-  { label: 'AA — Normal text', threshold: 4.5 },
-  { label: 'AA — Large text', threshold: 3 },
-  { label: 'AAA — Normal text', threshold: 7 },
-  { label: 'AAA — Large text', threshold: 4.5 },
+  { label: 'AA - Normal text', threshold: 4.5 },
+  { label: 'AA - Large text', threshold: 3 },
+  { label: 'AAA - Normal text', threshold: 7 },
+  { label: 'AAA - Large text', threshold: 4.5 },
 ];
 
 export default function ColorContrastChecker() {

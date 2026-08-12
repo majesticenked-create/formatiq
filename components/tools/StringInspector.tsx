@@ -24,10 +24,10 @@ function detectLineEndings(text: string): string {
   const withoutCrlf = text.replace(/\r\n/g, '');
   const hasLoneLf = /\n/.test(withoutCrlf);
   const hasLoneCr = /\r/.test(withoutCrlf);
-  if (hasCrlf && !hasLoneLf && !hasLoneCr) return 'CRLF (\\r\\n) — Windows-style';
-  if (hasLoneLf && !hasCrlf && !hasLoneCr) return 'LF (\\n) — Unix/macOS-style';
-  if (hasLoneCr && !hasCrlf && !hasLoneLf) return 'CR (\\r) — classic Mac-style';
-  if (hasCrlf || hasLoneLf || hasLoneCr) return 'Mixed — multiple line ending styles present';
+  if (hasCrlf && !hasLoneLf && !hasLoneCr) return 'CRLF (\\r\\n) - Windows-style';
+  if (hasLoneLf && !hasCrlf && !hasLoneCr) return 'LF (\\n) - Unix/macOS-style';
+  if (hasLoneCr && !hasCrlf && !hasLoneLf) return 'CR (\\r) - classic Mac-style';
+  if (hasCrlf || hasLoneLf || hasLoneCr) return 'Mixed - multiple line ending styles present';
   return 'None (single line, no line breaks)';
 }
 

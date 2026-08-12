@@ -175,7 +175,7 @@ export default function JsonDiffChecker() {
           <>
             <div className="output mono" style={{ padding: 0 }}>
               {result.entries.length === 0 ? (
-                <div style={{ padding: '2px 12px' }}>No differences — the two JSON values are structurally equal.</div>
+                <div style={{ padding: '2px 12px' }}>No differences - the two JSON values are structurally equal.</div>
               ) : (
                 result.entries.map((entry, idx) => (
                   <div

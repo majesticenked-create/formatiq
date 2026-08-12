@@ -72,7 +72,7 @@ function analyze(input: string) {
         message:
           result.failingPosition !== undefined
             ? `Invalid character at position ${result.failingPosition + 1}.`
-            : `Checksum failed — the check digit ("${digits[9]}") doesn’t match the computed value for the first 9 digits.`,
+            : `Checksum failed - the check digit ("${digits[9]}") doesn’t match the computed value for the first 9 digits.`,
       };
     }
     return {
@@ -92,7 +92,7 @@ function analyze(input: string) {
     if (!result.valid) {
       return {
         ok: false as const,
-        message: `Checksum failed — the check digit ("${digits[12]}") doesn’t match the computed value for the first 12 digits.`,
+        message: `Checksum failed - the check digit ("${digits[12]}") doesn’t match the computed value for the first 12 digits.`,
       };
     }
     const isbn10 = isbn13to10(digits);
@@ -105,7 +105,7 @@ function analyze(input: string) {
     };
   }
 
-  return { ok: false as const, message: `ISBNs are 10 or 13 characters long — got ${digits.length}.` };
+  return { ok: false as const, message: `ISBNs are 10 or 13 characters long - got ${digits.length}.` };
 }
 
 export default function IsbnValidatorGenerator() {

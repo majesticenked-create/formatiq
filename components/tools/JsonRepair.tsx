@@ -117,7 +117,7 @@ function repairJson(input: string): RepairResult {
   // Already valid — nothing to fix, just pretty-print it.
   try {
     const parsed = JSON.parse(input);
-    return { ok: true, output: JSON.stringify(parsed, null, 2), notes: ['No repairs were necessary — this JSON was already valid.'] };
+    return { ok: true, output: JSON.stringify(parsed, null, 2), notes: ['No repairs were necessary - this JSON was already valid.'] };
   } catch {
     // fall through to the repair pipeline
   }
@@ -163,7 +163,7 @@ function repairJson(input: string): RepairResult {
       notes,
       message:
         (err instanceof Error ? err.message : 'Invalid JSON') +
-        ' — this input has an issue too significant to auto-repair (e.g. a genuinely mismatched bracket or truncated value). Fix the highlighted area manually and try again.',
+        ' - this input has an issue too significant to auto-repair (e.g. a genuinely mismatched bracket or truncated value). Fix the highlighted area manually and try again.',
     };
   }
 }
@@ -220,7 +220,7 @@ export default function JsonRepair() {
             </div>
           </div>
           <div className="output mono">
-            {result.ok ? result.output : '// This input could not be automatically repaired — see the message above'}
+            {result.ok ? result.output : '// This input could not be automatically repaired - see the message above'}
           </div>
         </div>
       </div>

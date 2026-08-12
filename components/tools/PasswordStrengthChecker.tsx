@@ -134,7 +134,7 @@ export default function PasswordStrengthChecker() {
           marginTop: 16,
         }}
       >
-        ⚠ This only checks pattern strength (length and character variety) — it does not check whether this
+        ⚠ This only checks pattern strength (length and character variety) - it does not check whether this
         password has appeared in a known data breach, which would require sending it to a server to check
         against a breach database. A password can pass every check here and still be compromised if it&apos;s
         been leaked elsewhere. Consider a password manager and a breach-checking service for that separate

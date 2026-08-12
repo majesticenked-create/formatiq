@@ -69,7 +69,7 @@ export default function LoanCalculator() {
       >
         ⚠ This is an estimate for informational purposes only, not financial advice. It calculates a standard
         fixed-rate amortization and does not account for fees, taxes, insurance, or a lender&apos;s specific terms
-        — your actual loan offer may differ.
+        - your actual loan offer may differ.
       </div>
 
       <div className="control-row">

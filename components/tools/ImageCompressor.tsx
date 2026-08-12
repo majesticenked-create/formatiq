@@ -152,7 +152,7 @@ export default function ImageCompressor() {
         <div className="panels" style={{ marginTop: 16 }}>
           <div className="panel">
             <div className="panel-bar">
-              <span>Original — {formatBytes(original.size)}</span>
+              <span>Original - {formatBytes(original.size)}</span>
             </div>
             <div style={{ padding: 12, textAlign: 'center' }}>
               <img
@@ -167,7 +167,7 @@ export default function ImageCompressor() {
           </div>
           <div className="panel">
             <div className="panel-bar">
-              <span>Compressed{compressed ? ` — ${formatBytes(compressed.size)}` : ''}</span>
+              <span>Compressed{compressed ? ` - ${formatBytes(compressed.size)}` : ''}</span>
               <div className="panel-actions">
                 <button className="icon-btn" onClick={download} disabled={!compressed}>
                   Download
@@ -200,7 +200,7 @@ export default function ImageCompressor() {
         <div className={`status-line ${reduction >= 0 ? 'status-valid' : 'status-invalid'}`}>
           {reduction >= 0
             ? `✓ ${reduction}% smaller (${formatBytes(original!.size)} → ${formatBytes(compressed!.size)})`
-            : `File got ${Math.abs(reduction)}% larger — try a lower quality or the other format.`}
+            : `File got ${Math.abs(reduction)}% larger - try a lower quality or the other format.`}
         </div>
       )}
     </div>

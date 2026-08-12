@@ -80,7 +80,7 @@ export default function TextCompressDecompress() {
       setError(
         mode === 'compress'
           ? 'Could not compress this input.'
-          : 'Could not decompress this input — check that it\'s a valid base64-encoded gzip string.'
+          : 'Could not decompress this input - check that it\'s a valid base64-encoded gzip string.'
       );
       setOutput('');
       setOutputSize(null);

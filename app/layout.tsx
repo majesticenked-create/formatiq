@@ -4,9 +4,9 @@ import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
 import './globals.css';
 
-const TITLE = 'Formatiq — Free Browser-Based Developer Tools';
+const TITLE = 'Formatiq - Free Browser-Based Developer Tools';
 const DESCRIPTION =
-  'Free formatters, converters, validators, and generators for developers. Everything runs in your browser — nothing you paste is ever uploaded.';
+  'Free formatters, converters, validators, and generators for developers. Everything runs in your browser - nothing you paste is ever uploaded.';
 
 export const metadata: Metadata = {
   title: TITLE,

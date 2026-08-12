@@ -38,7 +38,7 @@ function decodeFromBytes(bytes: number[]): { ok: true; text: string } | { ok: fa
     const text = new TextDecoder('utf-8', { fatal: true }).decode(new Uint8Array(bytes));
     return { ok: true, text };
   } catch {
-    return { ok: false, message: 'These bytes are not valid UTF-8 — the sequence is malformed or incomplete.' };
+    return { ok: false, message: 'These bytes are not valid UTF-8 - the sequence is malformed or incomplete.' };
   }
 }
 
