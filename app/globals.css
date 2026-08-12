@@ -165,6 +165,7 @@ textarea.mono,
 
 .nav-links {
   display: flex;
+  align-items: center;
   gap: 24px;
   font-size: 14px;
   color: var(--text-secondary);
@@ -180,11 +181,17 @@ textarea.mono,
   justify-content: center;
   width: 32px;
   height: 32px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font: inherit;
+  box-sizing: border-box;
   background: transparent;
   border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--text-secondary);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .theme-toggle:hover {

@@ -56,3 +56,5 @@ ls -d .next-stale-* 2>/dev/null; echo "done"
 - `2026-08-11 18:53:06` | GUARD | MEDIUM | SOFT BLOCKED: recursive/force rm → rm -rf /Users/beyouenked/projects/formatiq/.next-stale-1786005556 /Users/beyouenked/projects/formatiq/.next-stale-1786440996 /Users/beyouenked/projects/formatiq/.next-stale-1786454428
 ls -d /Users/beyouenked/projects/formatiq/.next-stale-* 2>&1
 - `2026-08-11 18:53:16` | FAILURE | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-12 13:08:58` | GUARD | LOW | WARNING: mv command allowed → lsof -ti:3000 | xargs -r kill 2>/dev/null; sleep 1; mv /Users/beyouenked/projects/formatiq/.next /Users/beyouenked/projects/formatiq/.next-stale-$(date +%s) 2>/dev/null; echo done
+- `2026-08-12 14:14:38` | GUARD | MEDIUM | SOFT BLOCKED: recursive/force rm → rm -rf .next && npm run build 2>&1 | tail -60
