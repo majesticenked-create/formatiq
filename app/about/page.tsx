@@ -71,12 +71,6 @@ export default function AboutPage() {
           usable regardless of how the site is eventually monetized.
         </p>
 
-        <h2>Who&apos;s behind this</h2>
-        {/* TODO: Replace with real, accurate information about who built/maintains this site -
-            do not fabricate a name, bio, or credentials. This directly affects user trust and
-            Google's E-E-A-T signals. */}
-        <p>This site is built and maintained independently. [Add your background/story here].</p>
-
         <h2>How the site is organized</h2>
         <p>Tools are grouped into {categories.length} categories, each with its own hub page:</p>
         <ul>
