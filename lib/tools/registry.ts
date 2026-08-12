@@ -238,7 +238,7 @@ export const tools: ToolDefinition[] = [
     category: 'formatters',
     isNew: true,
     title: 'JSON Repair Tool',
-    shortDescription: 'Fix common JSON syntax mistakes automatically and see exactly what was changed.',
+    shortDescription: 'Fix common JSON syntax mistakes automatically and see exactly what was changed, all client-side.',
     longDescription:
       'Paste JSON that fails to parse and this tool attempts to automatically fix the mistakes that cause most real-world JSON errors: trailing commas before a closing brace or bracket, single quotes used instead of double quotes, unquoted object keys (valid in JavaScript object literals but not JSON), JavaScript-style comments (// and /* */) left in from hand-editing, and missing commas between properties or array items. Unlike json-formatter, which only validates and pretty-prints already-valid JSON, this tool actively rewrites the input to fix it - and shows exactly which fixes were applied in a plain summary below the result, so nothing changes silently without you knowing what happened. If the input has an issue too significant to safely guess at - a genuinely mismatched bracket, a truncated value - the tool reports a clear parse error instead of producing a guessed, possibly-wrong result. Runs entirely client-side.',
     metaTitle: 'JSON Repair Tool - Fix Broken JSON | Formatiq',
@@ -494,7 +494,7 @@ export const tools: ToolDefinition[] = [
     slug: 'json-to-csv',
     category: 'converters',
     title: 'JSON to CSV Converter',
-    shortDescription: 'Convert a JSON array or object into CSV, ready to open in a spreadsheet.',
+    shortDescription: 'Convert a JSON array or object into CSV, ready to open in a spreadsheet - done entirely in your browser.',
     longDescription:
       'Paste a JSON object or an array of flat objects and get clean, spreadsheet-ready CSV in real time, with column headers derived automatically from your keys. Choose between comma, semicolon, or tab delimiters to match the tool you’re importing into. Everything runs client-side, so your data never leaves the browser. Use it to export API responses, prep data for Excel or Google Sheets, or convert log/config data into a tabular format.',
     metaTitle: 'JSON to CSV Converter - Free Online Tool | Formatiq',
@@ -1502,7 +1502,7 @@ export const tools: ToolDefinition[] = [
     slug: 'jwt-decoder',
     category: 'encoders-decoders',
     title: 'JWT Decoder',
-    shortDescription: 'Decode a JWT into its header and payload - decoding only, signature is not verified.',
+    shortDescription: 'Decode a JWT into its header and payload, entirely in your browser - the token never leaves your device. Decoding only, signature is not verified.',
     longDescription:
       'Paste a JWT to split it into its three dot-separated segments and base64url-decode the header and payload into readable JSON, with iat and exp claims additionally converted into human-readable UTC dates. This tool decodes only - it does not verify the signature, and it can’t, since checking a signature requires the secret key or public key the token was signed with, something a browser-based decoder never has access to. A successful decode here only proves the token is structurally a well-formed JWT with valid JSON in its header and payload; it says nothing about whether the token was actually issued by a trusted server or has since been tampered with. Never treat a token as authentic based on this tool - signature verification has to happen server-side with the correct key. Everything runs client-side, so pasted tokens never leave your browser.',
     metaTitle: 'JWT Decoder with Expiry & Claims Viewer | Formatiq',
@@ -1569,7 +1569,7 @@ export const tools: ToolDefinition[] = [
     slug: 'password-generator',
     category: 'generators',
     title: 'Password Generator',
-    shortDescription: 'Generate random passwords with adjustable length and character sets.',
+    shortDescription: 'Generate random passwords with adjustable length and character sets - created locally in your browser, never sent anywhere.',
     longDescription:
       'Generate a random password from 8 to 64 characters long, with independent toggles for uppercase letters, lowercase letters, numbers, and symbols, regenerating automatically the moment you adjust any control. Characters are drawn using the Web Crypto API’s cryptographically secure random number generator rather than Math.random(), so the output isn’t predictable from a seed. The strength indicator underneath is a rough visual cue derived from length and how many character sets are enabled - it’s meant to help you eyeball whether a password looks thin, not a substitute for a real security audit or an actual entropy calculation used by a password policy engine. Runs entirely client-side, so generated passwords are never transmitted anywhere.',
     metaTitle: 'Password Generator - Free Online Tool | Formatiq',
@@ -2828,7 +2828,7 @@ export const tools: ToolDefinition[] = [
     category: 'validators',
     isNew: true,
     title: 'JSON Diff Checker',
-    shortDescription: 'Compare two JSON values and see exactly which keys were added, removed, or changed.',
+    shortDescription: 'Compare two JSON values and see exactly which keys were added, removed, or changed - all client-side.',
     longDescription:
       'Paste two JSON values into the left and right panels to get a structural comparison rather than a line-by-line text diff - the kind that falsely flags two objects as different just because a key moved or the formatting changed. Each difference is reported with its full nested path, like "user.address.city: changed from \'NYC\' to \'LA\'", so you can see exactly where two payloads diverge without hunting through reformatted JSON by eye. This is a genuinely different comparison than a text diff tool: reordering keys in an object produces zero differences here, since JSON objects are unordered by spec, while a real value change three levels deep in a nested structure is caught and reported by its exact path. Both panels must contain valid JSON before a comparison runs - an invalid panel shows its parse error immediately instead of attempting a partial diff. Runs entirely client-side, so nothing you paste is ever uploaded.',
     metaTitle: 'JSON Diff Checker - Compare JSON Online | Formatiq',
@@ -4299,7 +4299,7 @@ export const tools: ToolDefinition[] = [
     slug: 'password-strength-checker',
     category: 'validators',
     title: 'Password Strength Checker',
-    shortDescription: 'Check a password against length and character-variety rules, with a live strength meter.',
+    shortDescription: 'Check a password against length and character-variety rules, with a live strength meter - checked locally, never transmitted.',
     longDescription:
       'Type a password to see it checked live against the criteria that actually drive password strength: length (with a bump for 12+ characters), and whether it mixes uppercase, lowercase, numbers, and symbols. Each rule shows as its own checklist item with a checkmark, and an overall Weak/Fair/Good/Strong meter summarizes the result at a glance. A show/hide toggle lets you type it masked by default and reveal it to double-check for typos. This checks pattern strength only - length and character variety - and does not check the password against known data-breach lists, since doing that honestly would require sending the password to a third-party server to compare against a breach database, which a client-side, nothing-leaves-your-browser tool intentionally won’t do. A password can score "Strong" here and still be compromised if it has appeared in a previous breach elsewhere.',
     metaTitle: 'Password Strength Checker - Free Online Tool | Formatiq',
@@ -5118,7 +5118,7 @@ export const tools: ToolDefinition[] = [
     category: 'formatters',
     isNew: true,
     title: 'JSON Tree Viewer',
-    shortDescription: 'Explore JSON as a collapsible, color-coded tree instead of a flat formatted block.',
+    shortDescription: 'Explore JSON as a collapsible, color-coded tree instead of a flat formatted block - rendered entirely in your browser.',
     longDescription:
       'Paste any JSON and explore it as an interactive, collapsible tree rather than a single scrollable block of formatted text - every object and array node can be expanded or collapsed individually, with keys, strings, numbers, booleans, and null each shown in a distinct color so the shape of the data is visible at a glance. This is a genuinely different tool from json-formatter: that tool\'s job is to produce clean, correctly-indented text output you\'d copy elsewhere, while this one is built for navigating a large or deeply nested structure you\'re trying to understand - collapsing an array of 500 log entries down to one line, or folding away a config section you already know is fine, so you can focus on the part that actually matters. An "Expand all" / "Collapse all" pair resets the whole tree to fully open or fully folded in one click, and collapsed containers show their item count so you know what\'s hidden before you open it. Useful for exploring a large API response, inspecting a deeply nested config file, or getting oriented in unfamiliar JSON before deciding what to extract. Runs entirely client-side.',
     metaTitle: 'JSON Tree Viewer - Explore JSON Interactively | Formatiq',
