@@ -242,8 +242,14 @@ textarea.mono,
     display: none;
   }
 
+  /* Sized here, not in the 768px touch-target block below - this is the
+     breakpoint where the hamburger actually becomes the interactive nav
+     trigger, so its 44px touch target needs to hold for the full range
+     it's shown in, not just the last 768px of it. */
   .mobile-nav-toggle {
     display: inline-flex;
+    width: 44px;
+    height: 44px;
   }
 }
 
@@ -1231,8 +1237,7 @@ textarea.mono,
     min-height: 44px;
   }
 
-  .theme-toggle,
-  .mobile-nav-toggle {
+  .theme-toggle {
     width: 44px;
     height: 44px;
   }

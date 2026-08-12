@@ -4,7 +4,10 @@
 -
 
 ## This Week
--
+- [ ] Fix `log-stop-verdict.sh`: `jq -n` → `jq -cn` so verdicts.jsonl is valid JSONL (system audit 081326, C-grade finding)
+- [ ] Debug why 100% of 123 logged verdicts show decision=unknown/task_type=other — capture one real `$RAW_VERDICT` payload live to see actual shape, then fix extraction (system audit 081326)
+- [ ] Add the 8 undocumented SEO-suite commands to `.claude/command-index.md` + standard YAML frontmatter (system audit 081326)
+- [ ] Clean up `.next-stale-1786520341` (223MB) and `.claude/backups/2026-08-05/` (8 days old); consider an automated pruning hook (system audit 081326)
 
 ## Backlog
 -

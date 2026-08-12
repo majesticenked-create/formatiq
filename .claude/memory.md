@@ -1,11 +1,14 @@
 # Memory
 
 ## Now
-- Formatiq tool site (Next.js). 103 registered tools (via `tools.length`) / 125 static pages, build and tests clean (381 tests). All em dashes swept from user-visible text site-wide.
+- Formatiq tool site (Next.js), 103 registered tools / 125 static pages, build+tests clean (381 tests). Live on Cloudflare Pages at formatiq.tools (static export, `output: 'export'` in next.config.js) as of 08/12/26.
+- Mobile responsiveness pass done and deployed (`e66fa62`, pushed to `origin/main` 08/12/26): hamburger nav (portal-based, dynamic over `categories[]`), 44px touch targets, layout fixes across header/hero/gradient-generator/html-viewer. Verified with real headless-browser measurements (Playwright, temp `--no-save` install) — zero horizontal overflow at 375px across homepage/tool/category pages.
+- 08/13/26 system audit: grade C. Open corrective items on Task Board (verdicts.jsonl format+data bugs, command-index.md missing 8 SEO commands, stale `.next-stale-*`/backups cleanup). See Daily Notes/081326.md for full findings.
 - No active task in flight — awaiting next direction.
 
 ## Open Threads
-- (none)
+- verdicts.jsonl: `jq -n` (no `-c`) writes pretty-printed multi-line JSON instead of true JSONL; separately, 100% of 123 logged records show decision=unknown/task_type=other — extraction logic tested fine in isolation, so the real Stop-hook stdin shape likely doesn't match what `log-stop-verdict.sh` assumes. Needs a live payload capture to fix.
+- 8 SEO-suite commands (backlink-scan, competitor-seo, content-refresh, content-score, keyword-research, rank-check, seo-audit, topical-map) work but aren't in command-index.md and lack YAML frontmatter, unlike the other 21 commands.
 
 ## Recent Decisions
 - 08/11/26: When resuming with a stale/empty memory.md, verify `npm run build` + `npm run test` before acting on "continue" — this project has had significant unlogged work across sessions.
