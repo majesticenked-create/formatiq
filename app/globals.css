@@ -175,6 +175,78 @@ textarea.mono,
   color: var(--text-primary);
 }
 
+.site-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font: inherit;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mobile-nav-toggle:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+.mobile-nav-panel {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 24px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+  z-index: 60;
+}
+
+.mobile-nav-panel a {
+  padding: 13px 8px;
+  font-size: 15px;
+  color: var(--text-secondary);
+  border-radius: 8px;
+}
+
+.mobile-nav-panel a:hover {
+  color: var(--text-primary);
+  background: var(--surface-raised);
+}
+
+/* 900px, not 768px, for this specific breakpoint - at 7 categories the desktop
+   nav row (~750px) plus brand and theme toggle gets tight below ~940px viewport
+   width, so the hamburger needs to take over earlier than the site's usual
+   tablet breakpoint to avoid overflow in that in-between range. */
+@media (max-width: 900px) {
+  .nav-links {
+    display: none;
+  }
+
+  .mobile-nav-toggle {
+    display: inline-flex;
+  }
+}
+
 .theme-toggle {
   display: inline-flex;
   align-items: center;
@@ -310,6 +382,12 @@ textarea.mono,
 .hero-actions {
   display: flex;
   gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .hero-actions {
+    flex-wrap: wrap;
+  }
 }
 
 .btn {
@@ -528,6 +606,7 @@ textarea.mono,
   overflow-x: auto;
   padding-bottom: 8px;
   scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tool-card-compact {
@@ -746,6 +825,12 @@ textarea.mono,
   font-size: 11px;
   color: var(--text-secondary);
   white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .tool-tag {
+    padding: 9px 12px;
+  }
 }
 
 .tool-tag:hover {
@@ -1137,6 +1222,20 @@ textarea.mono,
   background: var(--accent);
   border-color: var(--accent);
   color: #14110a;
+}
+
+@media (max-width: 768px) {
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .theme-toggle,
+  .mobile-nav-toggle {
+    width: 44px;
+    height: 44px;
+  }
 }
 
 .panel textarea,

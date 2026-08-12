@@ -112,36 +112,43 @@ export const categories: CategoryDefinition[] = [
   {
     slug: 'formatters',
     title: 'Formatters & Beautifiers',
+    navLabel: 'Formatters',
     description: 'Clean up messy JSON, XML, HTML, CSS, JS, and SQL into readable, indented output.',
   },
   {
     slug: 'encoders-decoders',
     title: 'Encoders & Decoders',
+    navLabel: 'Encoders/Decoders',
     description: 'Base64, URL encoding, HTML entities, JWTs, and hash generation.',
   },
   {
     slug: 'generators',
     title: 'Generators',
+    navLabel: 'Generators',
     description: 'UUIDs, passwords, Lorem Ipsum, QR codes, and other on-demand data.',
   },
   {
     slug: 'text-tools',
     title: 'Text Tools',
+    navLabel: 'Text Tools',
     description: 'Counters, case converters, diff checkers, and other plain-text utilities.',
   },
   {
     slug: 'converters',
     title: 'Converters',
+    navLabel: 'Converters',
     description: 'Move data between formats: JSON, CSV, YAML, XML, and more.',
   },
   {
     slug: 'calculators',
     title: 'Calculators',
+    navLabel: 'Calculators',
     description: 'Quick math and everyday calculations: percentages, units, age, and more.',
   },
   {
     slug: 'validators',
     title: 'Validators',
+    navLabel: 'Validators',
     description: 'Check JSON, XML, HTML, emails, URLs, and cron expressions for correctness.',
   },
 ];

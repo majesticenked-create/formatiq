@@ -158,6 +158,9 @@ export default function CssGradientGenerator() {
             }}
           >
             {stops.map((stop) => (
+              // Outer div is the actual draggable hit area (44px, invisible) so the
+              // touch target isn't tied 1:1 to the visible dot size below it - the
+              // inner span is what's actually painted.
               <div
                 key={stop.id}
                 onPointerDown={(e) => {
@@ -170,23 +173,35 @@ export default function CssGradientGenerator() {
                   position: 'absolute',
                   left: `${stop.position}%`,
                   top: '100%',
-                  transform: 'translate(-50%, 4px)',
-                  width: 16,
-                  height: 16,
-                  borderRadius: '50%',
-                  background: stop.color,
-                  border: '2px solid var(--surface)',
-                  outline: '1px solid var(--border)',
+                  transform: 'translate(-50%, 0)',
+                  width: 44,
+                  height: 44,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   cursor: 'grab',
+                  touchAction: 'none',
                 }}
-              />
+              >
+                <span
+                  style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: '50%',
+                    background: stop.color,
+                    border: '2px solid var(--surface)',
+                    outline: '1px solid var(--border)',
+                    pointerEvents: 'none',
+                  }}
+                />
+              </div>
             ))}
           </div>
         </div>
 
         <div style={{ padding: '0 12px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
           {sortedStops.map((stop) => (
-            <div key={stop.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div key={stop.id} style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
               <input
                 type="color"
                 value={stop.color}

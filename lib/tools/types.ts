@@ -51,5 +51,7 @@ export interface ToolDefinition {
 export interface CategoryDefinition {
   slug: string;
   title: string;
+  /** Short label for space-constrained UI (site nav, breadcrumb chips) - the full `title` is used everywhere else (H1s, meta, footer). */
+  navLabel: string;
   description: string;
 }

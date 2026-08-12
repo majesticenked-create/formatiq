@@ -222,6 +222,10 @@ export default function HtmlViewer() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
+    setConsoleOpen(window.innerWidth > 768);
+  }, []);
+
+  useEffect(() => {
     const timer = setTimeout(() => setDebounced(input), 300);
     return () => clearTimeout(timer);
   }, [input]);

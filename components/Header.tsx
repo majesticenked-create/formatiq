@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import { categories } from '@/lib/tools/registry';
 import ThemeToggle from './ThemeToggle';
+import MobileNav from './MobileNav';
 
 export default function Header() {
   return (
@@ -11,12 +13,16 @@ export default function Header() {
           <span className="brand-mark">{'}'}</span>
         </Link>
         <nav className="nav-links">
-          <Link href="/tools/formatters">Formatters</Link>
-          <Link href="/tools/converters">Converters</Link>
-          <Link href="/tools/generators">Generators</Link>
-          <Link href="/tools/text-tools">Text Tools</Link>
-          <ThemeToggle />
+          {categories.map((category) => (
+            <Link key={category.slug} href={`/tools/${category.slug}`}>
+              {category.navLabel}
+            </Link>
+          ))}
         </nav>
+        <div className="site-header-actions">
+          <ThemeToggle />
+          <MobileNav />
+        </div>
       </div>
     </header>
   );

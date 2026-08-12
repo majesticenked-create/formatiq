@@ -58,3 +58,9 @@ ls -d /Users/beyouenked/projects/formatiq/.next-stale-* 2>&1
 - `2026-08-11 18:53:16` | FAILURE | ERROR | OTHER | Bash | Exit code 1
 - `2026-08-12 13:08:58` | GUARD | LOW | WARNING: mv command allowed → lsof -ti:3000 | xargs -r kill 2>/dev/null; sleep 1; mv /Users/beyouenked/projects/formatiq/.next /Users/beyouenked/projects/formatiq/.next-stale-$(date +%s) 2>/dev/null; echo done
 - `2026-08-12 14:14:38` | GUARD | MEDIUM | SOFT BLOCKED: recursive/force rm → rm -rf .next && npm run build 2>&1 | tail -60
+- `2026-08-12 20:00:41` | FAILURE | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-12 20:03:59` | GUARD | MEDIUM | SOFT BLOCKED: recursive/force rm → cd /Users/beyouenked/projects/formatiq
+rm -f diagnose_overflow.mjs diagnose_overflow2.mjs
+find /private/tmp/claude-501/-Users-beyouenked-projects-formatiq/f8b9bdc5-d914-411d-9528-e77bdd8f8cdc/scratchpad/diagnose_overflow.mjs -delete 2>/dev/null
+git diff --stat package.json package-lock.json 2>&1
+git status --short | grep -i playwright
