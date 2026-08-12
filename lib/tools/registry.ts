@@ -1,4 +1,5 @@
 import JsonFormatter from '@/components/tools/JsonFormatter';
+import JsonValidator from '@/components/tools/JsonValidator';
 import JsonRepair from '@/components/tools/JsonRepair';
 import PhpFormatter from '@/components/tools/PhpFormatter';
 import StringEscapeUnescape from '@/components/tools/StringEscapeUnescape';
@@ -1033,6 +1034,74 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: EmailValidator,
+  },
+  {
+    slug: 'json-validator',
+    category: 'validators',
+    isNew: true,
+    title: 'JSON Validator',
+    shortDescription: 'Check whether JSON is syntactically valid, with the line and column of the error when the browser can pinpoint one.',
+    longDescription:
+      'Paste JSON to get a clear valid/invalid verdict. When the browser’s parser can pinpoint where things broke, the error is translated from a raw character offset into a line and column number you can jump straight to - useful when a config file or API response fails to parse and you need to find the problem fast without scanning the whole thing by eye. Not every parse error carries a precise position (some, like an abruptly truncated input, only report that something’s wrong, not exactly where), so this tool always shows the browser’s full error message either way rather than a bare "invalid" verdict. Valid input also gets a quick structural breakdown: root type, top-level item count, maximum nesting depth, and total value count, so you can sanity-check the shape of a response before working with it further. This is a validation-only tool - it checks syntax and reports where it broke, but doesn’t reformat, pretty-print, or minify. For that, use the JSON Formatter, which shares the same underlying parser but focuses on producing clean, indented output instead of diagnosing errors. Runs entirely client-side; nothing you paste is ever uploaded.',
+    metaTitle: 'JSON Validator - Free Online Tool with Line/Column Errors | Formatiq',
+    metaDescription:
+      'Validate JSON online for free. Get the line and column of syntax errors when available, plus a structure breakdown for valid input. Runs entirely in your browser.',
+    keywords: ['json validator', 'validate json', 'json syntax checker', 'json error line number', 'is this json valid'],
+    useCase: 'Finding exactly where a config file or API response broke JSON syntax',
+    howItWorks: [
+      {
+        title: 'Paste your JSON',
+        description: 'Drop in a config file, API response, or any JSON string you need to check.',
+      },
+      {
+        title: 'Instant syntax check',
+        description: 'The parser validates as you type and reports a pass/fail verdict immediately.',
+      },
+      {
+        title: 'Exact error location',
+        description: 'On failure, the raw parser position is translated into a line and column number you can jump straight to.',
+      },
+      {
+        title: 'Structure breakdown on success',
+        description: 'Valid JSON gets a summary of its root type, item count, nesting depth, and total values.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Line and column, not just a position offset',
+        description: 'Translates the parser’s raw character position into a line/column you can actually navigate to in an editor.',
+      },
+      {
+        title: 'Structural sanity check',
+        description: 'See nesting depth and item counts at a glance to confirm a response has the shape you expected.',
+      },
+      {
+        title: 'Validation-focused, not formatting-focused',
+        description: 'No indent options or output panel to work through - just a direct verdict, for when that’s all you need.',
+      },
+      {
+        title: 'Nothing leaves your browser',
+        description: 'Parsing happens entirely client-side, which matters when the JSON contains real API responses or config secrets.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the JSON Formatter?',
+        answer:
+          'Both use the same underlying parser, but they’re built for different moments. The JSON Formatter is for when you already have valid-ish JSON and want clean, indented output or a minified version. This validator is for when JSON is failing to parse and you need to know why - it surfaces a line/column error location when the browser’s parser can determine one, a structural breakdown for valid input, and the full error message either way, instead of formatted output.',
+      },
+      {
+        question: 'Why does the error only point to the first problem?',
+        answer:
+          'JSON parsers stop at the first syntax error they encounter, since everything after an unclosed brace or a missing comma is unparseable until that first issue is fixed. Fix the reported line and column and re-check - if there’s a second error further in, it’ll surface on the next pass.',
+      },
+      {
+        question: 'What counts toward "total values" and "nesting depth" in the breakdown?',
+        answer:
+          'Total values counts every individual value in the structure - each object, array, string, number, boolean, and null, including nested ones. Nesting depth is how many levels deep the most-nested value sits; a flat object with no arrays or nested objects has a depth of 0.',
+      },
+    ],
+    Component: JsonValidator,
   },
   {
     slug: 'url-validator',
