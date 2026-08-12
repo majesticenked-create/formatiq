@@ -21,6 +21,7 @@ Curate when file exceeds 200 lines — archive data older than 90 days.
 
 | Domain | Last Audit | Tier | Health Score | Next Due |
 |--------|-----------|------|-------------|----------|
+| formatiq.tools | 081326 (keyword map expansion, not a technical audit) | — | — | T1 technical audit still pending (see 081226 audit note) |
 
 ---
 
@@ -55,6 +56,7 @@ _(Patterns that have been fixed or explained)_
 | Date | Domain | Tier | Verdict | Key Findings |
 |------|--------|------|---------|-------------|
 | 081226 | codebeautify.org (vs formatiq.tools) | T3-lite (competitive, CWV unavailable) | WARN — competitor established, formatiq.tools has zero tracked backlink/ranking history | See Audit Output Log SEO-001. formatiq.tools has broader per-tool depth on privacy/client-side messaging as untapped differentiator; codebeautify.org has 10+ yr domain age advantage and ~2.1M monthly visits (Similarweb, est.) |
+| 081326 | formatiq.tools | Keyword research (map expansion, not a technical/competitive audit) | INFO | Expanded keyword map from 12 to ~97 keywords by reading full 104-tool registry (`lib/tools/registry.ts`) and cross-referencing against all 7 live categories. Fixed stale row: json-validator now has a dedicated page, no longer a gap. See keyword-maps/formatiq-tools.md "Expansion Pass — 081326" section. |
 
 ---
 
