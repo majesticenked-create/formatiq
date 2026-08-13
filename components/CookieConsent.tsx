@@ -9,15 +9,9 @@ type ConsentValue = 'accepted' | 'rejected';
 
 function recordConsent(value: ConsentValue) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ value, timestamp: new Date().toISOString() }));
-
-  // TODO: Once Google AdSense or an analytics script (GA4, Plausible, etc.) is
-  // actually added to this codebase, it must check this stored consent value
-  // BEFORE loading — do not fire any ad or tracking script unconditionally.
-  // e.g.:
-  //   const consent = JSON.parse(localStorage.getItem('cookie-consent') ?? 'null');
-  //   if (consent?.value === 'accepted') { /* load ad/analytics script here */ }
-  // No such script exists in the codebase yet, so there is nothing to gate today —
-  // this comment marks exactly where that gate belongs when one is added.
+  // Lets already-mounted components (e.g. GoogleAnalytics) react immediately without
+  // requiring a page reload - see components/GoogleAnalytics.tsx for the listener.
+  window.dispatchEvent(new CustomEvent('formatiq-cookie-consent', { detail: value }));
 }
 
 export default function CookieConsent() {
@@ -46,7 +40,7 @@ export default function CookieConsent() {
     <div className="cookie-consent" role="region" aria-label="Cookie consent">
       <div className="cookie-consent-inner">
         <p>
-          This site may use cookies for ads and analytics once those are live. See our{' '}
+          This site uses Google Analytics to understand traffic - no tool input is ever included. See our{' '}
           <Link href="/privacy">Privacy Policy</Link> for details.
         </p>
         <div className="cookie-consent-actions">

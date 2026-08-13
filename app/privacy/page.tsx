@@ -53,13 +53,21 @@ export default function PrivacyPage() {
 
         <h2>What data we do collect</h2>
         <p>
-          No analytics currently installed. As of this writing, Formatiq does not run Google Analytics, Plausible,
-          or any other analytics or tracking script - you can verify this yourself by inspecting the page source. If
-          that changes in the future, this section will be updated to describe exactly what is collected. If and
-          when standard web analytics is added, it would typically collect aggregate information such as page views,
-          referring site, approximate geographic location (derived from IP address), and device/browser type - not
-          the content of anything typed into a tool, which never leaves your browser regardless of whether analytics
-          is present.
+          Formatiq uses Google Analytics (GA4) to understand aggregate site traffic - which pages are visited, how
+          people arrive here, and general usage trends. This collects standard information such as page views,
+          referring site, approximate geographic location (derived from IP address), and device/browser type. It
+          does not, and cannot, collect the content of anything typed or pasted into a tool - that processing happens
+          entirely in your browser and is never transmitted anywhere, regardless of whether analytics is present.
+        </p>
+        <p>
+          Analytics only loads after you accept cookies via the banner shown on your first visit - choosing "Reject
+          non-essential" keeps Google Analytics from loading at all. You can review or change your choice at any
+          time by clearing this site&apos;s data in your browser. Google&apos;s own handling of Analytics data is
+          described in their{' '}
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
+            Privacy Policy
+          </a>
+          .
         </p>
         <p>
           One thing worth noting for accuracy: the site&apos;s dark/light theme preference is saved using your
@@ -82,11 +90,12 @@ export default function PrivacyPage() {
 
         <h2>Third-party services</h2>
         <p>
-          This site is hosted on Vercel. Like virtually any web host, Vercel processes standard server-level logs as
-          part of serving pages - this typically includes information such as IP address, requested URL, timestamp,
-          and user agent, generated automatically by the act of loading a page over HTTP. This is separate from, and
-          unrelated to, the content you paste into a tool, which is never sent to Vercel or anywhere else since tool
-          processing happens entirely client-side.
+          This site is hosted on Cloudflare Pages. Like virtually any web host, Cloudflare processes standard
+          server-level logs as part of serving pages - this typically includes information such as IP address,
+          requested URL, timestamp, and user agent, generated automatically by the act of loading a page over HTTP.
+          This is separate from, and unrelated to, the content you paste into a tool, which is never sent to
+          Cloudflare or anywhere else since tool processing happens entirely client-side. When accepted, Google
+          Analytics is also used - see "What data we do collect" above for details.
         </p>
 
         <h2>Your rights</h2>
@@ -94,8 +103,8 @@ export default function PrivacyPage() {
           Depending on where you live, you may have rights under data protection laws such as the GDPR or CCPA
           regarding personal data collected about you, including the right to request access to, correction of, or
           deletion of your data. Given that Formatiq does not collect or store the content you use with its tools,
-          and currently collects no analytics data at all, there is generally very little personal data held about
-          any visitor. If you have questions about privacy on this site, please contact us at{' '}
+          and only loads analytics after you opt in via the cookie banner, there is generally very little personal
+          data held about any visitor. If you have questions about privacy on this site, please contact us at{' '}
           <a href="mailto:privacy@formatiq.tools">privacy@formatiq.tools</a>.
         </p>
 
@@ -106,7 +115,7 @@ export default function PrivacyPage() {
           date below reflects the last time this page was updated.
         </p>
 
-        <p style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>Last updated: August 6, 2026</p>
+        <p style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>Last updated: August 13, 2026</p>
       </div>
     </div>
   );
