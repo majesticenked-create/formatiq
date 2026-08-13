@@ -160,6 +160,38 @@ Per Notes below, this cluster is the core defensible angle vs. ad-supported/lega
 | cron expression syntax cheat sheet | Low-Medium (est.) | Low-Medium | Reference guide, links to /tools/cron-validator |
 | json vs yaml vs xml comparison | Low (est.) | Low-Medium | Comparison article, links to /tools/json-yaml-converter, /tools/xml-formatter |
 
+## Keyword Gap Analysis — w3schools.com/tools, jsonlint.com, base64decode.org — 081326
+
+Method: WebSearch only (no Ahrefs/SEMrush/Moz/GSC access) — all positions are search-based estimation/inference from visible SERP snippets and site: index checks, NOT confirmed hard ranking data.
+
+| Keyword | Competitor(s) ranking | Estimated position | Source of estimate |
+|---|---|---|---|
+| json formatter online | none of the 3 visible in top-7 organic snippet set (jsonformatter.org, codebeautify.org, jsoneditoronline.org, jsonlint.com, classic.online-json.com, json-indent.com, json.site) — jsonlint.com WAS present | jsonlint.com: page 1, not top 3 (~mid list); w3schools/base64decode.org: not visible | Direct SERP check |
+| json formatter (general, "best" framing) | jsonlint.com | Named as "best overall" in one roundup (dataformatterpro-style article) and appears repeatedly across multiple "vs" articles (dev.to, saashub) as a reference tool | Roundup + vs-article mentions (multiple independent articles) |
+| base64 encode decode online | none of the 3 visible in the top-10 organic set (checkserp, emn178, samltool, authgear, jam.dev, coddy, 64baser, utilities-online) | Not visible for w3schools or jsonlint; base64decode.org not visible either | Direct SERP check |
+| base64 decode online | base64decode.org, base64encode.org, base64decode.net (sister/competitor cluster) visible alongside codebeautify.org, base64.guru, emn178 | Page 1, not top 3 — base64decode.org appears mid-list behind emn178.github.io and codebeautify.org | Direct SERP check |
+| uuid generator online | none of the 3 visible (uuidgenerator.net, kinde, uuidtools.com, fusionauth, string.is, guidgenerator.com dominate) | Not visible for any of the 3 | Direct SERP check |
+| regex tester online | w3schools.com/tools/tool_regex.php | Page 1, ~position 5 of 10 (behind regex101.com, trackingplan, fossa, regexr.com) | Direct SERP check |
+| jwt decoder | w3schools.com/tools/tool_jwt_decoder.php (indexed, not confirmed ranked) | Not confirmed — indexed via site: search only, not tested via direct keyword SERP this round | site: index check only |
+| hash generator sha256 | w3schools.com/tools/tool_hash.php (indexed) | Not confirmed — indexed only, not tested via direct SERP this round | site: index check only |
+| json repair / fix broken json | jsonlint.com/json-repair (dedicated page, indexed) | Not confirmed via direct SERP this round, but page exists and is indexed — plausible contender given jsonlint's general JSON authority | site: index check only |
+
+Roundup / listicle articles found (backlink outreach targets — flag separately, matters independent of ranking question):
+- "Best Free JSON Formatter Tools in 2026 (15 Tools Tested)" — voivoinfotech.com/free-json-formatter-tools/ — mentions jsonlint.com, jsonformatter.org, codebeautify.org (not w3schools or base64decode.org)
+- "Best JSON Formatters Online 2026 – Top 7 Free Tools Compared" — dataformatterpro.com/blog/best-json-formatters-2026/ — names jsonlint.com as "best overall"
+- "Best JSON Formatter 2026: Top 5 Tools Compared" — cleantextlab.com/blog/best-json-formatter-2026 — competitive set, jsonlint.com likely included (not directly confirmed in snippet)
+- "5 Best JSON Formatter Tools in 2026 — Compared & Ranked" — jsondecode.com/alternatives
+- "JsonMaster vs JSONFormatter vs JSONLint — Which JSON Tool Should You Use in 2026?" — dev.to/abhishek_nayak_d40395ab36/... — jsonlint.com named directly, vs-article
+- "JSONLint VS JSON Formatter & Validator" / "JSONLint VS JSON Formatter by jackdalton.org" / "ExtendsClass JSON Formatter VS JSONLint" — saashub.com comparison pages — jsonlint.com named directly (multiple)
+- No roundup/listicle mentioning w3schools.com/tools or base64decode.org was found this session — both appear to compete mainly via direct domain authority/brand recognition (w3schools) or long-tail decoded-string pages (base64decode.org), not "best of" curation lists.
+
+Competitor profile notes (from site: index + vs-article scan):
+- **w3schools.com/tools**: broad, ~15-20 tool pages under `/tools/` (JSON formatter, tree viewer, JSONPath, JSON Schema generator, JSON-to-CSV, CSS/JS/HTML formatters, base64, SVG-to-data-URI, AES encrypt, regex tester, lorem ipsum, JWT decoder, JWT signer, UUID generator, hash generator, bcrypt generator, URL encoder, markdown preview). Distinguishing factor is not the tools page itself but the enormous tutorial-content backlink/authority halo from the core w3schools.com domain — the tools subfolder likely inherits substantial domain authority even where individual tool pages aren't yet well-optimized landing pages. Not confirmed via DR check (no paid access) but plausible given w3schools' overall domain scale.
+- **jsonlint.com**: narrow but deep — single-purpose JSON tool cluster (formatter, minify, repair, pretty-print, schema validator, stringify, tree view, datasets). Most name-recognized of the 3 in comparison articles specifically for JSON. Appears to be the incumbent "trusted brand" reference point competitors get compared against (multiple vs-articles use jsonlint.com as the benchmark).
+- **base64decode.org**: extremely narrow (base64 encode/decode only, plus a sister site base64encode.org), long-tail decoded-string pages (thousands of indexed `/dec/{string}/` pages) suggest most of its indexed footprint and traffic comes from long-tail exact-string lookups, not head-term "base64 encode decode online" ranking — it was NOT visible in the head-term SERP snippet set this session, though it appeared in a base64-decode-specific search.
+
+Implication for formatiq.tools: none of these 3 dominate head terms outright in the visible snippet sets checked this session (regex tester and base64 decode being partial exceptions for w3schools and base64decode.org respectively) — this suggests head-term SERPs for our priority keywords (json formatter, base64, uuid, regex tester, hash generator, jwt decoder) remain genuinely contestable rather than locked up by any single narrow competitor, reinforcing the existing priority list rather than requiring new keyword additions. jsonlint.com's advantage is more reputational/citation-based (named in comparison content) than confirmed head-term rank — worth revisiting once GSC/paid rank data is available.
+
 ## Notes
 - formatiq.tools' core differentiator (104 tools, 100% client-side/no-upload, 7 categories) is a genuine content angle competitors like codebeautify.org do not lead with — codebeautify.org's UI and marketing emphasize breadth/ads, not privacy. This is an opportunity keyword cluster ("client-side," "no upload," "runs in browser," "private json formatter") worth building out, not yet reflected in volume estimates above.
 - No backlink profile exists yet (confirmed via lack of prior audit history) — DR is effectively 0/untracked.

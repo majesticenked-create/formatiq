@@ -174,7 +174,7 @@ export const tools: ToolDefinition[] = [
     shortDescription: 'Beautify, validate, and minify JSON instantly in your browser.',
     longDescription:
       'Paste any JSON and get clean, indented output in real time, with syntax validation that points out exactly what\u2019s wrong when the input doesn\u2019t parse. Everything runs client-side, so your data never leaves the browser. Use it to debug API responses, clean up config files, or prep JSON for documentation.',
-    metaTitle: 'JSON Formatter & Validator \u2014 Free Online Tool | Formatiq',
+    metaTitle: 'JSON Formatter & Validator - Free Online Tool | Formatiq',
     metaDescription:
       'Format, validate, and minify JSON online for free. Instant syntax checking, adjustable indentation, and one-click copy. No data leaves your browser.',
     keywords: ['json formatter', 'json validator', 'json beautifier', 'json pretty print', 'minify json'],
@@ -219,7 +219,7 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Is my JSON data uploaded anywhere?',
         answer:
-          'No \u2014 the parsing and formatting happen locally in your browser\u2019s JavaScript engine, not on a server. That matters in practice because people often paste things here that shouldn\u2019t leave their machine: a production API response with real customer data, an internal config file with connection strings, or an auth token buried in a payload. None of it is transmitted anywhere; it\u2019s the same as opening the text in a local editor.',
+          'No - the parsing and formatting happen locally in your browser\u2019s JavaScript engine, not on a server. That matters in practice because people often paste things here that shouldn\u2019t leave their machine: a production API response with real customer data, an internal config file with connection strings, or an auth token buried in a payload. None of it is transmitted anywhere; it\u2019s the same as opening the text in a local editor.',
       },
       {
         question: 'What does it mean if my JSON is invalid?',
@@ -229,7 +229,7 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Can I minify JSON instead of formatting it?',
         answer:
-          'Yes \u2014 use the "Minify input" button to collapse your JSON to a single compact line, useful for reducing payload size before sending it over the wire.',
+          'Yes - use the "Minify input" button to collapse your JSON to a single compact line, useful for reducing payload size before sending it over the wire.',
       },
     ],
     Component: JsonFormatter,
@@ -311,7 +311,7 @@ export const tools: ToolDefinition[] = [
     shortDescription: 'Convert text to and from Base64 encoding instantly.',
     longDescription:
       'Encode plain text into Base64 or decode Base64 back into readable text, with a mode toggle to switch between the two directions and a swap button to feed the output straight back in as input. Base64 exists because some systems (older email protocols, certain URL contexts, JSON fields) can only reliably carry plain ASCII text, so binary or special-character data gets re-encoded into a safe 64-character alphabet before being embedded, then decoded back on the other end. Commonly used for embedding data in URLs, email attachments, and API payloads that require ASCII-safe encoding, or for quickly reading what a Base64-encoded JWT segment or config value actually contains. Runs fully client-side, so nothing you paste is ever uploaded.',
-    metaTitle: 'Base64 Encoder & Decoder \u2014 Free Online Tool | Formatiq',
+    metaTitle: 'Base64 Encoder & Decoder - Free Online Tool | Formatiq',
     metaDescription:
       'Encode and decode Base64 online for free. Fast, accurate conversion that runs entirely in your browser, so no data is ever uploaded to a server.',
     keywords: ['base64 encode', 'base64 decode', 'base64 converter', 'base64 to text'],
@@ -361,7 +361,7 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Why did decoding fail?',
         answer:
-          'Base64 decoding fails when the input contains characters outside the standard Base64 alphabet or has incorrect padding \u2014 double check you copied the full encoded string.',
+          'Base64 decoding fails when the input contains characters outside the standard Base64 alphabet or has incorrect padding - double check you copied the full encoded string.',
       },
     ],
     Component: Base64Tool,
@@ -374,7 +374,7 @@ export const tools: ToolDefinition[] = [
     shortDescription: 'Generate random UUID v4 identifiers, one or many at a time.',
     longDescription:
       'Generate cryptographically random UUID v4 identifiers for use as database keys, request IDs, or unique tokens, with an option to generate anywhere from one up to 100 at once and copy them all in a single click. UUID v4 specifically means the identifier is built almost entirely from random bits (rather than being derived from a timestamp or a machine identifier, as other UUID versions do), which is why it’s the most common choice when you just need a unique value with no other meaning attached. Useful for seeding test data, generating IDs for new database rows before they’re persisted, or creating one-off tokens for a request or session. Runs entirely client-side using the browser’s own random number generator, so nothing about the generated values is logged or transmitted anywhere.',
-    metaTitle: 'UUID Generator (v4) \u2014 Free Online Tool | Formatiq',
+    metaTitle: 'UUID Generator (v4) - Free Online Tool | Formatiq',
     metaDescription:
       'Generate random UUID v4 identifiers online for free. Create one or many at once, copy instantly. Runs entirely in your browser.',
     keywords: ['uuid generator', 'guid generator', 'uuid v4', 'random uuid'],
@@ -424,7 +424,7 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Are these UUIDs guaranteed unique?',
         answer:
-          'UUID v4 values are generated using random or pseudo-random numbers. The chance of a collision is astronomically small \u2014 practically negligible for real-world use.',
+          'UUID v4 values are generated using random or pseudo-random numbers. The chance of a collision is astronomically small - practically negligible for real-world use.',
       },
     ],
     Component: UuidGenerator,
@@ -437,7 +437,7 @@ export const tools: ToolDefinition[] = [
     shortDescription: 'Count words, characters, sentences, and estimated reading time.',
     longDescription:
       'Paste any text to instantly see word count, character count (with and without spaces), sentence count, paragraph count, and estimated reading time, all updating live as you type rather than requiring a separate "count" button. This covers the handful of limits people actually run into day to day: a strict word cap on an essay or cover letter, a character limit on a meta description or a tweet, or just wanting a rough sense of how long a piece of writing will take to read out loud. Sentence and paragraph counts are detected from punctuation and line breaks, so they\u2019re a close approximation rather than a guaranteed-exact grammatical count. Useful for essays, meta descriptions, social posts, and any word-limited submission. Runs entirely client-side, so nothing you paste is uploaded anywhere.',
-    metaTitle: 'Word & Character Counter \u2014 Free Tool | Formatiq',
+    metaTitle: 'Word & Character Counter - Free Tool | Formatiq',
     metaDescription:
       'Count words, characters, sentences, and reading time online for free. Instant results as you type, right in your browser.',
     keywords: ['word counter', 'character counter', 'reading time calculator', 'text counter'],
@@ -1443,7 +1443,7 @@ export const tools: ToolDefinition[] = [
     shortDescription: 'Generate MD5, SHA-1, SHA-256, and SHA-512 hashes of any text, all at once.',
     longDescription:
       'Type or paste any text to see its MD5, SHA-1, SHA-256, and SHA-512 hash computed side by side, each with its own copy button. SHA-1, SHA-256, and SHA-512 run through the browser’s native Web Crypto API (crypto.subtle.digest), the same implementation used for TLS and WebAuthn, so those three are computed with a well-audited, hardware-accelerated routine. MD5 isn’t supported by Web Crypto, so it’s computed with a small self-contained implementation of the standard RFC 1321 algorithm instead. Useful for verifying file or message integrity, generating cache keys, or checking that two pieces of text are byte-for-byte identical. Everything runs client-side - nothing you hash is ever sent to a server.',
-    metaTitle: 'Hash Generator (MD5, SHA-1/256/512) | Formatiq',
+    metaTitle: 'Hash Generator (MD5, SHA-1/256/512) - Free Online Tool | Formatiq',
     metaDescription:
       'Generate MD5, SHA-1, SHA-256, and SHA-512 hashes online for free, all at once with one click to copy each. Nothing is uploaded.',
     keywords: ['hash generator', 'md5 generator', 'sha256 generator', 'sha1 hash', 'sha512 hash', 'checksum generator'],
@@ -4251,7 +4251,7 @@ export const tools: ToolDefinition[] = [
     shortDescription: 'Preview HTML with a responsive viewport switcher, live console output, and basic error linting.',
     longDescription:
       'Paste HTML and see it rendered live in a sandboxed preview, but this goes well past a basic paste-and-render viewer. Switch the preview between Desktop, Tablet, and Mobile widths to actually check how a layout responds, instead of only ever seeing one fixed-width render. A captured console panel shows console.log/warn/error output - and uncaught runtime errors - from scripts running inside the preview, so you can actually debug broken JavaScript in the pasted page rather than staring at a silently blank result. A lightweight linter scans for unclosed tags, mismatched tags, and duplicate id attributes and lists them as non-blocking warnings above the preview, so markup problems are visible instead of silently swallowed. A "Formatted source" mode shows the HTML with basic tag/attribute/string syntax coloring, and you can export the result as a downloadable .html file or a shareable data URI. The preview iframe runs with sandbox="allow-scripts" only - scripts execute for the preview, but the sandbox blocks the page from accessing the parent site, cookies, or top-level navigation.',
-    metaTitle: 'HTML Viewer with Live Preview \u2014 Formatiq',
+    metaTitle: 'HTML Viewer with Live Preview - Formatiq',
     metaDescription:
       'Preview HTML online for free with a responsive Desktop/Tablet/Mobile viewport switcher, live console output, and basic error linting.',
     keywords: ['html viewer', 'html preview online', 'responsive html preview', 'html console debugger', 'live html preview'],
