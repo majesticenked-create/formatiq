@@ -96,7 +96,8 @@ export default function JsonFormatter() {
       <div className="status-line status-neutral" style={{ marginTop: 12 }}>
         Just need a pass/fail syntax check without reformatting? Use the{' '}
         <a href="/tools/validators/json-validator">JSON Validator</a>. Comparing two JSON documents? See the{' '}
-        <a href="/tools/validators/json-diff-checker">JSON Diff Checker</a>.
+        <a href="/tools/validators/json-diff-checker">JSON Diff Checker</a>. Converting to or from XML? Try the{' '}
+        <a href="/tools/converters/xml-json-converter">XML to JSON Converter</a>.
       </div>
     </div>
   );

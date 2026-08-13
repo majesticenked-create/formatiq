@@ -122,8 +122,10 @@ export default function JsonYamlConverter() {
       </div>
 
       <div className="status-line status-neutral" style={{ marginTop: 12 }}>
-        Need tabular output instead? Try <a href="/tools/converters/json-to-csv">JSON to CSV</a>. Working with XML?
-        See the <a href="/tools/formatters/xml-formatter">XML Formatter</a>.
+        Need tabular output instead? Try <a href="/tools/converters/json-to-csv">JSON to CSV</a>. Converting an INI
+        config? Try the <a href="/tools/converters/ini-json-converter">INI ⇄ JSON Converter</a>. Need XML instead of
+        JSON? See the <a href="/tools/converters/yaml-xml-converter">YAML ⇄ XML Converter</a>. Working with TOML?
+        Try the <a href="/tools/converters/toml-json-converter">TOML ⇄ JSON Converter</a>.
       </div>
     </div>
   );

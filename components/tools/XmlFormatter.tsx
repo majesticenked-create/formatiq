@@ -126,6 +126,12 @@ export default function XmlFormatter() {
           </div>
         </div>
       </div>
+
+      <div className="status-line status-neutral" style={{ marginTop: 12 }}>
+        Need to convert this to JSON rather than just reformat it? Use the{' '}
+        <a href="/tools/converters/xml-json-converter">XML to JSON Converter</a>. Converting to or from YAML instead?
+        Try the <a href="/tools/converters/yaml-xml-converter">YAML ⇄ XML Converter</a>.
+      </div>
     </div>
   );
 }

@@ -27,3 +27,6 @@
 - `2026-08-13 00:24:29` | WARN | FILESYSTEM | Bash | Exit code 1
 - `2026-08-13 01:12:09` | ERROR | OTHER | Bash | Exit code 1
 - `2026-08-13 01:14:14` | ERROR | OTHER | Read | File content (437.2KB) exceeds maximum allowed size (256KB). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.
+- `2026-08-13 20:15:21` | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-13 20:25:51` | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-13 20:31:29` | ERROR | OTHER | Bash | Exit code 1

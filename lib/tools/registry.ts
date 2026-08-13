@@ -15,6 +15,12 @@ import WordCounter from '@/components/tools/WordCounter';
 import JsonToCsv from '@/components/tools/JsonToCsv';
 import CsvJsonConverter from '@/components/tools/CsvJsonConverter';
 import XmlFormatter from '@/components/tools/XmlFormatter';
+import XmlJsonConverter from '@/components/tools/XmlJsonConverter';
+import IniJsonConverter from '@/components/tools/IniJsonConverter';
+import YamlXmlConverter from '@/components/tools/YamlXmlConverter';
+import PropertiesJsonConverter from '@/components/tools/PropertiesJsonConverter';
+import TomlJsonConverter from '@/components/tools/TomlJsonConverter';
+import JsonPhpArrayConverter from '@/components/tools/JsonPhpArrayConverter';
 import UrlEncoderDecoder from '@/components/tools/UrlEncoderDecoder';
 import EmailValidator from '@/components/tools/EmailValidator';
 import UrlValidator from '@/components/tools/UrlValidator';
@@ -169,7 +175,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'json-formatter',
     category: 'formatters',
-    relatedSlugs: ['json-validator', 'json-diff-checker', 'json-repair', 'json-tree-viewer'],
+    relatedSlugs: ['json-validator', 'json-diff-checker', 'json-repair', 'xml-json-converter'],
     isPopular: true,
     title: 'JSON Formatter & Validator',
     shortDescription: 'Beautify, validate, and minify JSON instantly in your browser.',
@@ -910,7 +916,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'xml-formatter',
     category: 'formatters',
-    relatedSlugs: ['json-yaml-converter', 'json-formatter'],
+    relatedSlugs: ['xml-json-converter', 'yaml-xml-converter', 'json-formatter'],
     title: 'XML Formatter & Validator',
     shortDescription: 'Beautify and check XML for well-formedness instantly in your browser.',
     longDescription:
@@ -1891,9 +1897,423 @@ export const tools: ToolDefinition[] = [
     Component: TextDiffChecker,
   },
   {
+    slug: 'xml-json-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['xml-formatter', 'json-formatter', 'json-yaml-converter'],
+    title: 'XML ⇄ JSON Converter',
+    shortDescription: 'Convert XML to JSON or JSON to XML in either direction, entirely in your browser.',
+    longDescription:
+      'Convert XML to JSON or JSON back to XML with a single click, filling a real gap on this site: XML formatting and JSON formatting already exist as separate tools, but neither actually converts between the two formats. Attributes become "@name" keys, text content alongside attributes or child elements becomes a "#text" key, and repeated child tags become a JSON array - a common, readable mapping (though XML and JSON have no single official conversion standard, so any converter is making structural choices, and this one documents its own). Useful for reading a SOAP response or legacy XML config as JSON for easier scripting, or producing XML output from a JSON API for a system that still expects it. Parsing and serialization both use the browser’s native DOMParser and XMLSerializer rather than a hand-rolled string parser, so malformed XML is caught the same way a real XML consumer would catch it. Runs entirely client-side.',
+    metaTitle: 'XML to JSON Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert XML to JSON or JSON to XML online for free, in either direction. Runs entirely in your browser - no data ever uploaded.',
+    keywords: ['xml to json', 'json to xml', 'xml json converter', 'convert xml online'],
+    useCase: 'Converting a legacy XML config or SOAP response into JSON for scripting',
+    howItWorks: [
+      {
+        title: 'Pick a direction',
+        description: 'Switch between XML → JSON and JSON → XML with one click.',
+      },
+      {
+        title: 'Paste your input',
+        description: 'Drop in XML or JSON - the sample updates to match whichever direction is selected.',
+      },
+      {
+        title: 'Read the converted output',
+        description: 'The result updates live as you type, using the attribute/text/array convention described below.',
+      },
+      {
+        title: 'Swap and repeat',
+        description: 'Use the swap button to feed the output straight back in as new input.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Fills a real gap',
+        description: 'XML and JSON formatting already exist separately on this site - this is the missing direct conversion between them.',
+      },
+      {
+        title: 'Native browser parsing',
+        description: 'Uses DOMParser and XMLSerializer rather than a hand-rolled string parser, so malformed XML is caught reliably.',
+      },
+      {
+        title: 'Documented, consistent convention',
+        description: 'Attributes, text content, and repeated tags map to JSON the same way every time, since XML↔JSON has no single official standard.',
+      },
+      {
+        title: 'Nothing leaves your browser',
+        description: 'Conversion happens entirely client-side - useful when the XML or JSON contains real API or config data.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why does my XML attribute show up as "@name" in the JSON output?',
+        answer:
+          'XML attributes and element text/children live in different places conceptually, but JSON only has one namespace per object - prefixing attributes with "@" keeps them from colliding with a child element of the same name, which is the convention most XML-to-JSON tools use.',
+      },
+      {
+        question: 'Why did converting JSON to XML fail?',
+        answer:
+          'JSON-to-XML conversion here expects the JSON to have exactly one top-level key, which becomes the XML root element - JSON objects with multiple top-level keys or a top-level array don’t have an unambiguous single root to convert to, since XML requires exactly one root element.',
+      },
+      {
+        question: 'Is this the same as the XML Formatter or JSON Formatter?',
+        answer:
+          'No - the XML Formatter and JSON Formatter each reformat a document within its own format (indent, validate). This tool converts between the two formats entirely, which is a different operation with its own structural mapping decisions.',
+      },
+    ],
+    Component: XmlJsonConverter,
+  },
+  {
+    slug: 'ini-json-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['json-yaml-converter', 'properties-json-converter', 'toml-json-converter', 'json-formatter'],
+    title: 'INI ⇄ JSON Converter',
+    shortDescription: 'Convert INI config files to JSON or JSON to INI, in either direction, in your browser.',
+    longDescription:
+      'Convert an INI-format config file into JSON, or JSON into INI, with sections in square brackets mapping to nested JSON objects and top-level key=value pairs mapping to top-level JSON keys. Comments starting with ";" or "#" are recognized and skipped during INI → JSON, and "true"/"false"/numeric values are inferred to their JSON types rather than kept as plain strings, matching how most INI parsers behave in practice. INI has no native array or nested-section syntax, so JSON input with arrays or sections nested more than one level deep can’t convert back to INI - the tool flags this explicitly rather than silently producing invalid output. Useful for reading a legacy .ini config (PHP, Windows, older desktop apps) as JSON for scripting, or generating an .ini file from a JSON config object. Runs entirely client-side.',
+    metaTitle: 'INI to JSON Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert INI config files to JSON or JSON to INI online for free, in either direction. Runs entirely in your browser - no data ever uploaded.',
+    keywords: ['ini to json', 'json to ini', 'ini json converter', 'convert ini file online'],
+    useCase: 'Reading a legacy .ini config file as JSON for scripting',
+    howItWorks: [
+      {
+        title: 'Pick a direction',
+        description: 'Switch between INI → JSON and JSON → INI with one click.',
+      },
+      {
+        title: 'Paste your input',
+        description: 'Drop in an INI file or a JSON config object.',
+      },
+      {
+        title: 'Read the converted output',
+        description: 'Sections become nested objects, comments are skipped, and types are inferred automatically.',
+      },
+      {
+        title: 'Swap and repeat',
+        description: 'Use the swap button to feed the output straight back in as new input.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Handles sections and comments',
+        description: 'Recognizes [section] headers and ";"/"#" comment lines the way real INI parsers do.',
+      },
+      {
+        title: 'Type inference',
+        description: '"true", "false", and numeric-looking values become their proper JSON types, not just strings.',
+      },
+      {
+        title: 'Honest about INI’s limits',
+        description: 'Flags JSON arrays or deeply nested objects explicitly rather than silently producing broken INI.',
+      },
+      {
+        title: 'Nothing leaves your browser',
+        description: 'Conversion happens entirely client-side - useful when the config contains real connection strings or credentials.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why did JSON to INI fail on my input?',
+        answer:
+          'INI has no native syntax for arrays or for sections nested more than one level deep. If your JSON has an array value or an object nested inside another nested object, flatten it first - the error message names the specific key that caused the problem.',
+      },
+      {
+        question: 'Are comments preserved when converting back to INI?',
+        answer:
+          'No - comments in the original INI are discarded during INI → JSON, since JSON has no comment syntax to hold them, so converting JSON back to INI won’t restore any comments that were in the original file.',
+      },
+      {
+        question: 'What counts as a "section" versus a top-level key?',
+        answer:
+          'Any line matching "[name]" starts a new section, and every key=value line after it belongs to that section until the next "[name]" line or the end of the file. Key=value lines before the first section header become top-level JSON keys rather than nested ones.',
+      },
+    ],
+    Component: IniJsonConverter,
+  },
+  {
+    slug: 'properties-json-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['ini-json-converter', 'json-yaml-converter', 'json-formatter'],
+    title: 'Properties ⇄ JSON Converter',
+    shortDescription: 'Convert Java .properties files to JSON or JSON to .properties, in either direction, in your browser.',
+    longDescription:
+      'Convert a Java .properties config file into JSON, or JSON back into .properties format, handling the format’s real-world quirks: comments starting with "#" or "!", line continuations where a trailing backslash joins a value onto the next line, and escape sequences like "\\n", "\\t", "\\:", "\\=", and "\\uXXXX" unicode escapes. Dotted keys like "db.host" are kept flat as-is in the JSON output rather than guessed into a nested structure, since .properties has no native nesting and inferring intended structure from dots alone would be unreliable - the INI ⇄ JSON Converter is the better fit when real nested sections are what you want. Useful for reading a Spring Boot or legacy Java config as JSON for scripting, or generating a .properties file from a JSON config object. Runs entirely client-side.',
+    metaTitle: 'Properties to JSON Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert Java .properties files to JSON or JSON to .properties online for free, in either direction. Handles comments, line continuations, and escapes.',
+    keywords: ['properties to json', 'json to properties', 'java properties converter', 'convert properties file online'],
+    useCase: 'Reading a Spring Boot or Java .properties config file as JSON for scripting',
+    howItWorks: [
+      {
+        title: 'Pick a direction',
+        description: 'Switch between .properties → JSON and JSON → .properties with one click.',
+      },
+      {
+        title: 'Paste your input',
+        description: 'Drop in a .properties file or a flat JSON object.',
+      },
+      {
+        title: 'Read the converted output',
+        description: 'Comments are skipped, line continuations are joined, and escape sequences are resolved automatically.',
+      },
+      {
+        title: 'Swap and repeat',
+        description: 'Use the swap button to feed the output straight back in as new input.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Handles real .properties quirks',
+        description: 'Comments, backslash line continuations, and "\\n"/"\\t"/"\\uXXXX" escapes are all resolved, not just simple key=value lines.',
+      },
+      {
+        title: 'Keeps dotted keys flat',
+        description: 'No guessing at intended nesting from dots in a key name - the mapping stays predictable.',
+      },
+      {
+        title: 'Round-trip escaping',
+        description: 'Converting JSON back to .properties re-escapes special characters (colons, backslashes, newlines) correctly.',
+      },
+      {
+        title: 'Nothing leaves your browser',
+        description: 'Conversion happens entirely client-side - useful when the config contains real connection strings or credentials.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why are dotted keys like "db.host" not nested into a JSON object?',
+        answer:
+          '.properties files have no native nesting syntax - a dot in a key name is just a naming convention some tools use, not a structural marker the format itself understands. Guessing at intended nesting from dots alone would be unreliable, so this tool keeps them flat. If you have genuinely nested config, the INI ⇄ JSON Converter supports real [section] nesting instead.',
+      },
+      {
+        question: 'What happens to comments when converting to JSON and back?',
+        answer:
+          'Comments (lines starting with "#" or "!") are skipped during .properties → JSON, since JSON has no comment syntax to preserve them in. Converting JSON back to .properties won’t restore any comments that were in the original file.',
+      },
+      {
+        question: 'How are escape sequences like "\\n" and "\\uXXXX" handled?',
+        answer:
+          '.properties → JSON resolves "\\n" to a real newline, "\\t" to a tab, "\\uXXXX" to the corresponding Unicode character, and "\\:"/"\\=" to literal colons and equals signs inside values. Converting back to .properties re-escapes backslashes, colons, newlines, and tabs so the output stays valid.',
+      },
+    ],
+    Component: PropertiesJsonConverter,
+  },
+  {
+    slug: 'toml-json-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['json-yaml-converter', 'ini-json-converter', 'json-formatter'],
+    title: 'TOML ⇄ JSON Converter',
+    shortDescription: 'Convert TOML to JSON or JSON to TOML in either direction, powered by a spec-compliant parser.',
+    longDescription:
+      'Convert TOML to JSON or JSON back into TOML, using @iarna/toml - a spec-compliant TOML parser and serializer - rather than a hand-rolled implementation. TOML is meaningfully more complex than INI: it has nested tables, array-of-tables ([[section]] syntax for repeated table entries), inline tables, typed values including native dates, and multiple numeric formats (hex, octal, binary, underscore separators), all of which a from-scratch parser risks mishandling silently on real-world files. Useful for reading a Cargo.toml, pyproject.toml, or other TOML config as JSON for scripting, or generating a TOML file from a JSON config object. Note that JSON has no native date type, so a date that started as a real TOML date becomes a plain string after a JSON round-trip rather than converting back to a native TOML date automatically. Runs entirely client-side.',
+    metaTitle: 'TOML to JSON Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert TOML to JSON or JSON to TOML online for free, in either direction. Powered by a spec-compliant TOML parser. No data leaves your browser.',
+    keywords: ['toml to json', 'json to toml', 'toml json converter', 'convert toml online'],
+    useCase: 'Reading a Cargo.toml or pyproject.toml config file as JSON for scripting',
+    howItWorks: [
+      {
+        title: 'Pick a direction',
+        description: 'Switch between TOML → JSON and JSON → TOML with one click.',
+      },
+      {
+        title: 'Paste your input',
+        description: 'Drop in a TOML config file or a JSON object.',
+      },
+      {
+        title: 'Read the converted output',
+        description: 'Nested tables, arrays of tables, and typed values are all handled by the underlying spec-compliant parser.',
+      },
+      {
+        title: 'Swap and repeat',
+        description: 'Use the swap button to feed the output straight back in as new input.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Spec-compliant parsing',
+        description: 'Handles TOML’s full feature set - nested tables, array-of-tables, inline tables, typed dates - rather than a partial hand-rolled parser.',
+      },
+      {
+        title: 'Catches real TOML syntax errors',
+        description: 'Malformed TOML is rejected with a specific parser error rather than silently misparsed.',
+      },
+      {
+        title: 'Handles Cargo/pyproject-style configs',
+        description: 'Works cleanly with the kind of real-world TOML files Rust, Python, and other modern toolchains actually use.',
+      },
+      {
+        title: 'Nothing leaves your browser',
+        description: 'Conversion happens entirely client-side - useful when the config contains real credentials or connection details.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why did my TOML fail to convert?',
+        answer:
+          'The underlying parser is spec-compliant, so a failure usually means the input has a genuine syntax error - an unclosed string, a malformed table header, or a value that doesn’t match TOML’s expected types. The error message names the specific problem the parser hit.',
+      },
+      {
+        question: 'What happens to TOML dates after converting to JSON and back?',
+        answer:
+          'TOML has a native date/time type, but JSON doesn’t - a TOML date becomes a JSON string after conversion. Converting that JSON back to TOML will keep it as a quoted string rather than automatically restoring it as a native TOML date, since there’s no reliable way to tell a date-shaped string from an intentional string value.',
+      },
+      {
+        question: 'Why use a library instead of a from-scratch TOML parser?',
+        answer:
+          'TOML supports nested tables, array-of-tables, inline tables, multiple numeric formats, and native dates - enough interacting syntax features that a hand-rolled parser risks silently mishandling real-world config files rather than failing loudly. A spec-compliant parser avoids that risk.',
+      },
+    ],
+    Component: TomlJsonConverter,
+  },
+  {
+    slug: 'json-php-array-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['json-formatter', 'json-yaml-converter'],
+    title: 'JSON ⇄ PHP Array Converter',
+    shortDescription: 'Convert JSON to PHP array syntax or PHP array syntax to JSON, in either direction, in your browser.',
+    longDescription:
+      'Convert JSON into PHP array literal syntax, or a PHP array literal back into JSON, using a small purpose-built tokenizer and parser rather than a regex substitution - regex can’t reliably handle nested arrays, quoted strings containing commas or brackets, or PHP’s "=>" key syntax, so this walks the actual token structure instead. PHP output uses modern short array syntax ([...]) with single-quoted string keys; a PHP array with sequential integer keys starting at 0 converts to a JSON array, while string keys or out-of-order integer keys convert to a JSON object, matching how PHP’s own json_encode() treats arrays. Useful for moving config or fixture data between a JS/JSON codebase and a PHP one, or reading a PHP array literal from a legacy config file as JSON. Runs entirely client-side.',
+    metaTitle: 'JSON to PHP Array Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert JSON to PHP array syntax or PHP array syntax to JSON online for free, in either direction. Runs entirely in your browser - no data ever uploaded.',
+    keywords: ['json to php array', 'php array to json', 'json php converter', 'convert php array online'],
+    useCase: 'Moving fixture or config data between a JS/JSON codebase and a PHP one',
+    howItWorks: [
+      {
+        title: 'Pick a direction',
+        description: 'Switch between JSON → PHP and PHP → JSON with one click.',
+      },
+      {
+        title: 'Paste your input',
+        description: 'Drop in a JSON object/array or a PHP array literal.',
+      },
+      {
+        title: 'Read the converted output',
+        description: 'Sequential arrays and associative arrays are distinguished automatically, matching PHP’s own conventions.',
+      },
+      {
+        title: 'Swap and repeat',
+        description: 'Use the swap button to feed the output straight back in as new input.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Real parsing, not regex',
+        description: 'A small tokenizer and parser handle nested arrays and quoted strings correctly, which a regex-based approach can’t do reliably.',
+      },
+      {
+        title: 'Matches PHP’s array/object convention',
+        description: 'Sequential integer-keyed arrays become JSON arrays; everything else becomes a JSON object, the same rule PHP’s json_encode() uses.',
+      },
+      {
+        title: 'Modern short array syntax',
+        description: 'JSON → PHP output uses [...] rather than the older array(...) form, matching current PHP style.',
+      },
+      {
+        title: 'Nothing leaves your browser',
+        description: 'Conversion happens entirely client-side - useful when the data includes real config values or fixture data.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this support the old array(...) syntax as well as [...]?',
+        answer:
+          'Yes for parsing PHP → JSON - both array(...) and [...] are accepted as input. JSON → PHP output always uses the modern short [...] syntax, since that’s the current PHP style recommendation.',
+      },
+      {
+        question: 'How does it decide whether PHP output should be a JSON array or a JSON object?',
+        answer:
+          'A PHP array with sequential integer keys starting at 0 (whether those keys are explicit or just implied by position) converts to a JSON array. Any array with string keys, or with integer keys that skip a number or start somewhere other than 0, converts to a JSON object instead - the same rule PHP’s built-in json_encode() function uses.',
+      },
+      {
+        question: 'Are PHP-specific values like objects or closures supported?',
+        answer:
+          'No - this only handles plain array literals: strings, numbers, true/false/null, and nested arrays. PHP objects, closures, constants, and variables aren’t valid inside a plain array literal in the way this parser expects, and won’t convert.',
+      },
+    ],
+    Component: JsonPhpArrayConverter,
+  },
+  {
+    slug: 'yaml-xml-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['json-yaml-converter', 'xml-json-converter', 'xml-formatter'],
+    title: 'YAML ⇄ XML Converter',
+    shortDescription: 'Convert YAML to XML or XML to YAML in either direction, entirely in your browser.',
+    longDescription:
+      'Convert YAML to XML or XML back to YAML with a single click, using js-yaml - a spec-compliant parser - for the YAML side and the browser’s native DOMParser/XMLSerializer for the XML side, the same approach used elsewhere on this site rather than a hand-rolled parser for either format. YAML commonly has multiple top-level keys (a Kubernetes manifest’s apiVersion, kind, metadata, and spec, for example), but XML requires exactly one root element, so YAML with more than one top-level key gets automatically wrapped in a synthetic root element rather than rejected outright - documented explicitly so the behavior isn’t a silent surprise. Useful for converting a Kubernetes or CI config between the two formats, or reading legacy XML config as more compact YAML. Runs entirely client-side.',
+    metaTitle: 'YAML to XML Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert YAML to XML or XML to YAML online for free, in either direction. Powered by js-yaml for spec-compliant parsing. No data leaves your browser.',
+    keywords: ['yaml to xml', 'xml to yaml', 'yaml xml converter', 'convert yaml online'],
+    useCase: 'Converting a Kubernetes manifest or CI config between YAML and XML',
+    howItWorks: [
+      {
+        title: 'Pick a direction',
+        description: 'Switch between YAML → XML and XML → YAML with one click.',
+      },
+      {
+        title: 'Paste your input',
+        description: 'Drop in YAML or XML - the sample updates to match whichever direction is selected.',
+      },
+      {
+        title: 'Read the converted output',
+        description: 'The result updates live as you type, using spec-compliant parsing on both sides.',
+      },
+      {
+        title: 'Swap and repeat',
+        description: 'Use the swap button to feed the output straight back in as new input.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Spec-compliant on both sides',
+        description: 'js-yaml handles YAML’s flexible syntax, and the browser’s native DOMParser handles XML - neither is a hand-rolled parser.',
+      },
+      {
+        title: 'Handles multi-key YAML sensibly',
+        description: 'Automatically wraps multi-key YAML (like a Kubernetes manifest) in a synthetic root element instead of rejecting it.',
+      },
+      {
+        title: 'Consistent with the rest of the converter cluster',
+        description: 'Uses the same attribute/text/array convention as the XML ⇄ JSON Converter, so the mapping is predictable across tools.',
+      },
+      {
+        title: 'Nothing leaves your browser',
+        description: 'Conversion happens entirely client-side - useful for real deployment manifests and config files.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why did my YAML get wrapped in a "<root>" element?',
+        answer:
+          'XML requires exactly one root element, but YAML very commonly has several top-level keys - a Kubernetes manifest has at least apiVersion, kind, metadata, and spec. Rather than rejecting that input, multi-key YAML is automatically nested under a synthetic <root> element so the conversion still works.',
+      },
+      {
+        question: 'Is this the same conversion convention as the XML ⇄ JSON Converter?',
+        answer:
+          'Yes - attributes become "@name" keys, text alongside attributes or children becomes "#text", and repeated child tags become a list, matching the XML ⇄ JSON Converter exactly so the mapping stays predictable if you use both tools.',
+      },
+      {
+        question: 'Will round-tripping YAML → XML → YAML give back the exact original file?',
+        answer:
+          'Not always exactly - comments and YAML-specific formatting (anchors, flow style, key ordering in some edge cases) don’t have an XML equivalent and are lost in the conversion, and multi-key YAML gains a synthetic root element that wasn’t in the original. The data itself round-trips correctly; the surrounding formatting doesn’t.',
+      },
+    ],
+    Component: YamlXmlConverter,
+  },
+  {
     slug: 'json-yaml-converter',
     category: 'converters',
-    relatedSlugs: ['json-to-csv', 'xml-formatter', 'json-formatter'],
+    relatedSlugs: ['yaml-xml-converter', 'ini-json-converter', 'toml-json-converter', 'json-to-csv'],
     title: 'JSON ⇄ YAML Converter',
     shortDescription: 'Convert JSON to YAML or YAML to JSON in either direction, in your browser.',
     longDescription:
