@@ -15,6 +15,18 @@ export interface ToolBenefit {
   description: string;
 }
 
+export interface ToolExtendedContentSection {
+  /** Rendered as an H2 - typically a Q&A-framed heading, e.g. "Does this tool validate JSON, not just format it?" */
+  heading: string;
+  /** One or two <p> tags of body copy (wrapped in a div, not a p, so multiple paragraphs and inline links are valid HTML). Rendered via dangerouslySetInnerHTML, so only trusted, hand-authored content belongs here - never user input. */
+  body: string;
+}
+
+export interface ToolComparisonTable {
+  headers: string[];
+  rows: string[][];
+}
+
 export interface ToolDefinition {
   /** URL-safe identifier, unique within its category */
   slug: string;
@@ -52,6 +64,10 @@ export interface ToolDefinition {
    * than its same-category siblings.
    */
   relatedSlugs?: string[];
+  /** Optional long-form SEO content: H2-level Q&A-framed sections rendered between longDescription and the FAQ accordion. Most tools don't have this. */
+  extendedContent?: ToolExtendedContentSection[];
+  /** Optional comparison/reference table rendered within the extended content area. Most tools don't have this. */
+  comparisonTable?: ToolComparisonTable;
   /** The React component implementing the tool's interactive UI */
   Component: ComponentType;
 }

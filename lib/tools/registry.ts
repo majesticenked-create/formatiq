@@ -180,12 +180,37 @@ export const tools: ToolDefinition[] = [
     title: 'JSON Formatter & Validator',
     shortDescription: 'Beautify, validate, and minify JSON instantly in your browser.',
     longDescription:
-      'Paste any JSON and get clean, indented output in real time, with syntax validation that points out exactly what\u2019s wrong when the input doesn\u2019t parse. Everything runs client-side, so your data never leaves the browser. Use it to debug API responses, clean up config files, or prep JSON for documentation.',
-    metaTitle: 'JSON Formatter & Validator - Free Online Tool | Formatiq',
+      'Paste your JSON and this json formatter beautifies, validates, and minifies it - instantly, in your browser, with nothing ever uploaded anywhere. It\u2019s built for the moment you\u2019re staring at a wall of unformatted API response or a config file that won\u2019t parse, and you need a clean, correct answer in the next ten seconds, not an account signup.',
+    metaTitle: 'JSON Formatter & Validator - Free, Browser-Based | Formatiq',
     metaDescription:
-      'Format, validate, and minify JSON online for free. Instant syntax checking, adjustable indentation, and one-click copy. No data leaves your browser.',
+      'Format, validate, and beautify JSON free - nothing you paste is ever uploaded. Instant error detection, adjustable indentation, one-click minify.',
     keywords: ['json formatter', 'json validator', 'json beautifier', 'json pretty print', 'minify json'],
     useCase: 'Debugging malformed API responses',
+    extendedContent: [
+      {
+        heading: 'Is there a free JSON formatter online you can actually trust with real data?',
+        body:
+          '<p>Yes - this one processes everything client-side, so a production API response, a config file with connection strings, or a token buried in a payload never leaves your machine. There\u2019s no server call to inspect, no upload step to trust, and no account required to get a result.</p><p>That distinction matters more than it sounds. A lot of "free" JSON tools quietly run your paste through a server before showing you the output, which is exactly the moment sensitive data can be logged, cached, or exposed. Here, the JavaScript in your browser does the parsing and formatting itself - the same as opening the text in a local editor, just with syntax highlighting and instant validation.</p>',
+      },
+      {
+        heading: 'Does this tool validate JSON, not just format it?',
+        body:
+          '<p>Yes - every paste is checked against strict JSON syntax as you type, and the validator points to the exact line and character where parsing fails. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON" target="_blank" rel="noopener noreferrer">Property names must be double-quoted strings and trailing commas are forbidden</a> under the JSON spec, and those two rules alone account for most of the "invalid JSON" errors developers hit.</p><p>That\u2019s the gap between JSON and the JavaScript object literals it resembles: JavaScript happily allows a trailing comma or an unquoted key, JSON does not. When your paste fails here, the error message tells you which of those rules broke and exactly where - not just "invalid JSON" with no location, which is the more common (and far less useful) failure mode on older formatter tools.</p>',
+      },
+      {
+        heading: 'Can I beautify or minify messy JSON here?',
+        body:
+          '<p>Yes - switch between 2-space and 4-space indentation instantly to beautify a compressed payload, or hit "Minify input" to collapse formatted JSON back down to a single compact line before sending it over the wire. Both directions use the same client-side parser, so nothing about switching formats changes where your data goes.</p><p>This covers the two directions developers actually need: expanding a minified API response into something readable for debugging, and compressing a hand-written or IDE-formatted JSON file down before it goes into a request body or a build artifact.</p>',
+      },
+    ],
+    comparisonTable: {
+      headers: ['Action', 'What it does', 'When to use it'],
+      rows: [
+        ['Format / Beautify', 'Adds indentation and line breaks (2 or 4 spaces)', 'Reading a minified API response or config file'],
+        ['Validate', 'Checks syntax live, flags the exact error position', 'Debugging a payload that won\u2019t parse'],
+        ['Minify', 'Collapses formatted JSON to one compact line', 'Shrinking payload size before sending it over the wire'],
+      ],
+    },
     howItWorks: [
       {
         title: 'Paste your JSON',

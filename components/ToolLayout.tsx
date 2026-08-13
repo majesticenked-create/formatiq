@@ -120,6 +120,41 @@ export default function ToolLayout({ tool, children }: { tool: ToolDefinition; c
         <h2>About this tool</h2>
         <p>{tool.longDescription}</p>
 
+        {tool.extendedContent && tool.extendedContent.length > 0 && (
+          <>
+            {tool.extendedContent.map((section) => (
+              <div key={section.heading}>
+                <h2 style={{ marginTop: 32 }}>{section.heading}</h2>
+                {/* eslint-disable-next-line react/no-danger */}
+                <div dangerouslySetInnerHTML={{ __html: section.body }} />
+              </div>
+            ))}
+          </>
+        )}
+
+        {tool.comparisonTable && (
+          <div className="comparison-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  {tool.comparisonTable.headers.map((header) => (
+                    <th key={header}>{header}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {tool.comparisonTable.rows.map((row, i) => (
+                  <tr key={i}>
+                    {row.map((cell, j) => (
+                      <td key={j}>{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         {tool.benefits && tool.benefits.length > 0 && (
           <>
             <h2 style={{ marginTop: 32 }}>Why use this tool</h2>
