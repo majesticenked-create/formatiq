@@ -20,9 +20,12 @@ function decode(input: string) {
   }
 }
 
-export default function Base64Tool() {
-  const [mode, setMode] = useState<Mode>('encode');
-  const [input, setInput] = useState('Formatiq makes dev tools fast.');
+const SAMPLE_PLAIN = 'Formatiq makes dev tools fast.';
+const SAMPLE_ENCODED = 'Rm9ybWF0aXEgbWFrZXMgZGV2IHRvb2xzIGZhc3Qu';
+
+export default function Base64Tool({ defaultMode = 'encode' }: { defaultMode?: Mode }) {
+  const [mode, setMode] = useState<Mode>(defaultMode);
+  const [input, setInput] = useState(defaultMode === 'decode' ? SAMPLE_ENCODED : SAMPLE_PLAIN);
 
   const result = useMemo(() => (mode === 'encode' ? encode(input) : decode(input)), [mode, input]);
 

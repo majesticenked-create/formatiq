@@ -9,6 +9,7 @@ import MetaTagGenerator from '@/components/tools/MetaTagGenerator';
 import ImageCompressor from '@/components/tools/ImageCompressor';
 import TimezoneConverter from '@/components/tools/TimezoneConverter';
 import Base64Tool from '@/components/tools/Base64Tool';
+import Base64Decoder from '@/components/tools/Base64Decoder';
 import UuidGenerator from '@/components/tools/UuidGenerator';
 import WordCounter from '@/components/tools/WordCounter';
 import JsonToCsv from '@/components/tools/JsonToCsv';
@@ -306,6 +307,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'base64-encoder-decoder',
     category: 'encoders-decoders',
+    relatedSlugs: ['base64-decoder'],
     isPopular: true,
     title: 'Base64 Encoder & Decoder',
     shortDescription: 'Convert text to and from Base64 encoding instantly.',
@@ -314,7 +316,7 @@ export const tools: ToolDefinition[] = [
     metaTitle: 'Base64 Encoder & Decoder - Free Online Tool | Formatiq',
     metaDescription:
       'Encode and decode Base64 online for free. Fast, accurate conversion that runs entirely in your browser, so no data is ever uploaded to a server.',
-    keywords: ['base64 encode', 'base64 decode', 'base64 converter', 'base64 to text'],
+    keywords: ['base64 encode', 'base64 converter', 'text to base64'],
     useCase: 'Embedding binary data in URLs or JSON payloads',
     howItWorks: [
       {
@@ -365,6 +367,75 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: Base64Tool,
+  },
+  {
+    slug: 'base64-decoder',
+    category: 'encoders-decoders',
+    relatedSlugs: ['base64-encoder-decoder'],
+    isNew: true,
+    title: 'Base64 Decoder',
+    shortDescription: 'Paste a Base64 string to get the original text back - decode-first, in your browser.',
+    longDescription:
+      'Paste a Base64-encoded string to decode it back into the original readable text instantly, with the decode direction selected by default so there’s no toggle to hunt for first. This is the same underlying Base64 conversion as our full encoder/decoder, framed around the decode-first workflow: pasting in a token, config value, or encoded payload someone handed you and needing the plain text out, rather than starting from plain text and encoding it. An encode mode is still available with one click if you need to go the other direction. Common sources of Base64 strings worth decoding include JWT segments, embedded data URIs, API tokens, and email attachment headers. Runs entirely client-side, so nothing you paste is ever uploaded.',
+    metaTitle: 'Base64 Decoder - Decode Base64 to Text Online | Formatiq',
+    metaDescription:
+      'Decode Base64 to text online for free. Paste an encoded string and get the original text back instantly - runs entirely in your browser, nothing uploaded.',
+    keywords: ['base64 decode', 'base64 decoder', 'base64 to text', 'decode base64 online'],
+    useCase: 'Reading the plain text behind a Base64-encoded token or config value',
+    howItWorks: [
+      {
+        title: 'Paste the encoded string',
+        description: 'Drop in the Base64 text you want to decode - decode mode is already selected.',
+      },
+      {
+        title: 'Read the result instantly',
+        description: 'The decoded text appears live as you type, no button press required.',
+      },
+      {
+        title: 'Switch to encode if needed',
+        description: 'Need to go the other direction instead? One click switches to encode mode.',
+      },
+      {
+        title: 'Copy and go',
+        description: 'Copy the decoded text with one click once it looks right.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Lands you in decode mode',
+        description: 'No toggle to find first - paste an encoded string and see the decoded text immediately.',
+      },
+      {
+        title: 'Nothing leaves your browser',
+        description: 'Decoding happens entirely client-side, which matters when the encoded string contains a real token or config secret.',
+      },
+      {
+        title: 'Clear failure messages',
+        description: 'Invalid Base64 input is flagged immediately rather than silently producing garbled output.',
+      },
+      {
+        title: 'Encode mode one click away',
+        description: 'Still the same full tool underneath - switch direction instantly if you need to encode instead.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why did my Base64 string fail to decode?',
+        answer:
+          'The most common cause is a copy-paste issue - a truncated string, extra whitespace, or missing padding characters (the trailing "=" signs). Less commonly, the string may contain characters outside the standard Base64 alphabet (letters, digits, "+", "/"), which means it wasn’t actually Base64 to begin with, or used a URL-safe variant with different characters.',
+      },
+      {
+        question: 'What characters are valid in a Base64 string?',
+        answer:
+          'Standard Base64 uses A-Z, a-z, 0-9, plus "+" and "/", with "=" used only for padding at the end. A URL-safe variant swaps "+" and "/" for "-" and "_" to avoid conflicts in URLs - if your string uses those characters, it may need converting before it decodes correctly here.',
+      },
+      {
+        question: 'Is this different from the main Base64 Encoder & Decoder tool?',
+        answer:
+          'It’s the same underlying tool, just landing you directly in decode mode instead of encode mode - useful when decoding is what you came here to do. Both are the same conversion; this page just skips the extra click.',
+      },
+    ],
+    Component: Base64Decoder,
   },
   {
     slug: 'uuid-generator',
