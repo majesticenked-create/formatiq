@@ -718,6 +718,81 @@ textarea.mono,
   border-radius: 999px;
 }
 
+/* New Additions - deliberately a compact list, not a horizontal-scroll card
+   row, so it reads as visually distinct from the Popular/Trending sections
+   either side of it rather than repeating the same layout a third time. */
+.new-tools-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 32px;
+}
+
+@media (max-width: 640px) {
+  .new-tools-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.new-tool-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.new-tool-row-text h3 {
+  font-size: 14px;
+  margin: 0 0 4px;
+  color: var(--text-primary);
+  transition: color 150ms ease;
+}
+
+.new-tool-row:hover .new-tool-row-text h3 {
+  color: var(--accent);
+}
+
+.new-tool-row-text p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.new-tool-badge {
+  flex-shrink: 0;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Scroll-triggered fade-in for homepage section headers - each section reveals
+   independently as the user scrolls to it, not a synchronized stagger, since
+   these sit far apart vertically rather than as one visible cluster. */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
+}
+
+.scroll-reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* Stats bar */
 .stats-bar {
   display: grid;

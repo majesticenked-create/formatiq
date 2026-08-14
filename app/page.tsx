@@ -1,20 +1,39 @@
 import Link from 'next/link';
 import HeroDemo from '@/components/HeroDemo';
 import ToolSearch from '@/components/ToolSearch';
+import ScrollReveal from '@/components/ScrollReveal';
 import { categories, getToolsByCategory, tools } from '@/lib/tools/registry';
 import type { ToolDefinition } from '@/lib/tools/types';
 
 const MAX_TOOL_TAGS = 4;
 const BASE_URL = 'https://formatiq.tools';
 
-function ToolCardRow({ items, badge }: { items: ToolDefinition[]; badge?: string }) {
+function ToolCardRow({ items }: { items: ToolDefinition[] }) {
   return (
     <div className="tool-card-row">
       {items.map((tool) => (
         <Link key={`${tool.category}-${tool.slug}`} href={`/tools/${tool.category}/${tool.slug}`} className="tool-card-compact">
-          {badge && <span className="tool-card-badge">{badge}</span>}
           <h3>{tool.title}</h3>
           <p>{tool.shortDescription}</p>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+// Deliberately distinct from ToolCardRow's horizontal-scroll layout - three
+// consecutive sections all using the same card-row pattern reads as repetitive.
+// A compact 2-column list (1-column on mobile) breaks that up in the middle.
+function NewToolsList({ items }: { items: ToolDefinition[] }) {
+  return (
+    <div className="new-tools-list">
+      {items.map((tool) => (
+        <Link key={`${tool.category}-${tool.slug}`} href={`/tools/${tool.category}/${tool.slug}`} className="new-tool-row">
+          <div className="new-tool-row-text">
+            <h3>{tool.title}</h3>
+            <p>{tool.shortDescription}</p>
+          </div>
+          <span className="new-tool-badge">New</span>
         </Link>
       ))}
     </div>
@@ -57,7 +76,10 @@ export default function HomePage() {
   const TRENDING_EXCLUDED_SLUGS = new Set(['bmi-calculator', 'loan-calculator']);
 
   const popularTools = tools.filter((t) => t.isPopular);
-  const newTools = tools.filter((t) => t.isNew);
+  // Capped for display: isNew currently spans 62 registry entries (accumulated
+  // across many build rounds, never cleared), which would make a "compact" list
+  // anything but compact. This caps what's shown, not the underlying flag.
+  const newTools = tools.filter((t) => t.isNew).slice(0, 6);
   const trendingTools = getTrendingTools(
     tools.filter((t) => !TRENDING_EXCLUDED_SLUGS.has(t.slug)),
     6
@@ -98,7 +120,7 @@ export default function HomePage() {
             <h1>Format, convert, and validate - without leaving your browser.</h1>
             <p className="lede">
               Formatiq is a growing collection of free developer tools: formatters, converters, validators, and
-              generators. Nothing you paste is ever uploaded anywhere.
+              generators. Nothing you paste leaves your browser.
             </p>
             <div className="hero-actions">
               <Link href="/tools/formatters/json-formatter" className="btn btn-primary">
@@ -129,10 +151,12 @@ export default function HomePage() {
       {popularTools.length > 0 && (
         <section className="home-section">
           <div className="container">
-            <div className="home-section-header">
-              <h2 className="section-title">Popular Tools</h2>
-              <p>The most reached-for tools on Formatiq, based on real-world search demand.</p>
-            </div>
+            <ScrollReveal>
+              <div className="home-section-header">
+                <h2 className="section-title">Popular Tools</h2>
+                <p>The most reached-for tools on Formatiq, based on real-world search demand.</p>
+              </div>
+            </ScrollReveal>
             <ToolCardRow items={popularTools} />
           </div>
         </section>
@@ -141,11 +165,13 @@ export default function HomePage() {
       {newTools.length > 0 && (
         <section className="home-section home-section-alt">
           <div className="container">
-            <div className="home-section-header">
-              <h2 className="section-title">New Additions</h2>
-              <p>The latest tools added to Formatiq.</p>
-            </div>
-            <ToolCardRow items={newTools} badge="New" />
+            <ScrollReveal>
+              <div className="home-section-header">
+                <h2 className="section-title">New Additions</h2>
+                <p>The latest tools added to Formatiq.</p>
+              </div>
+            </ScrollReveal>
+            <NewToolsList items={newTools} />
           </div>
         </section>
       )}
@@ -153,10 +179,12 @@ export default function HomePage() {
       {trendingTools.length > 0 && (
         <section className="home-section">
           <div className="container">
-            <div className="home-section-header">
-              <h2 className="section-title">Trending This Week</h2>
-              <p>A rotating pick of tools worth checking out, refreshed weekly.</p>
-            </div>
+            <ScrollReveal>
+              <div className="home-section-header">
+                <h2 className="section-title">Trending This Week</h2>
+                <p>A rotating pick of tools worth checking out, refreshed weekly.</p>
+              </div>
+            </ScrollReveal>
             <ToolCardRow items={trendingTools} />
           </div>
         </section>
@@ -164,7 +192,9 @@ export default function HomePage() {
 
       <div className="container">
         <section>
-          <h2 className="section-title">Browse by category</h2>
+          <ScrollReveal>
+            <h2 className="section-title">Browse by category</h2>
+          </ScrollReveal>
           <div className="category-grid">
             {categories.map((category) => {
               const categoryTools = getToolsByCategory(category.slug);
