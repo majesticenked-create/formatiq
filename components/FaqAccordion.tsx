@@ -35,7 +35,9 @@ export default function FaqAccordion({ faqs }: { faqs: ToolFaq[] }) {
               </svg>
             </button>
             <div className={`faq-answer ${isOpen ? 'open' : ''}`}>
-              <p>{faq.answer}</p>
+              <div className="faq-answer-inner">
+                <p>{faq.answer}</p>
+              </div>
             </div>
           </div>
         );

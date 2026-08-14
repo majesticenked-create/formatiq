@@ -7,11 +7,22 @@ import { categories } from '@/lib/tools/registry';
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
+  // Kept mounted for one exit-transition cycle after closing, since React would
+  // otherwise remove the portaled node the instant `open` flips, giving the CSS
+  // transition no time to play - see .mobile-nav-panel[data-state='closing'].
+  const [closing, setClosing] = useState(false);
   const [mounted, setMounted] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => setMounted(true), []);
+
+  function closeMenu() {
+    setOpen((wasOpen) => {
+      if (wasOpen) setClosing(true);
+      return false;
+    });
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -21,11 +32,11 @@ export default function MobileNav() {
     function handlePointerDown(e: PointerEvent) {
       const target = e.target as Node;
       if (panelRef.current?.contains(target) || toggleRef.current?.contains(target)) return;
-      setOpen(false);
+      closeMenu();
     }
 
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key === 'Escape') closeMenu();
     }
 
     document.addEventListener('pointerdown', handlePointerDown);
@@ -43,7 +54,7 @@ export default function MobileNav() {
         ref={toggleRef}
         type="button"
         className="mobile-nav-toggle"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => (open ? closeMenu() : setOpen(true))}
         aria-label={open ? 'Close menu' : 'Open menu'}
         aria-expanded={open}
       >
@@ -63,11 +74,18 @@ export default function MobileNav() {
           children (same rule as filter/transform), so a fixed panel nested inside it never
           actually positions relative to the viewport. The portal sidesteps that entirely. */}
       {mounted &&
-        open &&
+        (open || closing) &&
         createPortal(
-          <div ref={panelRef} className="mobile-nav-panel">
+          <div
+            ref={panelRef}
+            className="mobile-nav-panel"
+            data-state={closing ? 'closing' : 'open'}
+            onTransitionEnd={(e) => {
+              if (e.target === e.currentTarget && closing) setClosing(false);
+            }}
+          >
             {categories.map((category) => (
-              <Link key={category.slug} href={`/tools/${category.slug}`} onClick={() => setOpen(false)}>
+              <Link key={category.slug} href={`/tools/${category.slug}`} onClick={closeMenu}>
                 {category.navLabel}
               </Link>
             ))}

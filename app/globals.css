@@ -23,6 +23,11 @@
   /* Layout tokens */
   --radius: 6px;
   --max-width: 1120px;
+
+  /* Motion tokens - custom curves, not built-in CSS easings (too weak/generic) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 [data-theme='light'] {
@@ -198,6 +203,7 @@ textarea.mono,
   color: var(--text-secondary);
   cursor: pointer;
   flex-shrink: 0;
+  transition: color 150ms ease, border-color 150ms ease, transform 120ms var(--ease-out);
 }
 
 .mobile-nav-toggle:hover {
@@ -205,6 +211,14 @@ textarea.mono,
   border-color: var(--text-secondary);
 }
 
+.mobile-nav-toggle:active {
+  transform: scale(0.94);
+}
+
+/* Slide-down drawer, not a scale-from-trigger popover: this panel spans the full
+   viewport width, so there's no single trigger point to scale from the way a small
+   anchored popover would - the closest match in the skill's own vocabulary is the
+   iOS-style drawer curve, using translateY instead of a scale-based entrance. */
 .mobile-nav-panel {
   position: fixed;
   top: 64px;
@@ -219,6 +233,22 @@ textarea.mono,
   border-bottom: 1px solid var(--border);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
   z-index: 60;
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform 220ms var(--ease-drawer), opacity 200ms ease-out;
+}
+
+.mobile-nav-panel[data-state='closing'] {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: transform 180ms cubic-bezier(0.4, 0, 1, 1), opacity 150ms ease-in;
+}
+
+@starting-style {
+  .mobile-nav-panel {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
 }
 
 .mobile-nav-panel a {
@@ -270,11 +300,38 @@ textarea.mono,
   color: var(--text-secondary);
   cursor: pointer;
   flex-shrink: 0;
+  transition: color 150ms ease, border-color 150ms ease, transform 120ms var(--ease-out);
 }
 
 .theme-toggle:hover {
   color: var(--text-primary);
   border-color: var(--text-secondary);
+}
+
+.theme-toggle:active {
+  transform: scale(0.94);
+}
+
+.theme-toggle-icon {
+  display: inline-flex;
+  animation: theme-icon-in 220ms var(--ease-out);
+}
+
+@keyframes theme-icon-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85) rotate(-40deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle-icon {
+    animation: none;
+  }
 }
 
 .site-footer {
@@ -406,6 +463,11 @@ textarea.mono,
   font-weight: 500;
   border: 1px solid transparent;
   cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, transform 120ms var(--ease-out);
+}
+
+.btn:active {
+  transform: scale(0.97);
 }
 
 .btn-primary {
@@ -967,7 +1029,7 @@ textarea.mono,
 
 .faq-chevron {
   flex-shrink: 0;
-  transition: transform 0.15s ease;
+  transition: transform 180ms var(--ease-out);
   color: var(--text-tertiary);
 }
 
@@ -975,14 +1037,26 @@ textarea.mono,
   transform: rotate(180deg);
 }
 
+/* grid-template-rows 0fr->1fr instead of max-height: the old max-height:400px was
+   an arbitrary guessed cap (clips answers taller than that, e.g. at large text-zoom
+   or narrow widths) and animating max-height triggers layout on every frame. This
+   still triggers layout (no purely compositor-only way exists to animate to intrinsic
+   content height), but it's exact rather than guessed, and the opacity fade on top
+   keeps the more visually prominent part of the transition on the compositor. */
 .faq-answer {
-  overflow: hidden;
-  max-height: 0;
-  transition: max-height 0.2s ease;
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 220ms var(--ease-in-out), opacity 180ms ease-out;
 }
 
 .faq-answer.open {
-  max-height: 400px;
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.faq-answer-inner {
+  overflow: hidden;
 }
 
 .faq-answer p {
@@ -1210,11 +1284,16 @@ textarea.mono,
   padding: 8px 16px;
   font-size: 12px;
   cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease, transform 120ms var(--ease-out), background 150ms ease;
 }
 
 .icon-btn:hover {
   color: var(--text-primary);
   border-color: var(--text-secondary);
+}
+
+.icon-btn:active {
+  transform: scale(0.96);
 }
 
 /* Active/selected pill state (mode toggles, indent switches, etc.) */
