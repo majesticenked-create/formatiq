@@ -945,12 +945,37 @@ export const tools: ToolDefinition[] = [
     title: 'XML Formatter & Validator',
     shortDescription: 'Beautify and check XML for well-formedness instantly in your browser.',
     longDescription:
-      'Paste any XML and get cleanly indented output with elements and nesting easy to scan, using the browser’s own XML parser to catch malformed markup as you type. This checks well-formedness - unclosed tags, mismatched elements, invalid characters - not conformance to a specific DTD or XSD schema, so validly-structured XML that violates a particular schema will still format successfully. Everything runs client-side, so your data never leaves the browser. Use it to clean up SOAP payloads, RSS/Atom feeds, config files, or API responses for readability.',
-    metaTitle: 'XML Formatter & Validator - Free Online Tool | Formatiq',
+      'Paste your XML and this xml formatter beautifies it into cleanly indented, readable output while checking it’s well-formed as you go - instantly, in your browser, with nothing ever uploaded anywhere. Built for the moment a SOAP payload, RSS feed, or config file lands in your clipboard as one unreadable line and you need it scannable in the next ten seconds, not routed through a server first.',
+    metaTitle: 'XML Formatter & Validator - Free, Browser-Based | Formatiq',
     metaDescription:
-      'Format and validate XML online for free. Instant well-formedness checking, adjustable indentation, and one-click copy. No data leaves your browser.',
+      'Format, beautify, and validate XML free - nothing you paste is ever uploaded. Catches well-formedness errors instantly, adjustable indentation.',
     keywords: ['xml formatter', 'xml validator', 'xml beautifier', 'xml pretty print', 'format xml online'],
     useCase: 'Cleaning up SOAP payloads or RSS feeds for readability',
+    extendedContent: [
+      {
+        heading: 'Is there a free XML formatter online that’s safe for real config files and SOAP payloads?',
+        body:
+          '<p>Yes - everything runs client-side, so a SOAP payload with real endpoint data, an RSS feed pulled from a private feed URL, or a config file with connection strings never leaves your machine. There’s no upload step to trust and no account required to get a result.</p><p>That matters more for XML than it sounds, since XML is disproportionately used for exactly the kind of data people are cautious about - API contracts, enterprise config, exported records from internal systems. Here, the browser’s own XML parser does the parsing and formatting, the same as opening the file in a local editor, just with clean indentation and instant error checking added.</p>',
+      },
+      {
+        heading: 'Does this tool validate XML, not just format it?',
+        body:
+          '<p>Yes - it checks well-formedness as you type using the browser’s native XML parser, which means it enforces the same rules any XML consumer would: <a href="https://en.wikipedia.org/wiki/Well-formed_document" target="_blank" rel="noopener noreferrer">a single root element containing everything else, and tags that are case-sensitive and properly nested with no overlaps</a>. If any of those rules break, the tool reports it immediately rather than guessing at a fix.</p><p>That immediate, no-guessing behavior isn’t a design choice specific to this tool - <a href="https://en.wikipedia.org/wiki/Well-formed_document" target="_blank" rel="noopener noreferrer">XML processors are required by the spec to stop and report an error the moment well-formedness breaks, rather than trying to recover and continue like an HTML parser would</a>. So an XML error here isn’t the tool being strict for no reason; it’s the same hard stop any real XML consumer - an API, a build pipeline, a config loader - would hit on the same file.</p><p>Worth knowing: this checks well-formedness, not conformance to a specific schema. XML that’s validly structured can still fail against a particular DTD or XSD your system expects.</p>',
+      },
+      {
+        heading: 'How do you actually format or beautify a messy XML file?',
+        body:
+          '<p>Paste the XML into the input panel and it’s re-indented automatically as you type, with a choice of 2-space or 4-space indentation to match your project’s convention. There’s no button to press or format to pick - the moment valid XML lands in the box, clean output appears on the other side.</p><p>Because the output is generated from a real parsed structure rather than pattern-matching the text, the same clean result comes out regardless of how inconsistently the source was written - mixed indentation, no line breaks at all, or a single-line minified export all resolve to the same readable style.</p>',
+      },
+    ],
+    comparisonTable: {
+      headers: ['Feature', 'What it does', 'When to use it'],
+      rows: [
+        ['Format / Beautify', 'Re-indents XML with clean nesting (2 or 4 spaces)', 'Reading a minified SOAP payload, RSS feed, or config export'],
+        ['Well-formedness check', 'Flags unclosed tags, mismatched elements, invalid characters', 'Debugging XML that a parser or API is rejecting'],
+        ['Adjustable indentation', 'Toggle between 2-space and 4-space output', 'Matching your project’s existing formatting convention'],
+      ],
+    },
     howItWorks: [
       {
         title: 'Paste your XML',
