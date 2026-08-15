@@ -4791,12 +4791,33 @@ export const tools: ToolDefinition[] = [
     title: 'HTML Viewer & Live Preview',
     shortDescription: 'Preview HTML with a responsive viewport switcher, live console output, and basic error linting.',
     longDescription:
-      'Paste HTML and see it rendered live in a sandboxed preview, but this goes well past a basic paste-and-render viewer. Switch the preview between Desktop, Tablet, and Mobile widths to actually check how a layout responds, instead of only ever seeing one fixed-width render. A captured console panel shows console.log/warn/error output - and uncaught runtime errors - from scripts running inside the preview, so you can actually debug broken JavaScript in the pasted page rather than staring at a silently blank result. A lightweight linter scans for unclosed tags, mismatched tags, and duplicate id attributes and lists them as non-blocking warnings above the preview, so markup problems are visible instead of silently swallowed. A "Formatted source" mode shows the HTML with basic tag/attribute/string syntax coloring, and you can export the result as a downloadable .html file or a shareable data URI. The preview iframe runs with sandbox="allow-scripts" only - scripts execute for the preview, but the sandbox blocks the page from accessing the parent site, cookies, or top-level navigation.',
-    metaTitle: 'HTML Viewer with Live Preview - Formatiq',
+      'Paste HTML into this html viewer and see it rendered live in a sandboxed preview - not just the source code, the actual page - with a responsive width switcher, a captured console panel, and a lightweight linter, all instantly and all in your browser. Built for the moment you need to check how a pasted landing page or component actually looks and behaves, across screen sizes, without deploying anything first.',
+    metaTitle: 'HTML Viewer & Live Preview - Free, Browser-Based | Formatiq',
     metaDescription:
-      'Preview HTML online for free with a responsive Desktop/Tablet/Mobile viewport switcher, live console output, and basic error linting.',
+      'Preview HTML live with responsive breakpoints, console debugging, and a linter - nothing you paste is ever uploaded.',
     keywords: ['html viewer', 'html preview online', 'responsive html preview', 'html console debugger', 'live html preview'],
     useCase: 'Checking a pasted landing page layout across screen sizes before shipping it',
+    extendedContent: [
+      {
+        heading: 'Is there a free HTML viewer online that actually renders the page, not just the code?',
+        body:
+          '<p>Yes - this one renders your HTML, CSS, and JavaScript in a live sandboxed preview, not just a syntax-highlighted read of the source. Scripts run, styles apply, and the result looks the way it would in a real browser, entirely client-side with nothing ever uploaded anywhere.</p><p>That rendering happens inside an iframe locked down with <code>sandbox="allow-scripts"</code> and no <code>allow-same-origin</code>. If <code>allow-same-origin</code> isn’t set, <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe" target="_blank" rel="noopener noreferrer">the previewed content is treated as coming from a special origin that always fails the same-origin policy, blocking it from this site’s cookies, storage, and JavaScript APIs</a> - so pasted scripts can run and be debugged, but they can’t reach anything of yours.</p>',
+      },
+      {
+        heading: 'What does an HTML preview actually need to show you beyond a static render?',
+        body:
+          '<p>A single fixed-width render answers almost nothing about whether a layout actually works - this preview switches between Desktop, Tablet, and Mobile widths so CSS media queries and responsive rules genuinely re-evaluate at each size, the same way they would if you resized a real browser window. A captured console panel shows <code>console.log</code>/<code>warn</code>/<code>error</code> output and runtime errors from scripts running inside the preview, so broken JavaScript is visible immediately instead of a silently blank result.</p><p>A lightweight linter also scans for unclosed tags, mismatched tags, and duplicate <code>id</code> attributes, listing them as non-blocking warnings above the preview - the specific mistakes that most often silently break a layout or a <code>getElementById</code> lookup, surfaced before you go looking for them.</p>',
+      },
+    ],
+    comparisonTable: {
+      headers: ['Feature', 'What it does', 'When to use it'],
+      rows: [
+        ['Live preview', 'Renders pasted HTML, CSS, and JS in a sandboxed iframe', 'Checking how a pasted page or component actually looks and behaves'],
+        ['Responsive switcher', 'Resizes the preview to Desktop, Tablet, and Mobile widths', 'Verifying a layout holds up across screen sizes'],
+        ['Console panel', 'Captures console.log/warn/error and runtime errors live', 'Debugging broken JavaScript in the pasted page'],
+        ['Linter warnings', 'Flags unclosed tags, mismatched tags, duplicate IDs', 'Catching markup mistakes before they break something'],
+      ],
+    },
     howItWorks: [
       {
         title: 'Paste your HTML',
