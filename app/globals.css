@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-
 :root {
   /* Color tokens */
   --bg: #0e1116;
@@ -15,10 +13,8 @@
   --valid: #3fb950;
   --invalid: #f85149;
 
-  /* Type tokens */
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SFMono-Regular', monospace;
+  /* Type tokens: --font-display/--font-body/--font-mono are set on <html> via
+     next/font/google in app/layout.tsx, not declared here - see layout.tsx. */
 
   /* Layout tokens */
   --radius: 6px;
