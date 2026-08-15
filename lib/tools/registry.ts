@@ -2690,6 +2690,13 @@ export const tools: ToolDefinition[] = [
       'Format and beautify CSS online for free. Turn minified or messy stylesheets into clean, readable output with adjustable indentation.',
     keywords: ['css formatter', 'css beautifier', 'format css online', 'css pretty print', 'unminify css'],
     useCase: 'Un-minifying a production stylesheet to debug a style',
+    extendedContent: [
+      {
+        heading: 'Can I check how the formatted CSS actually looks applied to a page?',
+        body:
+          '<p>This tool formats the stylesheet text itself - it doesn’t render anything. To see the rules in action, paste the formatted CSS alongside some markup into the <a href="/tools/formatters/html-viewer">HTML Viewer</a> and check the result in its live preview, which is a lot faster than reading selectors and guessing at the outcome.</p>',
+      },
+    ],
     howItWorks: [
       {
         title: 'Paste minified or messy CSS',
@@ -2752,6 +2759,13 @@ export const tools: ToolDefinition[] = [
       'Format and beautify HTML online for free. Turn minified or messy markup into clean, properly indented output. No data leaves your browser.',
     keywords: ['html formatter', 'html beautifier', 'format html online', 'html pretty print', 'unminify html'],
     useCase: 'Un-minifying scraped markup to see its structure',
+    extendedContent: [
+      {
+        heading: 'Can I see how the formatted HTML actually renders, not just how it reads?',
+        body:
+          '<p>This tool only reformats the markup itself - it doesn’t render it. Once the HTML is cleanly indented and easy to scan, paste it into the <a href="/tools/formatters/html-viewer">HTML Viewer</a> to see it rendered live in a sandboxed preview, complete with a responsive width switcher and a console panel for catching any script errors.</p>',
+      },
+    ],
     howItWorks: [
       {
         title: 'Paste minified or dense HTML',
@@ -4288,6 +4302,13 @@ export const tools: ToolDefinition[] = [
       'Format and beautify JavaScript online for free. Turn minified or messy code into clean, properly indented output. No data leaves your browser.',
     keywords: ['javascript formatter', 'javascript beautifier', 'format js online', 'js pretty print', 'unminify javascript'],
     useCase: 'Un-minifying a script to review a third-party library',
+    extendedContent: [
+      {
+        heading: 'Can I run the formatted script and see what it actually does?',
+        body:
+          '<p>This tool only reformats the code - it doesn’t execute it. Once the script is readable, paste it into the <a href="/tools/formatters/html-viewer">HTML Viewer</a> to run it and watch the output in its live console panel, rather than debugging blind against a minified original.</p>',
+      },
+    ],
     howItWorks: [
       {
         title: 'Paste minified or messy JavaScript',
@@ -4787,6 +4808,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'html-viewer',
     category: 'formatters',
+    relatedSlugs: ['html-formatter', 'css-formatter', 'js-formatter', 'markdown-html-converter'],
     isNew: false,
     title: 'HTML Viewer & Live Preview',
     shortDescription: 'Preview HTML with a responsive viewport switcher, live console output, and basic error linting.',
@@ -4801,12 +4823,12 @@ export const tools: ToolDefinition[] = [
       {
         heading: 'Is there a free HTML viewer online that actually renders the page, not just the code?',
         body:
-          '<p>Yes - this one renders your HTML, CSS, and JavaScript in a live sandboxed preview, not just a syntax-highlighted read of the source. Scripts run, styles apply, and the result looks the way it would in a real browser, entirely client-side with nothing ever uploaded anywhere.</p><p>That rendering happens inside an iframe locked down with <code>sandbox="allow-scripts"</code> and no <code>allow-same-origin</code>. If <code>allow-same-origin</code> isn’t set, <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe" target="_blank" rel="noopener noreferrer">the previewed content is treated as coming from a special origin that always fails the same-origin policy, blocking it from this site’s cookies, storage, and JavaScript APIs</a> - so pasted scripts can run and be debugged, but they can’t reach anything of yours.</p>',
+          '<p>Yes - this one renders your HTML, CSS, and JavaScript in a live sandboxed preview, not just a syntax-highlighted read of the source. Scripts run, styles apply, and the result looks the way it would in a real browser, entirely client-side with nothing ever uploaded anywhere.</p><p>That rendering happens inside an iframe locked down with <code>sandbox="allow-scripts"</code> and no <code>allow-same-origin</code>. If <code>allow-same-origin</code> isn’t set, <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe" target="_blank" rel="noopener noreferrer">the previewed content is treated as coming from a special origin that always fails the same-origin policy, blocking it from this site’s cookies, storage, and JavaScript APIs</a> - so pasted scripts can run and be debugged, but they can’t reach anything of yours.</p><p>Pasting HTML that’s minified or inconsistently indented first? The <a href="/tools/formatters/html-formatter">HTML Formatter &amp; Beautifier</a> cleans it up before you preview it here, so what you’re debugging is readable markup, not a single unbroken line.</p>',
       },
       {
         heading: 'What does an HTML preview actually need to show you beyond a static render?',
         body:
-          '<p>A single fixed-width render answers almost nothing about whether a layout actually works - this preview switches between Desktop, Tablet, and Mobile widths so CSS media queries and responsive rules genuinely re-evaluate at each size, the same way they would if you resized a real browser window. A captured console panel shows <code>console.log</code>/<code>warn</code>/<code>error</code> output and runtime errors from scripts running inside the preview, so broken JavaScript is visible immediately instead of a silently blank result.</p><p>A lightweight linter also scans for unclosed tags, mismatched tags, and duplicate <code>id</code> attributes, listing them as non-blocking warnings above the preview - the specific mistakes that most often silently break a layout or a <code>getElementById</code> lookup, surfaced before you go looking for them.</p>',
+          '<p>A single fixed-width render answers almost nothing about whether a layout actually works - this preview switches between Desktop, Tablet, and Mobile widths so CSS media queries and responsive rules genuinely re-evaluate at each size, the same way they would if you resized a real browser window. Since this preview renders pasted CSS too, running it through the <a href="/tools/formatters/css-formatter">CSS Formatter &amp; Beautifier</a> first makes it easier to spot exactly which rule is causing a layout issue. A captured console panel shows <code>console.log</code>/<code>warn</code>/<code>error</code> output and runtime errors from scripts running inside the preview, so broken JavaScript is visible immediately instead of a silently blank result. Debugging is also easier when the script isn’t minified in the first place - run it through the <a href="/tools/formatters/js-formatter">JavaScript Formatter &amp; Beautifier</a> first if it came out of a build step.</p><p>A lightweight linter also scans for unclosed tags, mismatched tags, and duplicate <code>id</code> attributes, listing them as non-blocking warnings above the preview - the specific mistakes that most often silently break a layout or a <code>getElementById</code> lookup, surfaced before you go looking for them.</p>',
       },
     ],
     comparisonTable: {
