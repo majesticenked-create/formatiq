@@ -941,7 +941,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'xml-formatter',
     category: 'formatters',
-    relatedSlugs: ['xml-json-converter', 'yaml-xml-converter', 'json-formatter'],
+    relatedSlugs: ['xml-json-converter', 'yaml-xml-converter', 'json-formatter', 'html-formatter'],
     title: 'XML Formatter & Validator',
     shortDescription: 'Beautify and check XML for well-formedness instantly in your browser.',
     longDescription:
@@ -965,7 +965,7 @@ export const tools: ToolDefinition[] = [
       {
         heading: 'How do you actually format or beautify a messy XML file?',
         body:
-          '<p>Paste the XML into the input panel and it’s re-indented automatically as you type, with a choice of 2-space or 4-space indentation to match your project’s convention. There’s no button to press or format to pick - the moment valid XML lands in the box, clean output appears on the other side.</p><p>Because the output is generated from a real parsed structure rather than pattern-matching the text, the same clean result comes out regardless of how inconsistently the source was written - mixed indentation, no line breaks at all, or a single-line minified export all resolve to the same readable style.</p>',
+          '<p>Paste the XML into the input panel and it’s re-indented automatically as you type, with a choice of 2-space or 4-space indentation to match your project’s convention. There’s no button to press or format to pick - the moment valid XML lands in the box, clean output appears on the other side.</p><p>Because the output is generated from a real parsed structure rather than pattern-matching the text, the same clean result comes out regardless of how inconsistently the source was written - mixed indentation, no line breaks at all, or a single-line minified export all resolve to the same readable style.</p><p>Working with markup instead of data - HTML rather than XML? The <a href="/tools/formatters/html-formatter">HTML Formatter &amp; Beautifier</a> does the same clean-indentation job for HTML. And if you’ve converted XML to YAML and want to clean up the result, there’s no need to hand-edit the converter’s raw output - you can <a href="/tools/formatters/yaml-formatter">format the YAML directly</a> instead.</p>',
       },
     ],
     comparisonTable: {
