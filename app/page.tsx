@@ -76,9 +76,6 @@ export default function HomePage() {
   const TRENDING_EXCLUDED_SLUGS = new Set(['bmi-calculator', 'loan-calculator']);
 
   const popularTools = tools.filter((t) => t.isPopular);
-  // Capped for display: isNew currently spans 62 registry entries (accumulated
-  // across many build rounds, never cleared), which would make a "compact" list
-  // anything but compact. This caps what's shown, not the underlying flag.
   const newTools = tools.filter((t) => t.isNew).slice(0, 6);
   const trendingTools = getTrendingTools(
     tools.filter((t) => !TRENDING_EXCLUDED_SLUGS.has(t.slug)),

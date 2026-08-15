@@ -270,7 +270,7 @@ export const tools: ToolDefinition[] = [
     slug: 'json-repair',
     category: 'formatters',
     relatedSlugs: ['json-validator', 'json-formatter'],
-    isNew: true,
+    isNew: false,
     title: 'JSON Repair Tool',
     shortDescription: 'Fix common JSON syntax mistakes automatically and see exactly what was changed, all client-side.',
     longDescription:
@@ -403,7 +403,7 @@ export const tools: ToolDefinition[] = [
     slug: 'base64-decoder',
     category: 'encoders-decoders',
     relatedSlugs: ['base64-encoder-decoder'],
-    isNew: true,
+    isNew: false,
     title: 'Base64 Decoder',
     shortDescription: 'Paste a Base64 string to get the original text back - decode-first, in your browser.',
     longDescription:
@@ -737,7 +737,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'csv-tsv-converter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     title: 'CSV to TSV Converter',
     shortDescription: 'Convert CSV to TSV or TSV to CSV in either direction, with proper quoted-field handling.',
     longDescription:
@@ -805,7 +805,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'image-compressor',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     title: 'Image Compressor',
     shortDescription: 'Compress JPG, PNG, or WebP images entirely in your browser, with a quality slider and download.',
     longDescription:
@@ -873,7 +873,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'timezone-converter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     title: 'Timezone Converter',
     shortDescription: 'Convert a date and time across major timezones at once, from UTC to Sydney.',
     longDescription:
@@ -1145,7 +1145,7 @@ export const tools: ToolDefinition[] = [
     slug: 'json-validator',
     category: 'validators',
     relatedSlugs: ['json-formatter', 'json-repair', 'json-diff-checker'],
-    isNew: true,
+    isNew: false,
     title: 'JSON Validator',
     shortDescription: 'Check whether JSON is syntactically valid, with the line and column of the error when the browser can pinpoint one.',
     longDescription:
@@ -1924,7 +1924,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'xml-json-converter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     relatedSlugs: ['xml-formatter', 'json-formatter', 'json-yaml-converter'],
     title: 'XML ⇄ JSON Converter',
     shortDescription: 'Convert XML to JSON or JSON to XML in either direction, entirely in your browser.',
@@ -1993,7 +1993,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'ini-json-converter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     relatedSlugs: ['json-yaml-converter', 'properties-json-converter', 'toml-json-converter', 'json-formatter'],
     title: 'INI ⇄ JSON Converter',
     shortDescription: 'Convert INI config files to JSON or JSON to INI, in either direction, in your browser.',
@@ -2062,7 +2062,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'properties-json-converter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     relatedSlugs: ['ini-json-converter', 'json-yaml-converter', 'json-formatter'],
     title: 'Properties ⇄ JSON Converter',
     shortDescription: 'Convert Java .properties files to JSON or JSON to .properties, in either direction, in your browser.',
@@ -2131,7 +2131,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'toml-json-converter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     relatedSlugs: ['json-yaml-converter', 'ini-json-converter', 'json-formatter'],
     title: 'TOML ⇄ JSON Converter',
     shortDescription: 'Convert TOML to JSON or JSON to TOML in either direction, powered by a spec-compliant parser.',
@@ -2200,7 +2200,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'json-php-array-converter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     relatedSlugs: ['json-formatter', 'json-yaml-converter'],
     title: 'JSON ⇄ PHP Array Converter',
     shortDescription: 'Convert JSON to PHP array syntax or PHP array syntax to JSON, in either direction, in your browser.',
@@ -2269,7 +2269,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'yaml-xml-converter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     relatedSlugs: ['json-yaml-converter', 'xml-json-converter', 'xml-formatter'],
     title: 'YAML ⇄ XML Converter',
     shortDescription: 'Convert YAML to XML or XML to YAML in either direction, entirely in your browser.',
@@ -2587,7 +2587,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'php-formatter',
     category: 'formatters',
-    isNew: true,
+    isNew: false,
     title: 'PHP Formatter',
     shortDescription: 'Beautify PHP code with consistent indentation and brace placement.',
     longDescription:
@@ -3090,7 +3090,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'rem-px-converter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     title: 'REM to PX Converter',
     shortDescription: 'Convert between REM, PX, and EM units for CSS sizing, with an adjustable base font size.',
     longDescription:
@@ -3351,7 +3351,7 @@ export const tools: ToolDefinition[] = [
     slug: 'json-diff-checker',
     category: 'validators',
     relatedSlugs: ['json-formatter', 'json-validator'],
-    isNew: true,
+    isNew: false,
     title: 'JSON Diff Checker',
     shortDescription: 'Compare two JSON values and see exactly which keys were added, removed, or changed - all client-side.',
     longDescription:
@@ -3667,7 +3667,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'number-sorter',
     category: 'text-tools',
-    isNew: true,
+    isNew: false,
     title: 'Number Sorter',
     shortDescription: 'Sort a list of numbers ascending or descending, with sum, average, min, and max calculated.',
     longDescription:
@@ -3797,7 +3797,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'html-tag-stripper',
     category: 'text-tools',
-    isNew: true,
+    isNew: false,
     title: 'HTML Tag Stripper',
     shortDescription: 'Strip all HTML tags from source and get clean plain text, with line breaks preserved or flattened.',
     longDescription:
@@ -4052,7 +4052,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'age-calculator',
     category: 'calculators',
-    isNew: true,
+    isNew: false,
     title: 'Age Calculator',
     shortDescription: 'Calculate exact age in years, months, and days from a birth date, plus total days lived.',
     longDescription:
@@ -4115,7 +4115,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'ip-subnet-calculator',
     category: 'calculators',
-    isNew: true,
+    isNew: false,
     title: 'IP Subnet Calculator',
     shortDescription: 'Calculate network address, broadcast address, subnet mask, and usable host range from CIDR notation.',
     longDescription:
@@ -4185,7 +4185,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'bitwise-calculator',
     category: 'calculators',
-    isNew: true,
+    isNew: false,
     title: 'Bitwise Calculator',
     shortDescription: 'Run AND, OR, XOR, NOT, and bit-shift operations, with results in decimal, binary, and hex.',
     longDescription:
@@ -4253,7 +4253,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'js-formatter',
     category: 'formatters',
-    isNew: true,
+    isNew: false,
     title: 'JavaScript Formatter & Beautifier',
     shortDescription: 'Beautify minified or messy JavaScript into properly indented, readable code.',
     longDescription:
@@ -4316,7 +4316,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'phone-number-validator',
     category: 'validators',
-    isNew: true,
+    isNew: false,
     title: 'Phone Number Validator',
     shortDescription: 'Validate a phone number’s format for the US, UK, India, or international E.164 notation.',
     longDescription:
@@ -4379,7 +4379,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'bmi-calculator',
     category: 'calculators',
-    isNew: true,
+    isNew: false,
     title: 'BMI Calculator',
     shortDescription: 'Calculate Body Mass Index from height and weight, with standard WHO category ranges.',
     longDescription:
@@ -4442,7 +4442,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'roman-numeral-converter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     title: 'Roman Numeral Converter',
     shortDescription: 'Convert between numbers and Roman numerals in either direction, with strict validation.',
     longDescription:
@@ -4505,7 +4505,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'fake-data-generator',
     category: 'generators',
-    isNew: true,
+    isNew: false,
     title: 'Fake Data Generator',
     shortDescription: 'Generate mock name, email, phone, address, and company data for testing, with CSV or JSON export.',
     longDescription:
@@ -4568,7 +4568,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'character-frequency-counter',
     category: 'text-tools',
-    isNew: true,
+    isNew: false,
     title: 'Character Frequency Counter',
     shortDescription: 'Count how often each character appears in a text, sorted from most to least frequent.',
     longDescription:
@@ -4631,7 +4631,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'morse-code-converter',
     category: 'encoders-decoders',
-    isNew: true,
+    isNew: false,
     title: 'Morse Code Converter',
     shortDescription: 'Convert text to Morse code or Morse code back to text, in either direction.',
     longDescription:
@@ -4694,7 +4694,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'string-escape-unescape',
     category: 'encoders-decoders',
-    isNew: true,
+    isNew: false,
     title: 'String Escape / Unescape',
     shortDescription: 'Escape or unescape strings for JavaScript, Java, or regex, each handling its own special characters.',
     longDescription:
@@ -4762,7 +4762,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'html-viewer',
     category: 'formatters',
-    isNew: true,
+    isNew: false,
     title: 'HTML Viewer & Live Preview',
     shortDescription: 'Preview HTML with a responsive viewport switcher, live console output, and basic error linting.',
     longDescription:
@@ -4921,7 +4921,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'css-gradient-generator',
     category: 'generators',
-    isNew: true,
+    isNew: false,
     title: 'CSS Gradient Generator',
     shortDescription: 'Build a linear or radial CSS gradient with a visual color-stop editor and copy the CSS.',
     longDescription:
@@ -5019,7 +5019,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'image-to-ascii-art',
     category: 'generators',
-    isNew: true,
+    isNew: false,
     title: 'Image to ASCII Art Converter',
     shortDescription: 'Convert an uploaded image into ASCII art using canvas pixel sampling, with adjustable output width.',
     longDescription:
@@ -5088,7 +5088,7 @@ export const tools: ToolDefinition[] = [
     slug: 'totp-generator',
     category: 'generators',
     relatedSlugs: ['wordpress-password-hash-generator'],
-    isNew: true,
+    isNew: false,
     title: 'TOTP Generator',
     shortDescription: 'Generate a live, auto-refreshing 6-digit TOTP code from a Base32 secret key.',
     longDescription:
@@ -5156,7 +5156,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'meta-tag-generator',
     category: 'generators',
-    isNew: true,
+    isNew: false,
     title: 'Meta Tag Generator',
     shortDescription: 'Generate title, description, Open Graph, and Twitter Card meta tags with a live preview.',
     longDescription:
@@ -5254,7 +5254,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'remove-punctuation',
     category: 'text-tools',
-    isNew: true,
+    isNew: false,
     title: 'Remove Punctuation',
     shortDescription: 'Strip punctuation from text with toggleable categories, and see the before/after character count.',
     longDescription:
@@ -5382,7 +5382,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'digital-storage-converter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     title: 'Digital Storage Converter',
     shortDescription: 'Convert between bits, bytes, KB/MB/GB/TB, and their binary KiB/MiB/GiB/TiB equivalents.',
     longDescription:
@@ -5446,7 +5446,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'utf8-encode-decode',
     category: 'encoders-decoders',
-    isNew: true,
+    isNew: false,
     title: 'UTF-8 Encoder/Decoder',
     shortDescription: 'Encode text into its raw UTF-8 byte representation, or decode a UTF-8 byte sequence back to text.',
     longDescription:
@@ -5514,7 +5514,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'gzip-text-compressor',
     category: 'encoders-decoders',
-    isNew: true,
+    isNew: false,
     title: 'Gzip Text Compressor',
     shortDescription: 'Compress text to a base64-encoded gzip string, or decompress one back to plain text, entirely in your browser.',
     longDescription:
@@ -5582,7 +5582,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'color-contrast-checker',
     category: 'validators',
-    isNew: true,
+    isNew: false,
     title: 'Color Contrast Checker',
     shortDescription: 'Check the WCAG contrast ratio between two colors, with pass/fail results for AA and AAA at both text sizes.',
     longDescription:
@@ -5651,7 +5651,7 @@ export const tools: ToolDefinition[] = [
     slug: 'json-tree-viewer',
     category: 'formatters',
     relatedSlugs: ['json-formatter', 'json-validator'],
-    isNew: true,
+    isNew: false,
     title: 'JSON Tree Viewer',
     shortDescription: 'Explore JSON as a collapsible, color-coded tree instead of a flat formatted block - rendered entirely in your browser.',
     longDescription:
@@ -5719,7 +5719,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'html-table-generator',
     category: 'generators',
-    isNew: true,
+    isNew: false,
     title: 'HTML Table Generator',
     shortDescription: 'Build an HTML table by typing directly into a grid, with a live preview and copyable markup.',
     longDescription:
@@ -5787,7 +5787,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'css-box-shadow-generator',
     category: 'generators',
-    isNew: true,
+    isNew: false,
     title: 'CSS Box Shadow Generator',
     shortDescription: 'Build a box-shadow with a live preview, multiple layered shadows, and a copy-ready CSS declaration.',
     longDescription:
@@ -5855,7 +5855,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'currency-converter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     title: 'Currency Converter',
     shortDescription: 'Convert between 20 major currencies using daily reference exchange rates.',
     longDescription:
@@ -5924,7 +5924,7 @@ export const tools: ToolDefinition[] = [
     slug: 'aes-encrypt-decrypt',
     category: 'encoders-decoders',
     relatedSlugs: ['jwt-decoder'],
-    isNew: true,
+    isNew: false,
     title: 'AES Encrypt/Decrypt',
     shortDescription: 'Encrypt or decrypt text with a passphrase using AES-GCM via the browser\'s native Web Crypto API.',
     longDescription:
@@ -5992,7 +5992,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'ip-address-formatter',
     category: 'converters',
-    isNew: true,
+    isNew: false,
     title: 'IP Address Formatter',
     shortDescription: 'Convert an IPv4 address between dotted-decimal, integer, hex, and binary representations at once.',
     longDescription:
@@ -6060,7 +6060,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'string-inspector',
     category: 'text-tools',
-    isNew: true,
+    isNew: false,
     title: 'String Inspector',
     shortDescription: 'Break down text by byte length, character count, encoding quirks, and line ending style.',
     longDescription:
@@ -6128,7 +6128,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'mac-address-generator',
     category: 'generators',
-    isNew: true,
+    isNew: false,
     title: 'MAC Address Generator',
     shortDescription: 'Generate random MAC addresses with colon or hyphen formatting and a locally-administered toggle.',
     longDescription:
@@ -6196,7 +6196,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'barcode-generator',
     category: 'generators',
-    isNew: true,
+    isNew: false,
     title: 'Barcode Generator',
     shortDescription: 'Generate a Code 128 or EAN-13 barcode from text or a number, rendered as SVG with PNG download.',
     longDescription:
@@ -6264,7 +6264,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'dns-record-explainer',
     category: 'text-tools',
-    isNew: true,
+    isNew: false,
     title: 'DNS Record Type Explainer',
     shortDescription: 'Look up what each DNS record type (A, AAAA, CNAME, MX, TXT, NS) does, with a typical example.',
     longDescription:
@@ -6332,7 +6332,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'http-status-code-lookup',
     category: 'text-tools',
-    isNew: true,
+    isNew: false,
     title: 'HTTP Status Code Lookup',
     shortDescription: 'Look up any HTTP status code\'s meaning, or browse/search the full reference table by category.',
     longDescription:
@@ -6400,7 +6400,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'random-flag-generator',
     category: 'generators',
-    isNew: true,
+    isNew: false,
     title: 'Random Flag Generator',
     shortDescription: 'Generate a random country flag with its name and continent - click to see another.',
     longDescription:
@@ -6464,7 +6464,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'random-address-generator',
     category: 'generators',
-    isNew: true,
+    isNew: false,
     title: 'Random Address Generator',
     shortDescription: 'Generate realistic fake mailing addresses for the US, UK, or a generic international format.',
     longDescription:
@@ -6532,7 +6532,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'isbn-validator',
     category: 'validators',
-    isNew: true,
+    isNew: false,
     title: 'ISBN Validator & Converter',
     shortDescription: 'Validate ISBN-10 and ISBN-13 checksums with auto-detection, plus convert between the two formats.',
     longDescription:
@@ -6601,7 +6601,7 @@ export const tools: ToolDefinition[] = [
     slug: 'wordpress-password-hash-generator',
     category: 'generators',
     relatedSlugs: ['totp-generator'],
-    isNew: true,
+    isNew: false,
     title: 'WordPress Password Hash Generator',
     shortDescription: 'Generate a WordPress-compatible phpass ($P$) password hash from a plaintext password, client-side.',
     longDescription:
