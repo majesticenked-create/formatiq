@@ -29,15 +29,12 @@ export const metadata: Metadata = {
   },
 };
 
-// TODO: Replace contact@REPLACE-WITH-YOUR-DOMAIN.example with a real,
-// monitored email address before launch.
-//
 // This uses plain mailto: links because there's no backend API route in
 // this codebase today, and a form that silently goes nowhere is worse than
 // no form at all. A real contact form (e.g. via a service like Formspree,
 // or a Next.js API route + an email-sending service) is a bigger addition
 // — worth doing later, but this ships something that actually works now.
-const CONTACT_EMAIL = 'contact@REPLACE-WITH-YOUR-DOMAIN.example';
+const CONTACT_EMAIL = 'hello@formatiq.tools';
 
 const CATEGORIES = [
   {
