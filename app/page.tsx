@@ -188,6 +188,19 @@ export default function HomePage() {
       )}
 
       <div className="container">
+        <section style={{ marginBottom: 40 }}>
+          <ScrollReveal>
+            <p style={{ color: 'var(--text-secondary)', maxWidth: '70ch' }}>
+              Formatiq exists because most day-to-day developer tasks - reformatting a JSON blob, decoding a JWT, checking
+              whether an email address is even valid - don’t need an account, a subscription, or a round trip to a
+              server. Every tool here runs entirely in your browser: nothing you paste, encode, validate, or convert is
+              ever uploaded anywhere, which matters more than it sounds when what you’re working with is a real API
+              response, a production config file, or a token you’d rather not hand to an unfamiliar site. New tools get
+              added as real gaps show up, not on a release schedule, and every one of them stays free.
+            </p>
+          </ScrollReveal>
+        </section>
+
         <section>
           <ScrollReveal>
             <h2 className="section-title">Browse by category</h2>

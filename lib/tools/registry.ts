@@ -122,42 +122,56 @@ export const categories: CategoryDefinition[] = [
     title: 'Formatters & Beautifiers',
     navLabel: 'Formatters',
     description: 'Clean up messy JSON, XML, HTML, CSS, JS, and SQL into readable, indented output.',
+    intro:
+      'Formatters take code or data that’s been minified, scraped, or hand-edited into an unreadable mess and turn it back into something a human can actually scan - correct indentation, consistent brace placement, one property or element per line, without changing a single byte of the underlying logic or structure. Reach for one of these instead of eyeballing a wall of text when you’re debugging a production API response, reviewing someone else’s minified CSS, or trying to understand a third-party script before you trust it. Every formatter runs entirely in your browser using well-tested beautification engines rather than a hand-rolled regex, so the reformatted output is safe to paste back into real code - nothing you paste is ever sent anywhere.',
   },
   {
     slug: 'encoders-decoders',
     title: 'Encoders & Decoders',
     navLabel: 'Encoders/Decoders',
     description: 'Base64, URL encoding, HTML entities, JWTs, and hash generation.',
+    intro:
+      'Encoding and decoding show up constantly in day-to-day development, usually at the exact moment something looks wrong: a Base64 string that needs to become readable text, a URL parameter that’s been double-escaped, a JWT you want to inspect without a wallet of trust, or a hash you need to verify against a known value. These tools handle the conversion instantly and entirely client-side, since a lot of what gets pasted here - tokens, session data, encoded credentials - is exactly the kind of thing that shouldn’t be sent to a server just to take a quick look at it. Pick the direction you need and paste; there’s no account, upload step, or waiting involved.',
   },
   {
     slug: 'generators',
     title: 'Generators',
     navLabel: 'Generators',
     description: 'UUIDs, passwords, Lorem Ipsum, QR codes, and other on-demand data.',
+    intro:
+      'Sometimes you don’t have real data yet and you just need something plausible to work with: a UUID for a new database record, a strong password before an account exists to attach it to, a block of Lorem Ipsum to fill a layout, or a QR code to test a scanning flow. This category covers exactly that - on-demand values generated instantly in your browser, using proper randomness where it matters (like passwords and UUIDs) rather than predictable patterns. Nothing here depends on a server round-trip, so generating a batch of values is as fast as clicking the button, and nothing you generate is logged or stored anywhere outside your own session.',
   },
   {
     slug: 'text-tools',
     title: 'Text Tools',
     navLabel: 'Text Tools',
     description: 'Counters, case converters, diff checkers, and other plain-text utilities.',
+    intro:
+      'Plain text problems don’t always need a full editor or IDE plugin - counting words in a draft, comparing two versions of a paragraph to see exactly what changed, converting between snake_case and camelCase, or stripping out whitespace and control characters someone’s copy-paste left behind. These utilities handle the specific, narrow text operations that come up constantly but rarely justify opening a separate application for. Everything processes instantly as you type, entirely in your browser, so pasting a real document, a piece of source code, or sensitive text into any of these tools never sends it anywhere else.',
   },
   {
     slug: 'converters',
     title: 'Converters',
     navLabel: 'Converters',
     description: 'Move data between formats: JSON, CSV, YAML, XML, and more.',
+    intro:
+      'Data rarely stays in one format for long - a config file needs to move from YAML to JSON, a spreadsheet export needs to become CSV, an API response needs restructuring into something a different system expects. This category handles those format-to-format conversions directly in your browser, preserving the actual structure and values of what you paste rather than approximating it. Each converter is built around the specific mismatches that break naive conversions - nested objects that don’t map cleanly, type differences between formats, encoding edge cases - so the output is something you can trust and use immediately, not just a quick approximation to double-check by hand.',
   },
   {
     slug: 'calculators',
     title: 'Calculators',
     navLabel: 'Calculators',
     description: 'Quick math and everyday calculations: percentages, units, age, and more.',
+    intro:
+      'Not every calculation needs a spreadsheet open or a separate search - working out a tip, converting units between metric and imperial, checking a BMI, or figuring out exactly how many days are between two dates. These calculators handle everyday math instantly, with the specific edge cases (leap years, rounding, unit precision) already accounted for so the result is correct the first time rather than something you have to sanity-check. Everything runs client-side and updates live as you type, so there’s no submit button to wait on and nothing about the numbers you enter is sent anywhere.',
   },
   {
     slug: 'validators',
     title: 'Validators',
     navLabel: 'Validators',
     description: 'Check JSON, XML, HTML, emails, URLs, and cron expressions for correctness.',
+    intro:
+      'Before trusting a piece of data - a JSON payload, an XML document, an email address a user typed in, a cron expression meant to run on a schedule - it helps to know for certain whether it’s actually valid, not just whether it looks right at a glance. These tools check syntax and structure against the real rules each format requires, and point out specifically what’s wrong when something fails, rather than a generic error. Everything validates instantly and entirely in your browser, which matters when what you’re checking is a real payload, a user’s actual input, or something you’d rather not paste into an unfamiliar third-party site.',
   },
 ];
 

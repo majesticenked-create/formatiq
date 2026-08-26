@@ -78,4 +78,6 @@ export interface CategoryDefinition {
   /** Short label for space-constrained UI (site nav, breadcrumb chips) - the full `title` is used everywhere else (H1s, meta, footer). */
   navLabel: string;
   description: string;
+  /** Longer intro paragraph shown on the category listing page, below the one-line description. */
+  intro: string;
 }

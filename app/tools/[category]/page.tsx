@@ -77,6 +77,7 @@ export default function CategoryPage({ params }: { params: { category: string } 
 
         <h1>{category.title}</h1>
         <p>{category.description}</p>
+        <p style={{ color: 'var(--text-secondary)', marginTop: 12, maxWidth: '68ch' }}>{category.intro}</p>
         <div className="tool-badges">
           <span className="pill">
             {toolsInCategory.length} tool{toolsInCategory.length === 1 ? '' : 's'} in this category
