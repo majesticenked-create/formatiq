@@ -5526,7 +5526,7 @@ export const tools: ToolDefinition[] = [
     Component: DigitalStorageConverter,
   },
   {
-    slug: 'utf8-encode-decode',
+    slug: 'utf8-encoder-decoder',
     category: 'encoders-decoders',
     isNew: false,
     title: 'UTF-8 Encoder/Decoder',
@@ -6823,7 +6823,7 @@ export const tools: ToolDefinition[] = [
     title: 'Text to Binary Converter',
     shortDescription: 'Convert text to its 8-bit binary representation and back, space-separated byte by byte.',
     longDescription:
-      'Convert text into its binary representation - each byte shown as an 8-digit sequence of 0s and 1s, space-separated for readability - or decode a string of space-separated binary bytes back into text. This works at the same byte level as utf8-encode-decode, but shows the raw bits of each byte directly rather than hex or decimal, which is the representation most people picture when they think of "binary" and is useful for teaching or demonstrating how text is actually stored as bits. Multi-byte UTF-8 characters (accented letters, emoji, and other non-ASCII text) correctly expand into multiple 8-bit bytes using the browser\'s native TextEncoder, exactly as utf8-encode-decode does - so an emoji shows up as three or four separate 8-bit groups rather than one, reflecting how it\'s genuinely stored. Decoding validates that the input is well-formed - each token must be 1-8 binary digits representing a valid byte, and the resulting byte sequence must form valid UTF-8 - with a specific error if either check fails. Useful for a classroom demonstration of binary encoding, a puzzle or cipher involving binary text, or just satisfying curiosity about what a piece of text actually looks like in bits. Runs entirely client-side.',
+      'Convert text into its binary representation - each byte shown as an 8-digit sequence of 0s and 1s, space-separated for readability - or decode a string of space-separated binary bytes back into text. This works at the same byte level as utf8-encoder-decoder, but shows the raw bits of each byte directly rather than hex or decimal, which is the representation most people picture when they think of "binary" and is useful for teaching or demonstrating how text is actually stored as bits. Multi-byte UTF-8 characters (accented letters, emoji, and other non-ASCII text) correctly expand into multiple 8-bit bytes using the browser\'s native TextEncoder, exactly as utf8-encoder-decoder does - so an emoji shows up as three or four separate 8-bit groups rather than one, reflecting how it\'s genuinely stored. Decoding validates that the input is well-formed - each token must be 1-8 binary digits representing a valid byte, and the resulting byte sequence must form valid UTF-8 - with a specific error if either check fails. Useful for a classroom demonstration of binary encoding, a puzzle or cipher involving binary text, or just satisfying curiosity about what a piece of text actually looks like in bits. Runs entirely client-side.',
     metaTitle: 'Text to Binary Converter - Text/Binary Both Ways | Formatiq',
     metaDescription:
       'Convert text to 8-bit binary and back online for free, space-separated byte by byte. No data leaves your browser.',
@@ -6867,9 +6867,9 @@ export const tools: ToolDefinition[] = [
     ],
     faqs: [
       {
-        question: 'How is this different from utf8-encode-decode?',
+        question: 'How is this different from utf8-encoder-decoder?',
         answer:
-          'Both tools work at the same UTF-8 byte level, but display the bytes differently: utf8-encode-decode shows each byte as hex or decimal, while this tool shows the literal binary digits (0s and 1s) that make up each byte. Binary is the more visual, intuitive representation for teaching or demonstration purposes, while hex is more compact and common in actual debugging contexts - pick whichever representation fits what you\'re doing.',
+          'Both tools work at the same UTF-8 byte level, but display the bytes differently: utf8-encoder-decoder shows each byte as hex or decimal, while this tool shows the literal binary digits (0s and 1s) that make up each byte. Binary is the more visual, intuitive representation for teaching or demonstration purposes, while hex is more compact and common in actual debugging contexts - pick whichever representation fits what you\'re doing.',
       },
       {
         question: 'Why does one character sometimes become more than one 8-bit group?',
@@ -7157,7 +7157,7 @@ export const tools: ToolDefinition[] = [
     Component: GpaCalculator,
   },
   {
-    slug: 'base32-encode-decode',
+    slug: 'base32-encoder-decoder',
     category: 'encoders-decoders',
     isNew: true,
     title: 'Base32 Encoder/Decoder',
