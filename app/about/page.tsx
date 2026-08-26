@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { categories, tools } from '@/lib/tools/registry';
 
-const TITLE = 'About | Formatiq';
+const TITLE = 'About Formatiq - Free, Browser-Based Developer Tools';
 const DESCRIPTION =
   'What Formatiq is, why every tool runs entirely in your browser, and how the site is organized across formatters, converters, and more.';
 const CANONICAL_URL = 'https://formatiq.tools/about';

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
-const TITLE = 'Contact | Formatiq';
+const TITLE = 'Contact Formatiq - Feedback & Bug Reports';
 const DESCRIPTION =
   'Get in touch with Formatiq about bug reports, tool suggestions, general feedback, or questions about how your data is handled.';
 const CANONICAL_URL = 'https://formatiq.tools/contact';

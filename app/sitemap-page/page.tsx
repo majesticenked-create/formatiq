@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { categories, getToolsByCategory } from '@/lib/tools/registry';
 
-const TITLE = 'Sitemap | Formatiq';
+const TITLE = 'Sitemap - Every Tool & Page on Formatiq';
 const DESCRIPTION =
   'Every tool and page on Formatiq in one place, organized by category, for quick navigation without digging through menus or search.';
 const CANONICAL_URL = 'https://formatiq.tools/sitemap-page';

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
-const TITLE = 'Terms of Service | Formatiq';
+const TITLE = 'Terms of Service - Formatiq Developer Tools';
 const DESCRIPTION =
   'The terms governing use of Formatiq’s free, browser-based developer tools, including acceptable use and liability limitations.';
 const CANONICAL_URL = 'https://formatiq.tools/terms';

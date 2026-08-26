@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
-const TITLE = 'Privacy Policy | Formatiq';
+const TITLE = 'Privacy Policy - 100% Client-Side Tools | Formatiq';
 const DESCRIPTION =
   'How Formatiq handles data: every tool runs entirely client-side in your browser, with no input ever sent to or stored on a server.';
 const CANONICAL_URL = 'https://formatiq.tools/privacy';

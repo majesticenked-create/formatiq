@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
-const TITLE = 'Cookie Policy | Formatiq';
+const TITLE = 'Cookie Policy - How Formatiq Uses Cookies';
 const DESCRIPTION =
   'What cookies and local storage Formatiq uses today, and what will be added if advertising or analytics are introduced in the future.';
 const CANONICAL_URL = 'https://formatiq.tools/cookies';
