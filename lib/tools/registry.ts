@@ -114,6 +114,13 @@ import XmlDiffChecker from '@/components/tools/XmlDiffChecker';
 import TextAsciiConverter from '@/components/tools/TextAsciiConverter';
 import RandomZipCodeGenerator from '@/components/tools/RandomZipCodeGenerator';
 import IpHexConverter from '@/components/tools/IpHexConverter';
+import RgbCmykConverter from '@/components/tools/RgbCmykConverter';
+import JsonPathTester from '@/components/tools/JsonPathTester';
+import TimeUnitConverter from '@/components/tools/TimeUnitConverter';
+import LcmCalculator from '@/components/tools/LcmCalculator';
+import GcdCalculator from '@/components/tools/GcdCalculator';
+import PrimeNumberChecker from '@/components/tools/PrimeNumberChecker';
+import FactorialCalculator from '@/components/tools/FactorialCalculator';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -7580,6 +7587,305 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: IpHexConverter,
+  },
+  {
+    slug: 'rgb-cmyk-converter',
+    category: 'converters',
+    relatedSlugs: ['hex-rgb-hsl-converter', 'css-gradient-generator'],
+    isNew: true,
+    title: 'RGB to CMYK Converter',
+    shortDescription: 'Convert between RGB and CMYK color values instantly, in your browser.',
+    longDescription:
+      'Convert an RGB color value to its CMYK equivalent, or reverse the process, using the standard device-independent conversion formula. This is the same math-based approximation most online color tools use - it doesn\'t account for a specific printer\'s ICC color profile or actual ink behavior, so treat the result as a close approximation for screen-to-print planning rather than an exact match to real printed output. A live color swatch shows the result so you can visually sanity-check the conversion. Runs entirely client-side.',
+    metaTitle: 'RGB to CMYK Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert RGB to CMYK online for free, or CMYK back to RGB. Includes a live color swatch. Runs entirely in your browser.',
+    keywords: ['rgb to cmyk', 'cmyk to rgb', 'rgb cmyk converter', 'color converter cmyk', 'convert rgb to cmyk online'],
+    useCase: 'Estimating the CMYK values for a color before sending a design to print',
+    howItWorks: [
+      {
+        title: 'Choose a direction',
+        description: 'RGB to CMYK, or CMYK back to RGB.',
+      },
+      {
+        title: 'Enter your color value',
+        description: 'e.g. rgb(242, 183, 5) or cmyk(0%, 24%, 98%, 5%).',
+      },
+      {
+        title: 'See the result and swatch',
+        description: 'The converted value updates live, with a color preview to sanity-check it.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Will this exactly match what a printer produces?',
+        answer:
+          'No - this uses the standard device-independent RGB-CMYK formula, not a specific printer\'s ICC color profile. Real print output depends on the printer, ink, and paper, so treat this as a close approximation for planning, not a color-accurate proof.',
+      },
+      {
+        question: 'Why does black (RGB 0,0,0) convert to K:100 rather than requiring all four channels?',
+        answer:
+          'The formula used here maximizes the K (black) channel and minimizes C, M, and Y whenever possible, which is standard for a simple conversion - real print workflows often use "rich black" (adding some CMY to K) for deeper black, but that\'s a print-production choice this basic conversion doesn\'t make for you.',
+      },
+    ],
+    Component: RgbCmykConverter,
+  },
+  {
+    slug: 'jsonpath-tester',
+    category: 'validators',
+    relatedSlugs: ['json-formatter', 'json-validator', 'json-tree-viewer'],
+    isNew: true,
+    title: 'JSONPath Tester',
+    shortDescription: 'Test a JSONPath expression against your JSON and see exactly which values it matches.',
+    longDescription:
+      'Paste JSON and a JSONPath expression to see exactly which values it matches, without writing and running a script just to check a query. Supports the JSONPath features people reach for most often: dot notation (.key), array indexing ([n]), wildcards ([*]), slices ([start:end]), multiple indices ([n,n]), and recursive descent (..key) to search at any depth. This covers the common subset most JSONPath usage actually needs - full filter expressions like [?(@.price>20)] aren\'t supported, since implementing a complete filter-expression parser is a much larger undertaking than the path-matching most people are looking for. Runs entirely client-side.',
+    metaTitle: 'JSONPath Tester - Test JSONPath Expressions Online | Formatiq',
+    metaDescription:
+      'Test JSONPath expressions against your JSON online for free and see exactly what matches. Runs entirely in your browser.',
+    keywords: ['jsonpath tester', 'jsonpath online', 'test jsonpath', 'jsonpath evaluator', 'jsonpath expression tester'],
+    useCase: 'Checking a JSONPath expression matches what you expect before using it in code',
+    howItWorks: [
+      {
+        title: 'Paste your JSON',
+        description: 'The document you want to query against.',
+      },
+      {
+        title: 'Type a JSONPath expression',
+        description: 'e.g. $.store.books[*].title to pull every book title.',
+      },
+      {
+        title: 'See the matches instantly',
+        description: 'Every value the path matches is listed, updating live as you edit the path.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this support JSONPath filter expressions like [?(@.price>20)]?',
+        answer:
+          'No - this supports the common path-matching subset (dot notation, array indices, wildcards, slices, and recursive descent) but not conditional filter expressions, which require a much more involved expression parser. For filtering by a condition, matching all values first and then filtering the result in your own code is the practical workaround.',
+      },
+      {
+        question: 'What does the recursive descent operator (..) do?',
+        answer:
+          'A path like $..price searches the entire JSON document at any depth for a key named "price", rather than requiring you to know the exact path to it - useful when the same key appears in multiple nested locations and you want every occurrence.',
+      },
+      {
+        question: 'What happens if my JSON is invalid?',
+        answer:
+          'The tool reports the JSON parse error immediately rather than attempting to evaluate the path against broken input. Fix the JSON using the JSON Formatter & Validator first if you need help finding the syntax error.',
+      },
+    ],
+    Component: JsonPathTester,
+  },
+  {
+    slug: 'time-unit-converter',
+    category: 'calculators',
+    relatedSlugs: ['unit-converter', 'date-difference-calculator'],
+    isNew: true,
+    title: 'Time Unit Converter',
+    shortDescription: 'Convert between seconds, minutes, hours, days, and weeks instantly.',
+    longDescription:
+      'Convert a value between seconds, minutes, hours, days, and weeks - the units people actually need when figuring out how long something is in a different scale, like how many days a given number of hours works out to, or how many hours are left in a countdown measured in weeks. This is a dedicated time-unit converter, distinct from the Unit Converter (which covers length, weight, and temperature but not time) and from the Timezone Converter (which handles clock time across timezones, not raw duration). Runs entirely client-side.',
+    metaTitle: 'Time Unit Converter - Seconds, Minutes, Hours, Days | Formatiq',
+    metaDescription:
+      'Convert between seconds, minutes, hours, days, and weeks online for free. Instant results, runs entirely in your browser.',
+    keywords: ['time unit converter', 'hours to days', 'convert hours to days', 'days to hours', 'time converter'],
+    useCase: 'Figuring out how many days a given number of hours actually is',
+    howItWorks: [
+      {
+        title: 'Enter a value',
+        description: 'Any number, in whichever time unit you\'re starting from.',
+      },
+      {
+        title: 'Pick the units',
+        description: 'Choose the "from" and "to" units - seconds, minutes, hours, days, or weeks.',
+      },
+      {
+        title: 'Read the result instantly',
+        description: 'The conversion updates live as you type or change units, with a swap button to reverse direction.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the Unit Converter?',
+        answer:
+          'The Unit Converter handles length, weight, and temperature - it doesn\'t include time units at all. This tool is specifically for converting between seconds, minutes, hours, days, and weeks.',
+      },
+      {
+        question: 'Does this handle timezones or clock times?',
+        answer:
+          'No - this converts a raw duration between units (like "72 hours" to "3 days"), not a specific clock time across timezones. For converting a time of day between timezones, use the Timezone Converter instead.',
+      },
+    ],
+    Component: TimeUnitConverter,
+  },
+  {
+    slug: 'lcm-calculator',
+    category: 'calculators',
+    relatedSlugs: ['gcd-calculator', 'prime-number-checker'],
+    isNew: true,
+    title: 'LCM Calculator',
+    shortDescription: 'Find the least common multiple of two or more numbers instantly.',
+    longDescription:
+      'Enter two or more positive whole numbers, separated by commas, to find their least common multiple - the smallest positive number that all of them divide into evenly. Computed using the standard GCD-based method (LCM(a, b) = |a × b| / GCD(a, b)), applied pairwise across however many numbers you enter, so this works for two numbers or a longer list just as easily. Useful for adding fractions with different denominators, scheduling problems where events repeat at different intervals, or checking schoolwork. Runs entirely client-side.',
+    metaTitle: 'LCM Calculator - Least Common Multiple | Formatiq',
+    metaDescription:
+      'Find the least common multiple (LCM) of two or more numbers online for free. Instant results, runs entirely in your browser.',
+    keywords: ['lcm calculator', 'least common multiple', 'lcm calculator online', 'find lcm', 'least common multiple calculator'],
+    useCase: 'Finding a common denominator when adding or comparing fractions',
+    howItWorks: [
+      {
+        title: 'Enter your numbers',
+        description: 'Two or more positive whole numbers, separated by commas.',
+      },
+      {
+        title: 'LCM is computed instantly',
+        description: 'Calculated pairwise using the GCD-based method, so any count of numbers works.',
+      },
+      {
+        title: 'Read the result',
+        description: 'The least common multiple updates live as you edit the list.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How does this handle more than two numbers?',
+        answer:
+          'The LCM is computed pairwise: the LCM of the first two numbers is found, then that result is combined with the third number, and so on. This is mathematically equivalent to finding the LCM of all numbers at once and works for any count of inputs.',
+      },
+      {
+        question: 'What happens if I enter a negative number or a decimal?',
+        answer:
+          'LCM is only defined for positive whole numbers, so negative numbers, zero, and decimals are rejected with a clear message rather than producing a nonsensical result.',
+      },
+    ],
+    Component: LcmCalculator,
+  },
+  {
+    slug: 'gcd-calculator',
+    category: 'calculators',
+    relatedSlugs: ['lcm-calculator', 'prime-number-checker'],
+    isNew: true,
+    title: 'GCD Calculator',
+    shortDescription: 'Find the greatest common divisor of two or more numbers instantly.',
+    longDescription:
+      'Enter two or more positive whole numbers, separated by commas, to find their greatest common divisor - the largest number that divides evenly into all of them. Computed using the Euclidean algorithm, applied pairwise across however many numbers you enter. Useful for simplifying fractions to their lowest terms, solving ratio problems, or checking schoolwork. Runs entirely client-side.',
+    metaTitle: 'GCD Calculator - Greatest Common Divisor | Formatiq',
+    metaDescription:
+      'Find the greatest common divisor (GCD) of two or more numbers online for free. Instant results, runs entirely in your browser.',
+    keywords: ['gcd calculator', 'greatest common divisor', 'gcd calculator online', 'find gcd', 'greatest common factor calculator'],
+    useCase: 'Simplifying a fraction to its lowest terms',
+    howItWorks: [
+      {
+        title: 'Enter your numbers',
+        description: 'Two or more positive whole numbers, separated by commas.',
+      },
+      {
+        title: 'GCD is computed instantly',
+        description: 'Calculated using the Euclidean algorithm, applied pairwise so any count of numbers works.',
+      },
+      {
+        title: 'Read the result',
+        description: 'The greatest common divisor updates live as you edit the list.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How does this handle more than two numbers?',
+        answer:
+          'The GCD is computed pairwise: the GCD of the first two numbers is found, then that result is combined with the third number, and so on - mathematically equivalent to finding the GCD of all numbers at once.',
+      },
+      {
+        question: 'How is this different from the LCM Calculator?',
+        answer:
+          'GCD finds the largest number that divides evenly into all your inputs; LCM finds the smallest number that all your inputs divide evenly into - opposite operations, both useful for fraction and ratio problems. Use the LCM Calculator for that direction.',
+      },
+    ],
+    Component: GcdCalculator,
+  },
+  {
+    slug: 'prime-number-checker',
+    category: 'calculators',
+    relatedSlugs: ['gcd-calculator', 'lcm-calculator'],
+    isNew: true,
+    title: 'Prime Number Checker',
+    shortDescription: 'Check instantly whether a number is prime, with the factor that disqualifies it if not.',
+    longDescription:
+      'Enter a whole number to check whether it\'s prime - divisible only by 1 and itself. The check uses trial division up to the square root of the number, which is fast and exact for any number within JavaScript\'s safe integer range. If the number isn\'t prime, the smallest factor that disqualifies it is shown, so you can see exactly why rather than just getting a yes/no answer. Runs entirely client-side.',
+    metaTitle: 'Prime Number Checker - Free Online Tool | Formatiq',
+    metaDescription:
+      'Check whether a number is prime online for free. Shows the disqualifying factor if it isn\'t. Runs entirely in your browser.',
+    keywords: ['prime number checker', 'is this number prime', 'check prime number', 'prime number test', 'prime checker'],
+    useCase: 'Quickly checking whether a number is prime without doing trial division by hand',
+    howItWorks: [
+      {
+        title: 'Enter a whole number',
+        description: 'Any positive or negative integer.',
+      },
+      {
+        title: 'Trial division runs instantly',
+        description: 'Checked for divisibility up to the square root of the number - exact, not probabilistic.',
+      },
+      {
+        title: 'See the result and why',
+        description: 'If it\'s not prime, the smallest factor that disqualifies it is shown.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How large a number can this check?',
+        answer:
+          'Up to JavaScript\'s maximum safe integer (about 9 quadrillion). Trial division up to the square root stays fast even near that limit, but numbers beyond it can\'t be represented exactly enough to check reliably.',
+      },
+      {
+        question: 'Are negative numbers, 0, or 1 ever prime?',
+        answer:
+          'No - by definition, prime numbers are positive integers greater than 1 with exactly two divisors (1 and themselves). 0, 1, and all negative numbers are correctly reported as not prime.',
+      },
+    ],
+    Component: PrimeNumberChecker,
+  },
+  {
+    slug: 'factorial-calculator',
+    category: 'calculators',
+    relatedSlugs: ['prime-number-checker', 'gcd-calculator'],
+    isNew: true,
+    title: 'Factorial Calculator',
+    shortDescription: 'Calculate n! exactly, even for large numbers, using arbitrary-precision arithmetic.',
+    longDescription:
+      'Enter a whole number to calculate its factorial (n!) - the product of every whole number from 1 up to n. This uses JavaScript\'s native BigInt type for the calculation, so results stay exact even for large values where a regular floating-point number would lose precision (20! already exceeds what a standard JavaScript number can represent exactly). Useful for combinatorics problems, probability calculations, or checking schoolwork. Runs entirely client-side.',
+    metaTitle: 'Factorial Calculator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Calculate factorials (n!) online for free, exact even for large numbers. Uses arbitrary-precision arithmetic. Runs in your browser.',
+    keywords: ['factorial calculator', 'n factorial calculator', 'calculate factorial', 'factorial calculator online'],
+    useCase: 'Calculating combinatorics or probability problems that involve factorials',
+    howItWorks: [
+      {
+        title: 'Enter a whole number',
+        description: 'Any non-negative integer, from 0 up to 5,000.',
+      },
+      {
+        title: 'Calculated with BigInt',
+        description: 'Arbitrary-precision arithmetic keeps the result exact, no matter how large it gets.',
+      },
+      {
+        title: 'Copy the result',
+        description: 'Grab the exact value with one click, formatted with digit-grouping commas.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why does this need "arbitrary-precision" arithmetic - can\'t JavaScript just do the math?',
+        answer:
+          'A standard JavaScript number can only represent integers exactly up to about 9 quadrillion, and factorials grow extremely fast - 20! is already over 2 quintillion. Beyond that point, regular floating-point math would silently round the result. BigInt represents integers of any size exactly, so the result stays precise no matter how large n gets.',
+      },
+      {
+        question: 'Why is there a limit of 5,000?',
+        answer:
+          'Factorials grow so quickly that 5,000! already has over 16,000 digits - past that, the result becomes too large to display or copy usefully, even though the math itself would still be exact.',
+      },
+    ],
+    Component: FactorialCalculator,
   },
 ];
 
