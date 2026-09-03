@@ -121,6 +121,10 @@ import LcmCalculator from '@/components/tools/LcmCalculator';
 import GcdCalculator from '@/components/tools/GcdCalculator';
 import PrimeNumberChecker from '@/components/tools/PrimeNumberChecker';
 import FactorialCalculator from '@/components/tools/FactorialCalculator';
+import MatrixDeterminantCalculator from '@/components/tools/MatrixDeterminantCalculator';
+import TimeFormatConverter from '@/components/tools/TimeFormatConverter';
+import CatAgeConverter from '@/components/tools/CatAgeConverter';
+import DogAgeConverter from '@/components/tools/DogAgeConverter';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -7886,6 +7890,173 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: FactorialCalculator,
+  },
+  {
+    slug: 'matrix-determinant-calculator',
+    category: 'calculators',
+    isNew: true,
+    title: 'Matrix Determinant Calculator',
+    shortDescription: 'Calculate the determinant of a square matrix, from 1×1 up to 4×4.',
+    longDescription:
+      'Enter a square matrix (one row per line, values separated by commas) to calculate its determinant. Uses cofactor expansion along the first row, which is exact and straightforward to verify by hand for the sizes this tool supports (up to 4×4) - larger matrices are typically solved with LU decomposition instead for performance reasons, which isn\'t necessary at this scale. Useful for linear algebra coursework, checking whether a matrix is invertible (a zero determinant means it isn\'t), or verifying a calculation by hand. Runs entirely client-side.',
+    metaTitle: 'Matrix Determinant Calculator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Calculate the determinant of a 1x1 to 4x4 matrix online for free. Instant results, runs entirely in your browser.',
+    keywords: ['matrix determinant calculator', 'determinant calculator', 'calculate matrix determinant', 'find determinant of matrix'],
+    useCase: 'Checking linear algebra homework or verifying whether a matrix is invertible',
+    howItWorks: [
+      {
+        title: 'Enter your matrix',
+        description: 'One row per line, values separated by commas - must be square (same number of rows and columns).',
+      },
+      {
+        title: 'Determinant is computed instantly',
+        description: 'Calculated using cofactor expansion, exact for matrices up to 4×4.',
+      },
+      {
+        title: 'Read the result',
+        description: 'A zero determinant means the matrix is singular (not invertible).',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What does it mean if the determinant is 0?',
+        answer:
+          'A determinant of 0 means the matrix is singular - it has no inverse, and the linear system it represents either has no solution or infinitely many, rather than exactly one.',
+      },
+      {
+        question: 'Why is this limited to 4×4 matrices?',
+        answer:
+          'Cofactor expansion is simple and exact, but its cost grows factorially with matrix size, making it impractical beyond small matrices. Larger matrices are normally solved with LU decomposition instead - a different algorithm better suited to that scale, which this tool doesn\'t implement.',
+      },
+    ],
+    Component: MatrixDeterminantCalculator,
+  },
+  {
+    slug: 'time-format-converter',
+    category: 'calculators',
+    relatedSlugs: ['timezone-converter', 'time-unit-converter'],
+    isNew: true,
+    title: '12-Hour to 24-Hour Time Converter',
+    shortDescription: 'Convert a time between 12-hour (AM/PM) and 24-hour (military) format instantly.',
+    longDescription:
+      'Convert a time between 12-hour format (like 2:30 PM) and 24-hour format (like 14:30), in either direction. This is a pure format conversion - it doesn\'t touch timezones or dates, just the way a single clock time is written. Useful for converting a time from a schedule, itinerary, or system that uses one format into the other. Runs entirely client-side.',
+    metaTitle: '12-Hour to 24-Hour Time Converter - Free Tool | Formatiq',
+    metaDescription:
+      'Convert time between 12-hour (AM/PM) and 24-hour format online for free. Instant results, runs entirely in your browser.',
+    keywords: ['12 hour to 24 hour converter', '24 hour to 12 hour converter', 'military time converter', 'time format converter'],
+    useCase: 'Converting a time from a schedule or ticket that uses a different format than you\'re used to',
+    howItWorks: [
+      {
+        title: 'Choose a direction',
+        description: '12-hour to 24-hour, or 24-hour back to 12-hour.',
+      },
+      {
+        title: 'Enter the time',
+        description: 'e.g. 2:30 PM, or 14:30 for the 24-hour format.',
+      },
+      {
+        title: 'Read the result instantly',
+        description: 'The converted time updates live as you type.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this handle timezones?',
+        answer:
+          'No - this only converts the format a single clock time is written in (12-hour AM/PM vs 24-hour), not the timezone it\'s in. For converting a time across timezones, use the Timezone Converter instead.',
+      },
+      {
+        question: 'What does 24-hour format do with 12 AM and 12 PM?',
+        answer:
+          '12:00 AM (midnight) converts to 00:00 in 24-hour format, and 12:00 PM (noon) converts to 12:00 - the one part of the conversion that trips people up by hand, handled correctly here.',
+      },
+    ],
+    Component: TimeFormatConverter,
+  },
+  {
+    slug: 'cat-age-converter',
+    category: 'calculators',
+    relatedSlugs: ['dog-age-converter', 'age-calculator'],
+    isNew: true,
+    title: 'Cat Age to Human Years Converter',
+    shortDescription: 'Convert your cat\'s age to the human-years equivalent, using standard veterinary guidance.',
+    longDescription:
+      'Enter your cat\'s age to see the approximate equivalent in human years, using the commonly cited veterinary guideline: roughly 15 human years for the first year of life, another 9 for the second (24 total by age 2), and about 4 more for each year after that - not the old "multiply by 7" rule, which doesn\'t reflect how cats actually age. This is a widely-used average approximation, not a precise medical calculation, and individual cats vary. Runs entirely client-side.',
+    metaTitle: 'Cat Age to Human Years Converter - Free Tool | Formatiq',
+    metaDescription:
+      'Convert your cat\'s age to human years online for free, using standard veterinary guidance rather than the outdated "times 7" rule.',
+    keywords: ['cat years to human years', 'cat age calculator', 'cat years converter', 'how old is my cat in human years'],
+    useCase: 'Getting a rough sense of your cat\'s equivalent human age',
+    howItWorks: [
+      {
+        title: 'Enter your cat\'s age',
+        description: 'In years - decimals like 1.5 work too.',
+      },
+      {
+        title: 'Calculated using veterinary guidance',
+        description: '15 years for year one, +9 for year two, then +4 per year after.',
+      },
+      {
+        title: 'Read the approximate result',
+        description: 'A rounded estimate, not a precise medical calculation.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why not just multiply by 7?',
+        answer:
+          'The "multiply by 7" rule is a popular oversimplification that doesn\'t match how cats actually age - they mature very quickly in the first two years, then age more gradually afterward. The rates used here (15 for year one, +9 for year two, +4 per year after) reflect that more accurately and are closer to standard veterinary guidance.',
+      },
+      {
+        question: 'Is this exact for my specific cat?',
+        answer:
+          'No - this is a population-level average approximation. Individual cats age at different rates depending on breed, size, health, and lifestyle, so treat the result as a rough guide rather than a precise figure for your cat specifically.',
+      },
+    ],
+    Component: CatAgeConverter,
+  },
+  {
+    slug: 'dog-age-converter',
+    category: 'calculators',
+    relatedSlugs: ['cat-age-converter', 'age-calculator'],
+    isNew: true,
+    title: 'Dog Age to Human Years Converter',
+    shortDescription: 'Convert your dog\'s age to the human-years equivalent, using standard veterinary guidance.',
+    longDescription:
+      'Enter your dog\'s age to see the approximate equivalent in human years, using the commonly cited veterinary guideline: roughly 15 human years for the first year of life, another 9 for the second (24 total by age 2), and about 5 more for each year after that - not the old "multiply by 7" rule, which doesn\'t reflect how dogs actually age. Real aging rate varies significantly by breed and size (small breeds tend to age more slowly after year two, large breeds faster), so this single-rate average is a rough guide rather than a breed-specific calculation. Runs entirely client-side.',
+    metaTitle: 'Dog Age to Human Years Converter - Free Tool | Formatiq',
+    metaDescription:
+      'Convert your dog\'s age to human years online for free, using standard veterinary guidance rather than the outdated "times 7" rule.',
+    keywords: ['dog years to human years', 'dog age calculator', 'dog years converter', 'how old is my dog in human years'],
+    useCase: 'Getting a rough sense of your dog\'s equivalent human age',
+    howItWorks: [
+      {
+        title: 'Enter your dog\'s age',
+        description: 'In years - decimals like 1.5 work too.',
+      },
+      {
+        title: 'Calculated using veterinary guidance',
+        description: '15 years for year one, +9 for year two, then +5 per year after.',
+      },
+      {
+        title: 'Read the approximate result',
+        description: 'A rounded estimate, not a precise medical calculation.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why not just multiply by 7?',
+        answer:
+          'The "multiply by 7" rule is a popular oversimplification that doesn\'t match how dogs actually age - they mature very quickly in the first two years, then age more gradually afterward. The rates used here (15 for year one, +9 for year two, +5 per year after) are closer to standard veterinary guidance, though still an average rather than breed-specific.',
+      },
+      {
+        question: 'Does breed or size change the real answer?',
+        answer:
+          'Yes, significantly - small breeds tend to age more slowly after the first two years, while large and giant breeds tend to age faster and have shorter lifespans overall. This calculator uses a single average rate for simplicity, so treat the result as a rough guide rather than a breed-specific figure for your dog.',
+      },
+    ],
+    Component: DogAgeConverter,
   },
 ];
 
