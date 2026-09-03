@@ -125,6 +125,7 @@ import MatrixDeterminantCalculator from '@/components/tools/MatrixDeterminantCal
 import TimeFormatConverter from '@/components/tools/TimeFormatConverter';
 import CatAgeConverter from '@/components/tools/CatAgeConverter';
 import DogAgeConverter from '@/components/tools/DogAgeConverter';
+import ExcelViewer from '@/components/tools/ExcelViewer';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -8057,6 +8058,53 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: DogAgeConverter,
+  },
+  {
+    slug: 'excel-viewer',
+    category: 'formatters',
+    relatedSlugs: ['csv-viewer', 'csv-tsv-converter'],
+    isNew: true,
+    title: 'Excel Viewer',
+    shortDescription: 'View an .xlsx or .xls spreadsheet as a table, right in your browser.',
+    longDescription:
+      'Choose an .xlsx or .xls file to see its contents rendered as a readable table, without opening Excel or Google Sheets. Multiple sheets in the same workbook are supported - switch between them with the tabs above the table. The file is parsed entirely client-side using SheetJS\'s spreadsheet-parsing library; nothing is uploaded anywhere, which matters when the spreadsheet you\'re checking contains real data you\'d rather not hand to a random upload-based converter site.',
+    metaTitle: 'Excel Viewer - View XLSX Files Online | Formatiq',
+    metaDescription:
+      'View an Excel (.xlsx or .xls) file as a table online for free. Supports multiple sheets. Nothing is ever uploaded - parsed entirely in your browser.',
+    keywords: ['excel viewer', 'view xlsx online', 'xlsx viewer', 'open excel file online', 'view excel file'],
+    useCase: 'Quickly checking what\'s in a spreadsheet without opening Excel',
+    howItWorks: [
+      {
+        title: 'Choose a file',
+        description: 'An .xlsx or .xls file from your computer.',
+      },
+      {
+        title: 'Parsed instantly in your browser',
+        description: 'The file never leaves your machine - nothing is uploaded to a server.',
+      },
+      {
+        title: 'Switch between sheets',
+        description: 'If the workbook has more than one sheet, tabs appear above the table.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is my spreadsheet uploaded anywhere?',
+        answer:
+          'No - the file is read and parsed entirely in your browser using a client-side spreadsheet-parsing library. It\'s never sent to a server, which matters if the spreadsheet contains real business data, financial figures, or anything else you\'d rather keep local.',
+      },
+      {
+        question: 'Can I edit the spreadsheet here?',
+        answer:
+          'No - this tool is read-only, for quickly checking what a spreadsheet contains. For converting the data to another format, see the CSV Viewer or CSV ⇄ TSV Converter.',
+      },
+      {
+        question: 'Does this support both .xlsx and the older .xls format?',
+        answer:
+          'Yes - both the modern .xlsx format and the legacy .xls format are supported, along with workbooks containing multiple sheets.',
+      },
+    ],
+    Component: ExcelViewer,
   },
 ];
 
