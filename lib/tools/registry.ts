@@ -109,6 +109,11 @@ import GpaCalculator from '@/components/tools/GpaCalculator';
 import Base32EncodeDecode from '@/components/tools/Base32EncodeDecode';
 import RandomDateGenerator from '@/components/tools/RandomDateGenerator';
 import WordFrequencyCounter from '@/components/tools/WordFrequencyCounter';
+import CsvViewer from '@/components/tools/CsvViewer';
+import XmlDiffChecker from '@/components/tools/XmlDiffChecker';
+import TextAsciiConverter from '@/components/tools/TextAsciiConverter';
+import RandomZipCodeGenerator from '@/components/tools/RandomZipCodeGenerator';
+import IpHexConverter from '@/components/tools/IpHexConverter';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -7359,6 +7364,222 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: WordFrequencyCounter,
+  },
+  {
+    slug: 'csv-viewer',
+    category: 'formatters',
+    isNew: true,
+    title: 'CSV Viewer',
+    shortDescription: 'Paste CSV and see it rendered as a readable table instantly, in your browser.',
+    longDescription:
+      'Paste CSV data and see it rendered as an actual table - rows and columns lined up and readable - rather than a wall of comma-separated text. The parser handles quoted fields containing commas and doubled-quote escapes ("") correctly, so real-world exports from Excel, Google Sheets, or a database dump display accurately rather than breaking on the first field that happens to contain a comma. If a row has a different number of fields than the header, that\'s flagged rather than silently misaligning columns. Runs entirely client-side, so nothing you paste is ever uploaded.',
+    metaTitle: 'CSV Viewer - View CSV as a Table Online | Formatiq',
+    metaDescription:
+      'View CSV data as a readable table online for free. Handles quoted fields and commas correctly. Nothing you paste is ever uploaded.',
+    keywords: ['csv viewer', 'csv view', 'view csv online', 'csv reader', 'csv table viewer'],
+    useCase: 'Quickly reading a CSV export without opening a spreadsheet program',
+    howItWorks: [
+      {
+        title: 'Paste your CSV',
+        description: 'An export from Excel, Google Sheets, or any comma-separated data.',
+      },
+      {
+        title: 'Quoted fields are handled correctly',
+        description: 'Commas and escaped quotes inside a quoted field don\'t break the column alignment.',
+      },
+      {
+        title: 'See it as a table',
+        description: 'Rows and columns render instantly, with uneven row lengths flagged rather than hidden.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this handle commas inside a quoted field correctly?',
+        answer:
+          'Yes - the parser tracks whether it\'s inside a quoted field and only treats a comma as a column separator when it\'s outside quotes, so a field like "Smith, John" stays as one column rather than splitting into two.',
+      },
+      {
+        question: 'What happens if a row has more or fewer columns than the header?',
+        answer:
+          'The table still renders, but the status line flags that row lengths are inconsistent, so you know to check the source data rather than silently seeing misaligned columns.',
+      },
+      {
+        question: 'Can I edit the CSV or export the table?',
+        answer:
+          'This tool is read-only by design - it\'s for quickly checking what a CSV file contains, not for editing it. For converting CSV to another format, see the CSV ⇄ JSON Converter or CSV to TSV Converter.',
+      },
+    ],
+    Component: CsvViewer,
+  },
+  {
+    slug: 'xml-diff-checker',
+    category: 'validators',
+    relatedSlugs: ['xml-formatter', 'json-diff-checker'],
+    isNew: true,
+    title: 'XML Diff Checker',
+    shortDescription: 'Compare two XML documents and see exactly what changed, ignoring formatting differences.',
+    longDescription:
+      'Paste two XML documents and see exactly which elements were added, removed, or changed between them. Both documents are parsed and re-serialized with consistent indentation before comparing, so a difference in whitespace or attribute ordering doesn\'t get flagged as a change - only actual structural or content differences show up. This mirrors the JSON Diff Checker\'s approach for XML, since a naive text diff would report false positives for every formatting inconsistency between two documents that are otherwise identical. Runs entirely client-side, so nothing you paste is ever uploaded.',
+    metaTitle: 'XML Diff Checker - Compare Two XML Files | Formatiq',
+    metaDescription:
+      'Compare two XML documents online for free and see exactly what changed. Formatting differences are ignored - only real changes are flagged.',
+    keywords: ['xml diff', 'compare xml', 'xml diff checker', 'xml comparison tool', 'xml compare online'],
+    useCase: 'Reviewing what actually changed between two versions of a config or API response',
+    howItWorks: [
+      {
+        title: 'Paste both XML documents',
+        description: 'The original version in XML A, the changed version in XML B.',
+      },
+      {
+        title: 'Both are normalized first',
+        description: 'Each document is parsed and re-indented consistently before comparing.',
+      },
+      {
+        title: 'See the real differences',
+        description: 'Added and removed lines are highlighted - formatting-only differences are ignored.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Will formatting differences (indentation, attribute order) show up as changes?',
+        answer:
+          'No - both documents are re-serialized with the same consistent indentation before comparing, so whitespace and formatting differences are ignored. Only actual differences in elements, attributes, and text content are flagged.',
+      },
+      {
+        question: 'What happens if one of the documents isn\'t valid XML?',
+        answer:
+          'The comparison stops and reports which document (A or B) failed to parse, rather than attempting a text-level diff on invalid input. Fix the XML using the XML Formatter & Validator first if you need help finding the syntax error.',
+      },
+      {
+        question: 'How is this different from the JSON Diff Checker?',
+        answer:
+          'Same approach, different format - this normalizes and compares XML documents instead of JSON. If you\'re comparing JSON instead of XML, use the JSON Diff Checker.',
+      },
+    ],
+    Component: XmlDiffChecker,
+  },
+  {
+    slug: 'text-ascii-converter',
+    category: 'encoders-decoders',
+    isNew: true,
+    title: 'Text to ASCII Converter',
+    shortDescription: 'Convert text to its ASCII/Unicode code points, or decode a list of codes back into text.',
+    longDescription:
+      'Convert text into its underlying character codes - a space-separated list of decimal numbers, one per character - or reverse the process by pasting codes back in to get the original text. Each character is converted using its actual code point, so this correctly handles the full Unicode range, not just the 128 characters covered by classic 7-bit ASCII - an emoji or accented letter converts to its real, larger code point rather than an incorrect or truncated value. Useful for understanding what a character actually is under the hood, building a simple cipher, or debugging text-encoding issues. Runs entirely client-side.',
+    metaTitle: 'Text to ASCII Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert text to ASCII/Unicode character codes online for free, or decode codes back to text. Runs entirely in your browser.',
+    keywords: ['text to ascii', 'ascii to text', 'ascii converter', 'character code converter', 'text to character codes'],
+    useCase: 'Seeing the exact character codes behind a piece of text',
+    howItWorks: [
+      {
+        title: 'Choose a direction',
+        description: 'Text to ASCII codes, or ASCII codes back to text.',
+      },
+      {
+        title: 'Type or paste your input',
+        description: 'Plain text, or a space-separated list of character codes.',
+      },
+      {
+        title: 'Read the result instantly',
+        description: 'The conversion updates live as you type, with no button press required.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this only support the original 128 ASCII characters?',
+        answer:
+          'No - it uses each character\'s actual Unicode code point, so accented letters, symbols, and emoji all convert correctly to their real (often larger than 127) code point rather than being limited to classic 7-bit ASCII.',
+      },
+      {
+        question: 'What format should the codes be in to convert back to text?',
+        answer:
+          'A space-separated list of decimal numbers, one per character - for example "72 101 108 108 111" decodes to "Hello". Codes outside the valid Unicode range are rejected with a clear error rather than silently producing garbled output.',
+      },
+    ],
+    Component: TextAsciiConverter,
+  },
+  {
+    slug: 'random-zip-code-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Random ZIP Code Generator',
+    shortDescription: 'Generate 1-50 randomly formatted US ZIP codes at once, optionally with a ZIP+4 suffix.',
+    longDescription:
+      'Generate 1-50 US ZIP codes at once, each a random 5-digit number within the range the USPS actually assigns codes from (00501-99950), with an optional ZIP+4 suffix. Like any randomly generated code, these are properly formatted but not verified against the USPS\'s actual assigned-code database, so they\'re suited for populating test data or a form mockup, not for anything that needs a real, deliverable address. Runs entirely client-side.',
+    metaTitle: 'Random ZIP Code Generator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Generate random, properly formatted US ZIP codes online for free, with an optional ZIP+4 suffix. Useful test data for forms and databases.',
+    keywords: ['random zip code generator', 'random zip code', 'generate zip code', 'fake zip code', 'zip code generator'],
+    useCase: 'Populating test data in a form or database that expects a ZIP code field',
+    howItWorks: [
+      {
+        title: 'Set a count',
+        description: 'Generate 1 to 50 ZIP codes at once.',
+      },
+      {
+        title: 'Toggle ZIP+4 if needed',
+        description: 'Add the 4-digit delivery-point suffix, or leave it off for a plain 5-digit code.',
+      },
+      {
+        title: 'Copy the results',
+        description: 'Grab all generated codes at once with a single click.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Are these real, deliverable ZIP codes?',
+        answer:
+          'They\'re properly formatted and generated within the numeric range the USPS actually assigns from, but they aren\'t checked against the real assigned-code database, so a specific generated code may or may not correspond to an actual delivery area. Use these for test data, not for anything that needs to be genuinely deliverable.',
+      },
+      {
+        question: 'What is a ZIP+4 code?',
+        answer:
+          'ZIP+4 adds a 4-digit suffix after the standard 5-digit ZIP code to identify a more specific delivery segment, like a particular block or building. It\'s optional on most mail but sometimes required by systems that expect the fuller format.',
+      },
+    ],
+    Component: RandomZipCodeGenerator,
+  },
+  {
+    slug: 'ip-hex-converter',
+    category: 'converters',
+    isNew: true,
+    title: 'IP Address to Hex Converter',
+    shortDescription: 'Convert an IPv4 address to its 8-digit hex representation, or decode hex back to an IP.',
+    longDescription:
+      'Convert an IPv4 address into its 8-digit hexadecimal representation (two hex digits per octet), or reverse the process by pasting a hex string back in to get the dotted-decimal address. This is the same underlying value in two different representations - useful for reading hex-encoded addresses in packet captures, low-level networking configs, or systems that store IP addresses as raw hex rather than the familiar dotted-decimal format. Each octet is validated to be within the valid 0-255 range before conversion. Runs entirely client-side.',
+    metaTitle: 'IP Address to Hex Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert an IPv4 address to hexadecimal online for free, or decode hex back to an IP address. Runs entirely in your browser.',
+    keywords: ['ip to hex', 'ip address to hex', 'hex to ip', 'ip hex converter', 'convert ip to hexadecimal'],
+    useCase: 'Reading a hex-encoded IP address from a packet capture or low-level config',
+    howItWorks: [
+      {
+        title: 'Choose a direction',
+        description: 'IPv4 to hex, or hex back to an IPv4 address.',
+      },
+      {
+        title: 'Enter your value',
+        description: 'A dotted-decimal address like 192.168.1.10, or 8 hex digits like C0A8010A.',
+      },
+      {
+        title: 'Read the result instantly',
+        description: 'The conversion updates live, with invalid octets or malformed hex flagged clearly.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why would an IP address be represented in hex?',
+        answer:
+          'Some low-level networking tools, packet captures, and legacy configuration formats store or display IP addresses as raw hex bytes rather than the familiar dotted-decimal notation, since that\'s closer to how the address is actually represented in memory or on the wire.',
+      },
+      {
+        question: 'Does this support IPv6?',
+        answer:
+          'No - this converts 4-byte IPv4 addresses only. An IPv6 address is 16 bytes and uses its own hex-colon notation, which this tool doesn\'t handle.',
+      },
+    ],
+    Component: IpHexConverter,
   },
 ];
 
