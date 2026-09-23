@@ -294,6 +294,133 @@ function feeCalculate(amount: number, feePercent: number, fixedFee: number) {
   check('cash-app-fee-calculator', 'negative fee percent -> error not crash', bad.ok === false, JSON.stringify(bad));
 }
 
+// ---------- compound-interest-calculator ----------
+function ciCalculate(principal: number, ratePercent: number, years: number, periodsPerYear: number) {
+  if (!Number.isFinite(principal) || principal <= 0) return { ok: false as const };
+  if (!Number.isFinite(ratePercent) || ratePercent < 0) return { ok: false as const };
+  if (!Number.isFinite(years) || years <= 0) return { ok: false as const };
+  const r = ratePercent / 100;
+  const futureValue = principal * Math.pow(1 + r / periodsPerYear, periodsPerYear * years);
+  return { ok: true as const, futureValue, interestEarned: futureValue - principal };
+}
+{
+  const good = ciCalculate(10000, 5, 1, 12);
+  check('compound-interest-calculator', 'valid: $10000 @ 5% monthly for 1yr -> ~$10511.62, interest ~$511.62', good.ok === true && Math.abs(good.futureValue - 10511.62) < 0.01 && Math.abs(good.interestEarned - 511.62) < 0.01, JSON.stringify(good));
+  const bad = ciCalculate(0, 5, 1, 12); // zero principal
+  check('compound-interest-calculator', 'zero principal -> error not crash', bad.ok === false, JSON.stringify(bad));
+}
+
+// ---------- compound-interest-rate-calculator ----------
+function cirCalculate(principal: number, futureValue: number, years: number, periodsPerYear: number) {
+  if (!Number.isFinite(principal) || principal <= 0) return { ok: false as const };
+  if (!Number.isFinite(futureValue) || futureValue < principal) return { ok: false as const };
+  if (!Number.isFinite(years) || years <= 0) return { ok: false as const };
+  const ratio = futureValue / principal;
+  const rate = periodsPerYear * (Math.pow(ratio, 1 / (periodsPerYear * years)) - 1) * 100;
+  return { ok: true as const, rate };
+}
+{
+  const good = cirCalculate(10000, 10511.62, 1, 12);
+  check('compound-interest-rate-calculator', 'valid: P=10000,A=10511.62,t=1,monthly -> r ~ 5%', good.ok === true && Math.abs(good.rate - 5) < 0.05, JSON.stringify(good));
+  const bad = cirCalculate(10000, 9000, 1, 12); // future value less than principal
+  check('compound-interest-rate-calculator', 'future value less than principal -> error not crash', bad.ok === false, JSON.stringify(bad));
+}
+
+// ---------- current-ratio-calculator ----------
+function crCalculate(currentAssets: number, currentLiabilities: number) {
+  if (!Number.isFinite(currentAssets) || currentAssets < 0) return { ok: false as const };
+  if (!Number.isFinite(currentLiabilities) || currentLiabilities <= 0) return { ok: false as const };
+  return { ok: true as const, ratio: currentAssets / currentLiabilities };
+}
+{
+  const good = crCalculate(200000, 100000);
+  check('current-ratio-calculator', 'valid: 200000/100000 -> 2.0', good.ok === true && good.ratio === 2, JSON.stringify(good));
+  const bad = crCalculate(100000, 0); // zero liabilities
+  check('current-ratio-calculator', 'zero current liabilities -> error not divide-by-zero/Infinity', bad.ok === false, JSON.stringify(bad));
+}
+
+// ---------- degree-of-operating-leverage-calculator ----------
+function dolCalculate(sales: number, variableCosts: number, fixedCosts: number) {
+  if (!Number.isFinite(sales) || sales <= 0) return { ok: false as const };
+  if (!Number.isFinite(variableCosts) || variableCosts < 0) return { ok: false as const };
+  if (!Number.isFinite(fixedCosts) || fixedCosts < 0) return { ok: false as const };
+  const contributionMargin = sales - variableCosts;
+  const operatingIncome = contributionMargin - fixedCosts;
+  if (operatingIncome <= 0) return { ok: false as const };
+  return { ok: true as const, contributionMargin, operatingIncome, dol: contributionMargin / operatingIncome };
+}
+{
+  const good = dolCalculate(100000, 60000, 20000);
+  check('degree-of-operating-leverage-calculator', 'valid: sales=100000,variable=60000,fixed=20000 -> CM 40000, OI 20000, DOL 2.0', good.ok === true && good.contributionMargin === 40000 && good.operatingIncome === 20000 && good.dol === 2, JSON.stringify(good));
+  const bad = dolCalculate(100000, 60000, 40000); // operating income exactly zero
+  check('degree-of-operating-leverage-calculator', 'operating income at break-even (zero) -> error not divide-by-zero', bad.ok === false, JSON.stringify(bad));
+}
+
+// ---------- depreciation-calculator ----------
+function depCalculate(cost: number, salvage: number, life: number) {
+  if (!Number.isFinite(cost) || cost <= 0) return { ok: false as const };
+  if (!Number.isFinite(salvage) || salvage < 0 || salvage >= cost) return { ok: false as const };
+  if (!Number.isFinite(life) || life <= 0) return { ok: false as const };
+  return { ok: true as const, annualDepreciation: (cost - salvage) / life };
+}
+{
+  const good = depCalculate(10000, 2000, 4);
+  check('depreciation-calculator', 'valid: cost=10000,salvage=2000,life=4 -> $2000/year', good.ok === true && good.annualDepreciation === 2000, JSON.stringify(good));
+  const bad = depCalculate(10000, 10000, 4); // salvage equals cost
+  check('depreciation-calculator', 'salvage equal to cost -> error not zero-depreciation silently', bad.ok === false, JSON.stringify(bad));
+}
+
+// ---------- discounted-cash-flow-calculator ----------
+function dcfCalculate(cashFlows: number[], discountRatePercent: number, initialInvestment: number) {
+  if (!Number.isFinite(discountRatePercent) || discountRatePercent <= -100) return { ok: false as const };
+  if (!Number.isFinite(initialInvestment) || initialInvestment < 0) return { ok: false as const };
+  if (cashFlows.length === 0) return { ok: false as const };
+  const r = discountRatePercent / 100;
+  const presentValue = cashFlows.reduce((sum, cf, i) => sum + cf / Math.pow(1 + r, i + 1), 0);
+  return { ok: true as const, presentValue, netPresentValue: presentValue - initialInvestment };
+}
+{
+  const good = dcfCalculate([1000, 1000, 1000], 10, 0);
+  check('discounted-cash-flow-calculator', 'valid: 10% rate, 3x $1000 -> PV ~ $2486.85', good.ok === true && Math.abs(good.presentValue - 2486.85) < 0.01, JSON.stringify(good));
+  const bad = dcfCalculate([], 10, 0); // no cash flows
+  check('discounted-cash-flow-calculator', 'no cash flows -> error not zero/NaN result', bad.ok === false, JSON.stringify(bad));
+}
+
+// ---------- dividend-calculator ----------
+function divCalculate(shares: number, dividendPerShare: number, sharePrice: number | null) {
+  if (!Number.isFinite(shares) || shares <= 0) return { ok: false as const };
+  if (!Number.isFinite(dividendPerShare) || dividendPerShare < 0) return { ok: false as const };
+  const annualDividendIncome = shares * dividendPerShare;
+  const yieldPercent = sharePrice !== null ? (dividendPerShare / sharePrice) * 100 : null;
+  return { ok: true as const, annualDividendIncome, yieldPercent };
+}
+{
+  const good = divCalculate(100, 2.5, null);
+  check('dividend-calculator', 'valid: 100 shares x $2.50 -> $250 income', good.ok === true && good.annualDividendIncome === 250, JSON.stringify(good));
+  const withYield = divCalculate(100, 2.5, 50);
+  check('dividend-calculator', 'valid with price=$50 -> yield 5%', withYield.ok === true && withYield.yieldPercent === 5, JSON.stringify(withYield));
+  const bad = divCalculate(0, 2.5, null); // zero shares
+  check('dividend-calculator', 'zero shares -> error not crash', bad.ok === false, JSON.stringify(bad));
+}
+
+// ---------- dividend-discount-model-calculator ----------
+function ddmCalculate(d0: number, growthPercent: number, requiredReturnPercent: number) {
+  if (!Number.isFinite(d0) || d0 <= 0) return { ok: false as const };
+  if (!Number.isFinite(growthPercent) || !Number.isFinite(requiredReturnPercent)) return { ok: false as const };
+  if (requiredReturnPercent <= growthPercent) return { ok: false as const };
+  const d1 = d0 * (1 + growthPercent / 100);
+  const value = d1 / (requiredReturnPercent / 100 - growthPercent / 100);
+  return { ok: true as const, d1, value };
+}
+{
+  const good = ddmCalculate(2, 5, 10);
+  check('dividend-discount-model-calculator', 'valid: D0=2,g=5%,r=10% -> D1=2.10, value=42.00', good.ok === true && Math.abs(good.d1 - 2.1) < 1e-9 && Math.abs(good.value - 42) < 1e-9, JSON.stringify(good));
+  const badEqual = ddmCalculate(2, 10, 10); // r equals g
+  check('dividend-discount-model-calculator', 'r equal to g -> rejected with error, not Infinity', badEqual.ok === false, JSON.stringify(badEqual));
+  const badLess = ddmCalculate(2, 12, 10); // r less than g
+  check('dividend-discount-model-calculator', 'r less than g -> rejected with error, not a negative value', badLess.ok === false, JSON.stringify(badLess));
+}
+
 describe('Calculators', () => {
   results.forEach((r) => {
     it(`${r.tool}: ${r.test}`, () => {

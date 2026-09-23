@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { compoundBalance, nominalRateToApy } from '@/lib/tools/finance-utils';
+import { compoundBalance, nominalRateToApy, solveForRate } from '@/lib/tools/finance-utils';
 
 describe('finance-utils', () => {
   it('nominalRateToApy: 5% APR monthly compounding produces APY slightly above 5%', () => {
@@ -27,5 +27,16 @@ describe('finance-utils', () => {
     const monthly = compoundBalance(10000, 5, 'monthly', 1);
     const annually = compoundBalance(10000, 5, 'annually', 1);
     expect(monthly).toBeGreaterThan(annually);
+  });
+
+  it('solveForRate: inverse of compoundBalance recovers ~5% APR monthly compounding', () => {
+    const rate = solveForRate(10000, 10511.62, 1, 'monthly');
+    expect(rate).toBeCloseTo(5, 1);
+  });
+
+  it('solveForRate: round-trips exactly with compoundBalance', () => {
+    const balance = compoundBalance(10000, 7, 'quarterly', 3);
+    const rate = solveForRate(10000, balance, 3, 'quarterly');
+    expect(rate).toBeCloseTo(7, 6);
   });
 });

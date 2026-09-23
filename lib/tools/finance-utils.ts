@@ -46,3 +46,19 @@ export function compoundBalance(
   const r = aprPercent / 100;
   return principal * Math.pow(1 + r / n, n * years);
 }
+
+/**
+ * Solves for the nominal annual rate (as a percentage) required to grow a principal into a
+ * given future value over a number of years at the given compounding frequency - the inverse
+ * of compoundBalance: r = n × ((A/P)^(1/(n*years)) - 1).
+ */
+export function solveForRate(
+  principal: number,
+  futureValue: number,
+  years: number,
+  frequency: CompoundingFrequency,
+): number {
+  const n = COMPOUNDING_PERIODS_PER_YEAR[frequency];
+  const ratio = futureValue / principal;
+  return n * (Math.pow(ratio, 1 / (n * years)) - 1) * 100;
+}

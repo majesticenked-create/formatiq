@@ -138,6 +138,14 @@ import CapmCalculator from '@/components/tools/CapmCalculator';
 import PaymentFeeCalculator from '@/components/tools/PaymentFeeCalculator';
 import CashFlowToDebtRatioCalculator from '@/components/tools/CashFlowToDebtRatioCalculator';
 import CdCalculator from '@/components/tools/CdCalculator';
+import CompoundInterestCalculator from '@/components/tools/CompoundInterestCalculator';
+import CompoundInterestRateCalculator from '@/components/tools/CompoundInterestRateCalculator';
+import CurrentRatioCalculator from '@/components/tools/CurrentRatioCalculator';
+import DegreeOfOperatingLeverageCalculator from '@/components/tools/DegreeOfOperatingLeverageCalculator';
+import DepreciationCalculator from '@/components/tools/DepreciationCalculator';
+import DiscountedCashFlowCalculator from '@/components/tools/DiscountedCashFlowCalculator';
+import DividendCalculator from '@/components/tools/DividendCalculator';
+import DividendDiscountModelCalculator from '@/components/tools/DividendDiscountModelCalculator';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -8686,6 +8694,382 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: CdCalculator,
+  },
+  {
+    slug: 'compound-interest-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['cd-calculator', 'apy-calculator', 'appreciation-calculator', 'compound-interest-rate-calculator'],
+    title: 'Compound Interest Calculator',
+    shortDescription: 'Calculate the future value and interest earned on savings or an investment growing at compound interest.',
+    longDescription:
+      'Enter a starting principal, an annual interest rate, a time period in years, and how often interest compounds - daily, monthly, quarterly, semi-annually, or annually - to calculate the future value: A = P × (1 + r/n)^(n × t), where P is the principal, r is the annual rate as a decimal, n is the number of compounding periods per year, and t is the number of years. This is a general-purpose version of the same compounding math behind this site\'s CD Calculator, meant for any savings or investment scenario rather than a Certificate of Deposit specifically - a general brokerage account, a high-yield savings account, or a classroom compound-interest problem. Both the projected future value and the total interest earned (future value minus principal) are shown, along with the formula worked out with your actual numbers. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Compound Interest Calculator - Future Value | Formatiq',
+    metaDescription:
+      'Calculate the future value and interest earned on compound interest online for free, from principal, rate, time period, and compounding frequency.',
+    keywords: ['compound interest calculator', 'future value calculator', 'compounding calculator', 'interest calculator', 'savings growth calculator'],
+    useCase: 'Projecting how much a savings or investment balance will grow over time at a given interest rate',
+    howItWorks: [
+      {
+        title: 'Enter the principal, rate, and time period',
+        description: 'The starting amount, the annual interest rate, and how many years it will grow for.',
+      },
+      {
+        title: 'Choose a compounding frequency',
+        description: 'Daily, monthly, quarterly, semi-annually, or annually.',
+      },
+      {
+        title: 'Read the future value',
+        description: 'The projected ending balance and the total interest earned, using A = P × (1 + r/n)^(n × t).',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the CD Calculator?',
+        answer:
+          'They share the exact same underlying compounding formula, but the CD Calculator is framed specifically around Certificates of Deposit - it labels the input a "deposit" and warns about APR versus APY conventions specific to CDs. This calculator uses general savings/investment language (principal, rate, future value) for any compounding scenario, not just a CD.',
+      },
+      {
+        question: 'What does the compounding frequency change?',
+        answer:
+          'It changes n, the number of times per year interest is calculated and added to the balance. More frequent compounding (daily versus annually, for example) means interest starts earning its own interest sooner, which produces a slightly higher future value for the same nominal annual rate.',
+      },
+      {
+        question: 'Does this calculator handle additional contributions over time?',
+        answer:
+          'No - this models a single lump-sum principal compounding over time with no additional deposits or withdrawals. If you\'re adding money regularly, the actual future value will be higher than what this tool shows, since it doesn\'t account for those extra contributions.',
+      },
+    ],
+    Component: CompoundInterestCalculator,
+  },
+  {
+    slug: 'compound-interest-rate-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['compound-interest-calculator', 'apy-calculator', 'cd-calculator'],
+    title: 'Compound Interest Rate Calculator',
+    shortDescription: 'Solve for the annual interest rate required to grow a principal into a target future value.',
+    longDescription:
+      'Enter a starting principal, a target future value, a time period in years, and a compounding frequency to solve for the annual interest rate (r) that would produce that growth: r = n × ((A/P)^(1/(n × t)) − 1), where A is the target future value, P is the principal, n is the number of compounding periods per year, and t is the number of years. This is the inverse of the standard compound-interest formula used by this site\'s Compound Interest Calculator - instead of projecting a future value from a known rate, it works backward from a known starting and ending amount to find the rate that connects them. Useful for checking what return an investment would have needed to reach a specific goal, or reverse-engineering an advertised growth claim. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Compound Interest Rate Calculator - Solve for Rate | Formatiq',
+    metaDescription:
+      'Solve for the annual interest rate required to grow a principal into a target future value online for free, for any compounding frequency.',
+    keywords: ['compound interest rate calculator', 'solve for interest rate calculator', 'required rate of return calculator', 'reverse compound interest calculator'],
+    useCase: 'Figuring out what annual return an investment would have needed to grow from a starting amount to a target amount',
+    howItWorks: [
+      {
+        title: 'Enter the principal and target future value',
+        description: 'The starting amount and the ending amount you want to solve the rate for.',
+      },
+      {
+        title: 'Enter the time period and compounding frequency',
+        description: 'How many years the growth happened over, and how often interest compounds.',
+      },
+      {
+        title: 'Read the required rate',
+        description: 'The annual interest rate that connects the principal to the target future value, using r = n × ((A/P)^(1/(n×t)) − 1).',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the Compound Interest Calculator?',
+        answer:
+          'The Compound Interest Calculator solves for the future value given a known rate. This tool solves the opposite problem - given a known starting amount, ending amount, and time period, it works backward to find what rate would explain that growth. They\'re inverse operations built on the same underlying formula.',
+      },
+      {
+        question: 'What happens if the future value is less than the principal?',
+        answer:
+          'The tool reports an error rather than a nonsensical result - this compounding model solves for a positive growth rate connecting a smaller starting amount to a larger ending amount, and a decline isn\'t expressible as a compounding rate in this formula.',
+      },
+      {
+        question: 'Why does the compounding frequency matter here too?',
+        answer:
+          'The same total growth can be explained by different nominal rates depending on how often that rate is assumed to compound - a rate that compounds daily needs to be slightly lower than one that compounds annually to produce the identical ending balance, since more frequent compounding does more of the work on its own.',
+      },
+    ],
+    Component: CompoundInterestRateCalculator,
+  },
+  {
+    slug: 'current-ratio-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['cash-flow-to-debt-ratio-calculator', 'break-even-calculator'],
+    title: 'Current Ratio Calculator',
+    shortDescription: 'Calculate the current ratio from current assets and current liabilities, with a plain-language assessment.',
+    longDescription:
+      'Enter current assets and current liabilities to calculate the current ratio - current assets ÷ current liabilities - a liquidity metric that estimates whether a company has enough short-term assets to cover its short-term obligations. A ratio of 1.0 means current assets exactly equal current liabilities; a ratio above 1 suggests a comfortable liquidity cushion, while a ratio below 1 can signal potential difficulty meeting near-term obligations. The result includes a plain-language assessment (strong, healthy, moderate, or weak) based on commonly cited thresholds, though what counts as healthy varies by industry and business model. Useful for credit analysis, comparing a company\'s liquidity year over year, or coursework in financial ratio analysis. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Current Ratio Calculator - Liquidity Ratio | Formatiq',
+    metaDescription:
+      'Calculate the current ratio online for free from current assets and current liabilities, with a plain-language liquidity assessment.',
+    keywords: ['current ratio calculator', 'liquidity ratio calculator', 'working capital ratio calculator', 'current assets to liabilities ratio'],
+    useCase: 'Assessing whether a company\'s short-term assets can cover its short-term liabilities',
+    howItWorks: [
+      {
+        title: 'Enter current assets',
+        description: 'Cash, receivables, inventory, and other assets expected to convert to cash within a year.',
+      },
+      {
+        title: 'Enter current liabilities',
+        description: 'Obligations due within a year, such as accounts payable and short-term debt.',
+      },
+      {
+        title: 'Read the ratio and assessment',
+        description: 'The current ratio, along with a plain-language strong/healthy/moderate/weak assessment.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What does a current ratio of exactly 1.0 mean?',
+        answer:
+          'It means current assets exactly equal current liabilities - in theory, the company could cover all of its short-term obligations by converting its short-term assets to cash, with nothing left over as a cushion.',
+      },
+      {
+        question: 'Is a higher current ratio always better?',
+        answer:
+          'Generally yes for liquidity, but an unusually high ratio can also indicate the company is holding excess cash or inventory rather than deploying it productively. What counts as a healthy ratio varies by industry, so this is more useful compared against industry peers or the same company\'s own history than a single universal benchmark.',
+      },
+      {
+        question: 'How is this different from the Cash Flow to Debt Ratio Calculator?',
+        answer:
+          'The current ratio compares short-term (current) assets against short-term (current) liabilities - a balance-sheet snapshot of near-term liquidity. Cash flow to debt ratio instead compares a full year of operating cash flow against total debt (not just current liabilities) - a broader measure of solvency over a longer horizon.',
+      },
+    ],
+    Component: CurrentRatioCalculator,
+  },
+  {
+    slug: 'degree-of-operating-leverage-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['break-even-calculator', 'cash-flow-to-debt-ratio-calculator'],
+    title: 'Degree of Operating Leverage Calculator',
+    shortDescription: 'Calculate the degree of operating leverage (DOL) from sales, variable costs, and fixed costs.',
+    longDescription:
+      'Enter total sales, total variable costs, and total fixed costs to calculate the degree of operating leverage (DOL): (Sales − Variable costs) ÷ (Sales − Variable costs − Fixed costs), or equivalently, contribution margin ÷ operating income. DOL measures how sensitive operating income is to a change in sales - a DOL of 2 means a 1% change in sales is expected to produce roughly a 2% change in operating income, in either direction. Businesses with a higher proportion of fixed costs relative to variable costs tend to have a higher DOL, meaning more upside when sales grow but also more downside risk when sales decline. This calculator shares its contribution-margin concept with this site\'s Break-Even Calculator, but reports a different output - a sensitivity ratio rather than a break-even unit count. If operating income isn\'t positive, DOL isn\'t meaningful under this formula, so the tool reports an error instead of a distorted or negative ratio. Useful for assessing cost-structure risk or coursework in managerial accounting. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Degree of Operating Leverage Calculator - DOL | Formatiq',
+    metaDescription:
+      'Calculate the degree of operating leverage (DOL) online for free from sales, variable costs, and fixed costs.',
+    keywords: ['degree of operating leverage calculator', 'dol calculator', 'operating leverage calculator', 'contribution margin sensitivity calculator'],
+    useCase: 'Assessing how sensitive a business\'s operating income is to a change in sales volume',
+    howItWorks: [
+      {
+        title: 'Enter sales, variable costs, and fixed costs',
+        description: 'Total sales, total variable costs, and total fixed costs for the period.',
+      },
+      {
+        title: 'Contribution margin and operating income are calculated',
+        description: 'Contribution margin is sales minus variable costs; operating income subtracts fixed costs from that.',
+      },
+      {
+        title: 'Read the DOL',
+        description: 'DOL = contribution margin ÷ operating income - how much operating income moves per 1% move in sales.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What does a DOL of 2 actually mean?',
+        answer:
+          'It means operating income is expected to change by roughly 2% for every 1% change in sales, in either direction. A business with a higher DOL sees larger swings in profit from the same percentage change in sales, compared to a business with a lower DOL.',
+      },
+      {
+        question: 'Why does the calculator require operating income to be positive?',
+        answer:
+          'The DOL formula divides contribution margin by operating income, which becomes zero, negative, or misleading right around and below the break-even point. The ratio is only meaningful for a business that\'s already generating a positive operating income - use the Break-Even Calculator first to check whether a given sales level clears that threshold.',
+      },
+      {
+        question: 'How does this relate to the Break-Even Calculator?',
+        answer:
+          'Both start from the same contribution margin concept (selling price or sales minus variable costs). The Break-Even Calculator uses it to find the sales volume needed to cover fixed costs; this calculator uses it to measure how sensitive profit is to sales changes once a business is already past that point.',
+      },
+    ],
+    Component: DegreeOfOperatingLeverageCalculator,
+  },
+  {
+    slug: 'depreciation-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['break-even-calculator', 'appreciation-calculator'],
+    title: 'Depreciation Calculator',
+    shortDescription: 'Calculate straight-line depreciation and a year-by-year book value schedule from cost, salvage value, and useful life.',
+    longDescription:
+      'Enter an asset\'s cost, its estimated salvage value, and its useful life in years to calculate straight-line depreciation - the most common depreciation method, which spreads the depreciable base (cost minus salvage value) evenly across the asset\'s useful life: annual depreciation = (Cost − Salvage) ÷ Useful life. The tool also builds a year-by-year book value schedule showing how the asset\'s recorded value declines each year until it reaches the salvage value at the end of its useful life. Straight-line is the simplest and most widely used depreciation method for financial reporting because the expense is identical every year, unlike accelerated methods (such as double-declining balance) that front-load larger deductions in earlier years - this calculator covers straight-line only. Useful for accounting coursework, small-business bookkeeping, or estimating an asset\'s book value at a given point in its life. Runs entirely client-side, and this is an informational estimate, not tax or accounting advice.',
+    metaTitle: 'Depreciation Calculator - Straight-Line Method | Formatiq',
+    metaDescription:
+      'Calculate straight-line depreciation and a year-by-year book value schedule online for free from cost, salvage value, and useful life.',
+    keywords: ['depreciation calculator', 'straight line depreciation calculator', 'asset depreciation calculator', 'book value calculator'],
+    useCase: 'Calculating a fixed asset\'s annual depreciation expense and book value over its useful life',
+    howItWorks: [
+      {
+        title: 'Enter the asset cost and salvage value',
+        description: 'The original purchase cost and the estimated value at the end of its useful life.',
+      },
+      {
+        title: 'Enter the useful life',
+        description: 'The number of years the asset is expected to remain in service.',
+      },
+      {
+        title: 'Read the annual depreciation and schedule',
+        description: 'The yearly depreciation expense, plus a year-by-year book value breakdown down to the salvage value.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What happens if the salvage value is greater than or equal to the cost?',
+        answer:
+          'The tool reports an error instead of a depreciation schedule, since there would be nothing left to depreciate - straight-line depreciation only makes sense when the asset is expected to lose some value over its useful life.',
+      },
+      {
+        question: 'Why does the calculator only support straight-line depreciation?',
+        answer:
+          'Straight-line is the most commonly used method and the easiest to verify by hand, spreading the depreciable base evenly across the useful life. Accelerated methods like double-declining balance follow different rules (including a switch-over point back to straight-line) that are easy to get subtly wrong, so this tool focuses on doing straight-line correctly rather than half-implementing multiple methods.',
+      },
+      {
+        question: 'Does the book value ever go below the salvage value?',
+        answer:
+          'No - the schedule stops reducing book value once it reaches the salvage value, since an asset isn\'t depreciated below its estimated residual worth under the straight-line method.',
+      },
+    ],
+    Component: DepreciationCalculator,
+  },
+  {
+    slug: 'discounted-cash-flow-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['dividend-discount-model-calculator', 'capm-calculator', 'compound-interest-calculator'],
+    title: 'Discounted Cash Flow (DCF) Calculator',
+    shortDescription: 'Calculate the present value and net present value of a series of future cash flows at a given discount rate.',
+    longDescription:
+      'Enter a discount rate and any number of future annual cash flows (add or remove rows as needed) to calculate each cash flow\'s present value and the total present value (PV): PV = Σ CFₜ ÷ (1 + r)ᵗ, where CFₜ is the cash flow in year t and r is the discount rate. Optionally enter an initial investment to also see the net present value (NPV) - present value minus that upfront cost - the standard capital-budgeting metric for deciding whether a project or investment is expected to add value at a given required rate of return. Each year\'s individual discounted value is shown alongside the total, so it\'s clear how much of the present value comes from near-term versus distant cash flows. This models simple, known future cash flows discounted at a single flat rate - it doesn\'t forecast the cash flows themselves or handle a rate that changes over time. Useful for capital-budgeting decisions, valuing a simple investment, or finance coursework. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Discounted Cash Flow (DCF) Calculator - PV & NPV | Formatiq',
+    metaDescription:
+      'Calculate the present value and net present value of future cash flows online for free, with an editable list of yearly cash flows.',
+    keywords: ['discounted cash flow calculator', 'dcf calculator', 'net present value calculator', 'npv calculator', 'present value calculator'],
+    useCase: 'Evaluating whether a project\'s expected future cash flows justify its upfront cost at a given discount rate',
+    howItWorks: [
+      {
+        title: 'Enter the discount rate',
+        description: 'The required rate of return used to discount future cash flows back to today\'s dollars.',
+      },
+      {
+        title: 'Add each year\'s expected cash flow',
+        description: 'Use the add/remove row buttons to list as many years of cash flow as needed.',
+      },
+      {
+        title: 'Read the present value (and NPV, if applicable)',
+        description: 'Each year\'s discounted value, the total present value, and - if an initial investment is entered - the net present value.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What\'s the difference between present value (PV) and net present value (NPV)?',
+        answer:
+          'Present value is simply the sum of all future cash flows discounted back to today. Net present value subtracts an upfront cost (like an initial investment) from that present value, answering whether the discounted future cash flows are worth more or less than what it costs to get them - a positive NPV generally suggests the investment adds value at the given discount rate.',
+      },
+      {
+        question: 'Why does a cash flow further in the future contribute less to the present value?',
+        answer:
+          'Discounting reflects that money received later is worth less today than the same amount received sooner, both because of the time value of money and the risk that a distant cash flow might not materialize as expected. Each additional year of delay divides that cash flow by another factor of (1 + r), shrinking its contribution to the total.',
+      },
+      {
+        question: 'Does this calculator forecast the cash flows for me?',
+        answer:
+          'No - you provide the expected cash flow for each year yourself. This tool only performs the discounting arithmetic once those estimates are in hand; forecasting the cash flows themselves depends on business-specific assumptions this calculator has no way to know.',
+      },
+    ],
+    Component: DiscountedCashFlowCalculator,
+  },
+  {
+    slug: 'dividend-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['dividend-discount-model-calculator', 'apy-calculator'],
+    title: 'Dividend Calculator',
+    shortDescription: 'Calculate total annual dividend income from shares owned and the annual dividend per share, plus yield if a share price is given.',
+    longDescription:
+      'Enter the number of shares owned and the annual dividend per share to calculate total annual dividend income: income = shares × annual dividend per share. Optionally enter the current share price to also see the dividend yield - annual dividend per share ÷ share price - a percentage that\'s useful for comparing income-generating potential across stocks trading at different prices. The dividend-per-share input is explicitly an annual figure: many companies pay quarterly, so if you only know a per-payment amount, multiply it by the number of payments per year (typically 4 for quarterly payers) before entering it here, to avoid understating income by a factor of four. Useful for estimating passive income from a dividend-paying portfolio or comparing yield across holdings. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Dividend Calculator - Income & Yield | Formatiq',
+    metaDescription:
+      'Calculate total annual dividend income and dividend yield online for free from shares owned, dividend per share, and share price.',
+    keywords: ['dividend calculator', 'dividend income calculator', 'dividend yield calculator', 'annual dividend calculator'],
+    useCase: 'Estimating annual passive income from a dividend-paying stock position',
+    howItWorks: [
+      {
+        title: 'Enter the number of shares owned',
+        description: 'The total share count for the position.',
+      },
+      {
+        title: 'Enter the annual dividend per share',
+        description: 'The full-year dividend amount, not a single quarterly payment - multiply a quarterly figure by 4 first if needed.',
+      },
+      {
+        title: 'Optionally enter the share price',
+        description: 'Adding a current share price also calculates the dividend yield as a percentage.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Should I enter the quarterly dividend or the annual dividend?',
+        answer:
+          'Enter the annual figure. Many companies pay dividends quarterly, so if you only know the amount paid per quarter, multiply it by 4 (or by however many payments occur per year) before entering it here - otherwise the calculated income and yield will be understated by roughly a factor of four.',
+      },
+      {
+        question: 'What does the dividend yield tell me that the raw income figure doesn\'t?',
+        answer:
+          'Dividend yield expresses the annual dividend per share as a percentage of the current share price, which makes it possible to compare the income-generating potential of stocks trading at very different prices on equal footing, rather than just comparing raw dollar amounts.',
+      },
+      {
+        question: 'Does this account for dividend reinvestment or dividend growth over time?',
+        answer:
+          'No - this calculates a single year\'s income and yield based on the numbers entered, assuming a flat dividend per share. It doesn\'t model reinvesting dividends to buy more shares or a dividend that grows year over year - for valuing a growing dividend stream, see the Dividend Discount Model Calculator.',
+      },
+    ],
+    Component: DividendCalculator,
+  },
+  {
+    slug: 'dividend-discount-model-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['dividend-calculator', 'capm-calculator', 'discounted-cash-flow-calculator'],
+    title: 'Dividend Discount Model (DDM) Calculator',
+    shortDescription: 'Calculate a stock\'s intrinsic value using the Gordon Growth Model from its current dividend, growth rate, and required return.',
+    longDescription:
+      'Enter a stock\'s current annual dividend (D0), an expected constant dividend growth rate (g), and a required rate of return (r) to calculate its intrinsic value per share using the Gordon Growth Model: next year\'s dividend D1 = D0 × (1 + g), and intrinsic value P0 = D1 ÷ (r − g). The model assumes the dividend grows at the same constant rate indefinitely, which makes it best suited to mature, stable dividend payers rather than fast-growing or non-dividend-paying companies. The required rate of return must be greater than the growth rate for the formula to produce a sensible result - if r is less than or equal to g, the denominator becomes zero or negative, implying an infinite or negative value that doesn\'t reflect any real stock price, so the calculator rejects that input with a clear message instead of showing Infinity or a nonsensical negative number. Useful for a first-pass valuation of a dividend-paying stock or finance coursework on equity valuation models. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Dividend Discount Model (DDM) Calculator - Gordon Growth | Formatiq',
+    metaDescription:
+      'Calculate a stock\'s intrinsic value with the Gordon Growth Model online for free from its current dividend, growth rate, and required return.',
+    keywords: ['dividend discount model calculator', 'ddm calculator', 'gordon growth model calculator', 'stock intrinsic value calculator'],
+    useCase: 'Estimating a dividend-paying stock\'s intrinsic value for a first-pass equity valuation',
+    howItWorks: [
+      {
+        title: 'Enter the current annual dividend (D0)',
+        description: 'The most recent full-year dividend per share the company paid.',
+      },
+      {
+        title: 'Enter the expected growth rate and required return',
+        description: 'The assumed constant annual dividend growth rate, and your required rate of return as an investor.',
+      },
+      {
+        title: 'Read the intrinsic value',
+        description: 'D1 = D0 × (1 + g), then P0 = D1 ÷ (r − g) - the model\'s estimate of fair value per share.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What happens if the required return is less than or equal to the growth rate?',
+        answer:
+          'The calculator rejects the input with a clear error message rather than showing Infinity or a negative number. Mathematically, r ≤ g makes the (r − g) denominator zero or negative, which would imply an infinitely large or negative stock value - a sign the model\'s constant-growth assumption doesn\'t hold for those inputs, not a real valuation.',
+      },
+      {
+        question: 'Why does this model only work well for mature, stable dividend payers?',
+        answer:
+          'The Gordon Growth Model assumes the dividend grows at exactly the same constant rate forever. Fast-growing companies (or ones with volatile or no dividends) don\'t fit that assumption well, since their growth rate is unlikely to stay constant indefinitely - the model is best suited to established companies with a long history of steady, predictable dividend growth.',
+      },
+      {
+        question: 'How does this relate to the Discounted Cash Flow Calculator?',
+        answer:
+          'Both are present-value models that discount a future stream of payments back to today. DDM assumes that stream is a dividend growing at one constant rate forever, which lets it collapse into a simple formula; the DCF Calculator instead lets you enter each year\'s cash flow individually, which is more flexible but requires estimating every year rather than just a single growth rate.',
+      },
+    ],
+    Component: DividendDiscountModelCalculator,
   },
 ];
 
