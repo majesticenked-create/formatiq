@@ -207,7 +207,7 @@ export default function PropertiesJsonConverter() {
       </div>
 
       <div className="status-line status-neutral" style={{ marginTop: 12 }}>
-        Dotted keys like "db.host" are kept flat as-is in JSON, not nested into {'{ db: { host: ... } }'} - .properties
+        Dotted keys like &quot;db.host&quot; are kept flat as-is in JSON, not nested into {'{ db: { host: ... } }'} - .properties
         has no native nesting, so guessing at intended structure would be unreliable. Want real nested sections
         instead? Try the <a href="/tools/converters/ini-json-converter">INI ⇄ JSON Converter</a>.
       </div>

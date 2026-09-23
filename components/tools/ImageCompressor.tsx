@@ -188,7 +188,7 @@ export default function ImageCompressor() {
                 </>
               ) : (
                 <div className="mono" style={{ fontSize: 12, color: 'var(--text-secondary)', padding: '40px 0' }}>
-                  Click "Compress" to see the result
+                  Click &quot;Compress&quot; to see the result
                 </div>
               )}
             </div>

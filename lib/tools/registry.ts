@@ -126,6 +126,18 @@ import TimeFormatConverter from '@/components/tools/TimeFormatConverter';
 import CatAgeConverter from '@/components/tools/CatAgeConverter';
 import DogAgeConverter from '@/components/tools/DogAgeConverter';
 import ExcelViewer from '@/components/tools/ExcelViewer';
+import AppreciationCalculator from '@/components/tools/AppreciationCalculator';
+import ApyCalculator from '@/components/tools/ApyCalculator';
+import NandCalculator from '@/components/tools/NandCalculator';
+import NorCalculator from '@/components/tools/NorCalculator';
+import IpToOctalConverter from '@/components/tools/IpToOctalConverter';
+import Ipv6ToBinaryConverter from '@/components/tools/Ipv6ToBinaryConverter';
+import XnorCalculator from '@/components/tools/XnorCalculator';
+import BreakEvenCalculator from '@/components/tools/BreakEvenCalculator';
+import CapmCalculator from '@/components/tools/CapmCalculator';
+import PaymentFeeCalculator from '@/components/tools/PaymentFeeCalculator';
+import CashFlowToDebtRatioCalculator from '@/components/tools/CashFlowToDebtRatioCalculator';
+import CdCalculator from '@/components/tools/CdCalculator';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -146,7 +158,7 @@ export const categories: CategoryDefinition[] = [
     slug: 'encoders-decoders',
     title: 'Encoders & Decoders',
     navLabel: 'Encoders/Decoders',
-    description: 'Base64, URL encoding, HTML entities, JWTs, and hash generation.',
+    description: 'Free browser-based encoders and decoders: Base64, hex, URL, JWT, hashes, AES, and more. Fast, accurate, and 100% private.',
     intro:
       'Encoding and decoding show up constantly in day-to-day development, usually at the exact moment something looks wrong: a Base64 string that needs to become readable text, a URL parameter that’s been double-escaped, a JWT you want to inspect without a wallet of trust, or a hash you need to verify against a known value. These tools handle the conversion instantly and entirely client-side, since a lot of what gets pasted here - tokens, session data, encoded credentials - is exactly the kind of thing that shouldn’t be sent to a server just to take a quick look at it. Pick the direction you need and paste; there’s no account, upload step, or waiting involved.',
   },
@@ -154,7 +166,7 @@ export const categories: CategoryDefinition[] = [
     slug: 'generators',
     title: 'Generators',
     navLabel: 'Generators',
-    description: 'UUIDs, passwords, Lorem Ipsum, QR codes, and other on-demand data.',
+    description: 'Free online generators for passwords, UUIDs, QR codes, fake data, favicons, and more — instant results, 100% private in your browser.',
     intro:
       'Sometimes you don’t have real data yet and you just need something plausible to work with: a UUID for a new database record, a strong password before an account exists to attach it to, a block of Lorem Ipsum to fill a layout, or a QR code to test a scanning flow. This category covers exactly that - on-demand values generated instantly in your browser, using proper randomness where it matters (like passwords and UUIDs) rather than predictable patterns. Nothing here depends on a server round-trip, so generating a batch of values is as fast as clicking the button, and nothing you generate is logged or stored anywhere outside your own session.',
   },
@@ -170,7 +182,7 @@ export const categories: CategoryDefinition[] = [
     slug: 'converters',
     title: 'Converters',
     navLabel: 'Converters',
-    description: 'Move data between formats: JSON, CSV, YAML, XML, and more.',
+    description: 'Free online converters for JSON, CSV, timestamps, colors, and units — fast, accurate, and 100% private in your browser.',
     intro:
       'Data rarely stays in one format for long - a config file needs to move from YAML to JSON, a spreadsheet export needs to become CSV, an API response needs restructuring into something a different system expects. This category handles those format-to-format conversions directly in your browser, preserving the actual structure and values of what you paste rather than approximating it. Each converter is built around the specific mismatches that break naive conversions - nested objects that don’t map cleanly, type differences between formats, encoding edge cases - so the output is something you can trust and use immediately, not just a quick approximation to double-check by hand.',
   },
@@ -1208,7 +1220,7 @@ export const tools: ToolDefinition[] = [
       'Paste JSON to get a clear valid/invalid verdict. When the browser’s parser can pinpoint where things broke, the error is translated from a raw character offset into a line and column number you can jump straight to - useful when a config file or API response fails to parse and you need to find the problem fast without scanning the whole thing by eye. Not every parse error carries a precise position (some, like an abruptly truncated input, only report that something’s wrong, not exactly where), so this tool always shows the browser’s full error message either way rather than a bare "invalid" verdict. Valid input also gets a quick structural breakdown: root type, top-level item count, maximum nesting depth, and total value count, so you can sanity-check the shape of a response before working with it further. This is a validation-only tool - it checks syntax and reports where it broke, but doesn’t reformat, pretty-print, or minify. For that, use the JSON Formatter, which shares the same underlying parser but focuses on producing clean, indented output instead of diagnosing errors. Runs entirely client-side; nothing you paste is ever uploaded.',
     metaTitle: 'JSON Validator - Line/Column Error Detection | Formatiq',
     metaDescription:
-      'Validate JSON online for free. Get the line and column of syntax errors when available, plus a structure breakdown for valid input. Runs entirely in your browser.',
+      'Validate JSON syntax instantly, format with clean indentation, and pinpoint errors by exact line and column. Free and 100% private.',
     keywords: ['json validator', 'validate json', 'json syntax checker', 'json error line number', 'is this json valid'],
     useCase: 'Finding exactly where a config file or API response broke JSON syntax',
     howItWorks: [
@@ -1601,7 +1613,7 @@ export const tools: ToolDefinition[] = [
     shortDescription: 'Generate MD5, SHA-1, SHA-256, and SHA-512 hashes of any text, all at once.',
     longDescription:
       'Type or paste any text to see its MD5, SHA-1, SHA-256, and SHA-512 hash computed side by side, each with its own copy button. SHA-1, SHA-256, and SHA-512 run through the browser’s native Web Crypto API (crypto.subtle.digest), the same implementation used for TLS and WebAuthn, so those three are computed with a well-audited, hardware-accelerated routine. MD5 isn’t supported by Web Crypto, so it’s computed with a small self-contained implementation of the standard RFC 1321 algorithm instead. Useful for verifying file or message integrity, generating cache keys, or checking that two pieces of text are byte-for-byte identical. Everything runs client-side - nothing you hash is ever sent to a server.',
-    metaTitle: 'Hash Generator (MD5, SHA-1/256/512) - Free Online Tool | Formatiq',
+    metaTitle: 'Hash Generator - MD5, SHA-1, SHA-256, SHA-512 | Formatiq',
     metaDescription:
       'Generate MD5, SHA-1, SHA-256, and SHA-512 hashes online for free, all at once with one click to copy each. Nothing is uploaded.',
     keywords: ['hash generator', 'md5 generator', 'sha256 generator', 'sha1 hash', 'sha512 hash', 'checksum generator'],
@@ -4321,6 +4333,100 @@ export const tools: ToolDefinition[] = [
     Component: BitwiseCalculator,
   },
   {
+    slug: 'nand-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['nor-calculator', 'bitwise-calculator'],
+    title: 'NAND Calculator',
+    shortDescription: 'Calculate the bitwise NAND (NOT AND) of two integers, with a selectable 8/16/32-bit width.',
+    longDescription:
+      'Enter two integers and calculate their bitwise NAND - NOT(A AND B) - the operation that\'s functionally complete in digital logic, meaning any other logic gate (AND, OR, NOT, XOR, and more) can be built from NAND gates alone. Because the NOT step needs a fixed number of bits to produce a meaningful, non-negative result, this calculator requires you to choose an explicit bit width - 8, 16, or 32 bits - rather than relying on JavaScript\'s unbounded integer or 32-bit-signed bitwise defaults. Each input accepts decimal, 0b-prefixed binary, or 0x-prefixed hex, and the result is shown in all three formats, zero-padded to match the selected width. Both inputs are validated against the chosen width, so a value that doesn\'t fit (like 300 at 8-bit) is caught with a specific error. Runs entirely client-side.',
+    metaTitle: 'NAND Calculator - Bitwise NOT(A AND B) | Formatiq',
+    metaDescription:
+      'Calculate the bitwise NAND of two integers online for free, with a selectable 8/16/32-bit width and decimal, binary, and hex output. Runs in your browser.',
+    keywords: ['nand calculator', 'bitwise nand', 'nand gate calculator', 'not and calculator', 'digital logic calculator'],
+    useCase: 'Verifying a NAND gate truth-table value or a logic-simulation result by hand',
+    howItWorks: [
+      {
+        title: 'Choose a bit width',
+        description: '8, 16, or 32 bits - this determines how the NOT step is bounded.',
+      },
+      {
+        title: 'Enter A and B',
+        description: 'Decimal, 0b-prefixed binary, or 0x-prefixed hex, each validated against the chosen width.',
+      },
+      {
+        title: 'Read the NAND result',
+        description: 'NOT(A AND B), shown in decimal, zero-padded binary, and hex all at once.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why do I have to pick a bit width instead of the calculator just working it out?',
+        answer:
+          'NOT flips every bit of a value, and without a fixed width that produces either an unbounded result or, using JavaScript\'s native 32-bit signed bitwise operators, a negative number that doesn\'t match how NAND is normally taught or used in digital logic. Choosing 8, 16, or 32 bits fixes exactly how many bits get flipped, so the result is a bounded, non-negative value consistent with how a real NAND gate or logic simulator would represent it at that width.',
+      },
+      {
+        question: 'What happens if I enter a value that doesn\'t fit the selected width?',
+        answer:
+          'It\'s rejected with a specific error message naming the valid range - for example, at 8-bit width, only values from 0 to 255 are accepted, so entering 300 would be flagged rather than silently truncated or wrapped.',
+      },
+      {
+        question: 'Why is NAND called "functionally complete"?',
+        answer:
+          'Any Boolean logic function - AND, OR, NOT, XOR, and every other gate - can be constructed using only NAND gates, which is why NAND (and its counterpart NOR) are common building blocks in real digital circuits: a chip designer can implement an entire logic system from a single gate type.',
+      },
+    ],
+    Component: NandCalculator,
+  },
+  {
+    slug: 'nor-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['nand-calculator', 'bitwise-calculator'],
+    title: 'NOR Calculator',
+    shortDescription: 'Calculate the bitwise NOR (NOT OR) of two integers, with a selectable 8/16/32-bit width.',
+    longDescription:
+      'Enter two integers and calculate their bitwise NOR - NOT(A OR B) - the counterpart to NAND, and the other logic gate considered functionally complete on its own, meaning any Boolean function can be built from NOR gates alone. As with NAND, the NOT step needs a fixed bit width to produce a bounded, non-negative result, so this calculator requires choosing 8, 16, or 32 bits before computing rather than relying on JavaScript\'s unbounded or 32-bit-signed bitwise defaults. Each input accepts decimal, 0b-prefixed binary, or 0x-prefixed hex, and the result is shown in decimal, binary (zero-padded to the selected width), and hex simultaneously. Both inputs are validated against the chosen width. Runs entirely client-side.',
+    metaTitle: 'NOR Calculator - Bitwise NOT(A OR B) | Formatiq',
+    metaDescription:
+      'Calculate the bitwise NOR of two integers online for free, with a selectable 8/16/32-bit width and decimal, binary, and hex output. Runs in your browser.',
+    keywords: ['nor calculator', 'bitwise nor', 'nor gate calculator', 'not or calculator', 'digital logic calculator'],
+    useCase: 'Verifying a NOR gate truth-table value or a logic-simulation result by hand',
+    howItWorks: [
+      {
+        title: 'Choose a bit width',
+        description: '8, 16, or 32 bits - this determines how the NOT step is bounded.',
+      },
+      {
+        title: 'Enter A and B',
+        description: 'Decimal, 0b-prefixed binary, or 0x-prefixed hex, each validated against the chosen width.',
+      },
+      {
+        title: 'Read the NOR result',
+        description: 'NOT(A OR B), shown in decimal, zero-padded binary, and hex all at once.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is NOR different from NAND?',
+        answer:
+          'NAND is NOT(A AND B) - it\'s false only when both A and B are true. NOR is NOT(A OR B) - it\'s true only when both A and B are false. They\'re related but distinct gates, and both happen to be functionally complete on their own, meaning either one alone can implement any other Boolean logic function.',
+      },
+      {
+        question: 'Why does this calculator require a bit width, same as the NAND calculator?',
+        answer:
+          'The NOT step in NOR needs a fixed number of bits to flip, otherwise the result is either unbounded or, under JavaScript\'s native 32-bit signed bitwise semantics, a negative number that doesn\'t match how NOR is normally represented in digital logic. Choosing 8, 16, or 32 bits keeps the result a bounded, non-negative value at that width.',
+      },
+      {
+        question: 'What happens with a value outside the selected width\'s range?',
+        answer:
+          'It\'s rejected with an error naming the valid range for that width - for example, 0-65535 at 16-bit - rather than being silently truncated or wrapped to fit.',
+      },
+    ],
+    Component: NorCalculator,
+  },
+  {
     slug: 'js-formatter',
     category: 'formatters',
     isNew: false,
@@ -5479,6 +5585,100 @@ export const tools: ToolDefinition[] = [
     Component: LoanCalculator,
   },
   {
+    slug: 'appreciation-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['loan-calculator', 'apy-calculator'],
+    title: 'Appreciation Calculator',
+    shortDescription: 'Calculate the appreciation amount, percentage, and annualized (CAGR) rate between two values.',
+    longDescription:
+      'Enter an initial value and a final value to see how much an asset appreciated (or depreciated) - the raw amount, the percentage change, and, if you provide a time period in years, the annualized appreciation rate using the compound annual growth rate (CAGR) formula: (final ÷ initial)^(1/years) − 1. CAGR expresses the appreciation as a smooth, consistent yearly rate rather than a single lump-sum percentage, which is what makes it possible to compare an investment held for 3 years against one held for 10 on equal footing. If the final value is lower than the initial value, the tool still calculates a result and reports it as a negative appreciation (depreciation) rather than erroring out. Useful for tracking real estate, collectibles, or investment value over time. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Appreciation Calculator - CAGR & Growth Rate | Formatiq',
+    metaDescription:
+      'Calculate appreciation amount, percentage, and annualized CAGR growth rate between two values online for free. Runs entirely in your browser.',
+    keywords: ['appreciation calculator', 'cagr calculator', 'annualized growth rate', 'asset appreciation calculator', 'value growth calculator'],
+    useCase: 'Estimating the annualized growth rate of a property or investment over several years',
+    howItWorks: [
+      {
+        title: 'Enter the initial and final value',
+        description: 'The starting value must be greater than zero; the final value can be zero or greater.',
+      },
+      {
+        title: 'Optionally add a time period',
+        description: 'Enter the number of years to also see the annualized (CAGR) rate.',
+      },
+      {
+        title: 'Read the appreciation',
+        description: 'The amount and percentage change appear immediately, with the CAGR shown when a time period is given.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What happens if the final value is lower than the initial value?',
+        answer:
+          'The calculator still produces a result - it reports a negative appreciation amount and percentage (depreciation), and if a time period is given, a negative CAGR as well, rather than failing or requiring you to look at a decline differently from a gain.',
+      },
+      {
+        question: 'Why does the annualized rate need a time period, but the basic appreciation doesn\'t?',
+        answer:
+          'The raw appreciation amount and percentage only compare two values and don\'t need to know how much time passed between them. The annualized (CAGR) rate specifically expresses that change as a consistent yearly rate, which requires knowing the number of years over which the change happened - without it, there\'s no way to spread the total appreciation across a timeline.',
+      },
+      {
+        question: 'Why use CAGR instead of just dividing the total percentage by the number of years?',
+        answer:
+          'Simple division assumes linear growth, but compounding means growth builds on itself each year, so a naive average overstates or understates the real year-over-year rate. CAGR - (final ÷ initial)^(1/years) − 1 - solves for the single constant compounding rate that would produce the same total change, which is the standard way investments and asset values are compared over different time horizons.',
+      },
+    ],
+    Component: AppreciationCalculator,
+  },
+  {
+    slug: 'apy-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['loan-calculator', 'appreciation-calculator'],
+    title: 'APY Calculator',
+    shortDescription: 'Convert a nominal interest rate (APR) into its effective annual yield (APY) for a given compounding frequency.',
+    longDescription:
+      'Enter a nominal annual interest rate (APR) and choose how often it compounds - daily, monthly, quarterly, semi-annually, or annually - to calculate the annual percentage yield (APY): the actual rate of return earned in a year once compounding is factored in. The formula used is APY = (1 + r/n)^n − 1, where r is the APR expressed as a decimal and n is the number of compounding periods per year. Because interest earned in one period starts earning its own interest in the next, a 5% APR compounded monthly actually yields slightly more than 5% over a year - the APY captures that difference, which is why it\'s the number banks are required to advertise for savings accounts and CDs, while APR is more commonly quoted for loans. The tool shows the formula with your actual numbers substituted in, not just the final answer. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'APY Calculator - APR to Annual Yield | Formatiq',
+    metaDescription:
+      'Convert a nominal interest rate (APR) into its effective annual yield (APY) online for free, for daily, monthly, quarterly, or annual compounding.',
+    keywords: ['apy calculator', 'apr to apy calculator', 'annual percentage yield calculator', 'compound interest rate calculator', 'effective annual rate'],
+    useCase: 'Comparing two savings accounts that advertise the same APR but compound at different frequencies',
+    howItWorks: [
+      {
+        title: 'Enter the nominal rate (APR)',
+        description: 'The stated annual interest rate as a percentage, e.g. 5.',
+      },
+      {
+        title: 'Choose a compounding frequency',
+        description: 'Daily, monthly, quarterly, semi-annually, or annually.',
+      },
+      {
+        title: 'Read the APY',
+        description: 'The effective annual yield, along with the formula shown with your actual numbers substituted in.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why is APY higher than the APR I entered?',
+        answer:
+          'APY accounts for compounding - interest earned in each period is added to the balance and starts earning its own interest in the next period. The more frequently interest compounds (daily versus annually, for example), the more this effect adds up over a year, so APY is always equal to or greater than the APR for any compounding frequency more often than once a year. Entering 0% just returns 0% APY, since there\'s no interest to compound.',
+      },
+      {
+        question: 'What does the compounding frequency actually change?',
+        answer:
+          'It changes n, the number of times per year interest is calculated and added to the balance, in the formula APY = (1 + r/n)^n − 1. A higher n (like 365 for daily compounding) means interest compounds more often, so more of it starts earning its own interest sooner, which pushes the effective yield slightly higher than a less frequent compounding schedule at the exact same nominal rate.',
+      },
+      {
+        question: 'Is APY the same thing as APR?',
+        answer:
+          'No - APR is the stated nominal rate before compounding is factored in, while APY (also called the effective annual rate) is the actual return you\'d earn over a year once compounding is included. For loans, APR is more commonly quoted; for savings products, APY is the number that lets you fairly compare accounts with different compounding schedules.',
+      },
+    ],
+    Component: ApyCalculator,
+  },
+  {
     slug: 'digital-storage-converter',
     category: 'converters',
     isNew: false,
@@ -5618,7 +5818,7 @@ export const tools: ToolDefinition[] = [
     shortDescription: 'Compress text to a base64-encoded gzip string, or decompress one back to plain text, entirely in your browser.',
     longDescription:
       'Compress any block of text using real gzip compression and get back a base64-encoded string safe to paste into JSON, a URL, or an email - or run it in reverse, pasting a base64 gzip string to recover the original text. This uses the browser\'s native CompressionStream and DecompressionStream APIs (widely supported in current Chrome, Firefox, Safari, and Edge) rather than a bundled compression library, so the same real DEFLATE-based gzip algorithm used by servers and command-line gzip runs directly in JavaScript with no dependency download. Before and after sizes are shown together with the percentage reduction, the same way the image compressor reports its savings, so you can see exactly how much a given block of text - repetitive log output, a large JSON blob, or plain prose - actually shrinks. Useful for testing how compressible a payload is before deciding whether to gzip it server-side, or for producing a compact string to embed somewhere space is limited. Runs entirely client-side; nothing is uploaded.',
-    metaTitle: 'Gzip Text Compressor - Compress & Decompress Online | Formatiq',
+    metaTitle: 'Gzip Compressor - Compress & Decompress Text | Formatiq',
     metaDescription:
       'Compress text to base64 gzip or decompress it back to plain text online for free, using your browser\'s native compression API. No data leaves your browser.',
     keywords: ['gzip text online', 'compress text online', 'gzip compressor', 'base64 gzip decompress', 'text compression tool'],
@@ -5959,7 +6159,7 @@ export const tools: ToolDefinition[] = [
     shortDescription: 'Convert between 20 major currencies using daily reference exchange rates.',
     longDescription:
       'Convert an amount between 20 major world currencies using real exchange rate data fetched from frankfurter.dev, a free public API built on European Central Bank reference rates. Unlike a hardcoded rate table baked into the page, the rates here are fetched fresh each time you change the source currency, so the conversion reflects the actual current published rate rather than a stale snapshot from whenever the tool was built - important context, though, is that ECB reference rates update once per business day, not continuously through the trading day the way a bank or trading platform\'s live feed would, so this is genuinely current daily data rather than real-time market pricing. That distinction is stated directly in the tool rather than left ambiguous, since the difference between "live" and "daily reference" rates matters if you\'re using the number for anything beyond a rough estimate. Useful for getting a quick, genuinely up-to-date sense of what an amount in one currency is worth in another - budgeting for travel, sanity-checking an invoice, or converting a price for comparison. The conversion math runs client-side against the fetched rates; only the rate lookup itself requires a network request.',
-    metaTitle: 'Currency Converter - Live Reference Exchange Rates | Formatiq',
+    metaTitle: 'Currency Converter - Reference Exchange Rates | Formatiq',
     metaDescription:
       'Convert between 20 major currencies online for free using daily ECB reference exchange rates, fetched fresh each time you use it.',
     keywords: ['currency converter online', 'exchange rate converter', 'convert currency free', 'usd to eur converter', 'live exchange rates'],
@@ -7594,6 +7794,105 @@ export const tools: ToolDefinition[] = [
     Component: IpHexConverter,
   },
   {
+    slug: 'ip-to-octal-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['ip-address-formatter', 'ip-hex-converter', 'ip-subnet-calculator', 'ipv6-to-binary-converter'],
+    title: 'IP to Octal Converter',
+    shortDescription: 'Convert an IPv4 address to its per-octet octal representation.',
+    longDescription:
+      'Enter an IPv4 address in dotted-decimal form and see each of its four octets converted to base-8 (octal) individually - for example, 192.168.1.1 becomes 300.250.1.1 in octal, octet by octet. This mirrors an older but still-encountered IP notation convention: some systems and historical Unix tools accept or display IPv4 octets in octal, and a leading zero on a number (like 010) is sometimes misinterpreted as octal rather than decimal by parsers that follow C-style number literal rules, which is a real source of IP-parsing bugs and even a known SSRF/validation-bypass technique. The IPv4 address is validated with the same rules used across this site\'s other IP tools - exactly four dot-separated octets, each 0-255, no leading or trailing dots. Runs entirely client-side.',
+    metaTitle: 'IP to Octal Converter - IPv4 to Base-8 | Formatiq',
+    metaDescription:
+      'Convert an IPv4 address to its per-octet octal (base-8) representation online for free. No data leaves your browser.',
+    keywords: ['ip to octal converter', 'ipv4 octal', 'ip address octal notation', 'convert ip to base 8', 'octal ip address'],
+    useCase: 'Understanding how an IP address parser might misread a leading-zero octet as octal',
+    howItWorks: [
+      {
+        title: 'Enter an IPv4 address',
+        description: 'Standard dotted-decimal form, like 192.168.1.1.',
+      },
+      {
+        title: 'The address is validated',
+        description: 'Exactly four octets, each 0-255 - anything else produces a specific error message.',
+      },
+      {
+        title: 'See each octet in octal',
+        description: 'Every octet is converted to base-8 individually and shown alongside its decimal value.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why would an IP address ever be written in octal?',
+        answer:
+          'Some legacy tools and parsers that follow C-style numeric literal rules treat a number with a leading zero (like 010) as octal rather than decimal, which means an IP address like 192.168.0.010 could be silently parsed as a different address than expected. This has historically been exploited as a validation-bypass or SSRF technique against systems that don\'t normalize IP octets consistently, so understanding the octal equivalent of an address is useful for security review as much as for working with genuinely octal-based legacy systems.',
+      },
+      {
+        question: 'Is 300.250.1.1 a valid IP address?',
+        answer:
+          'No - that\'s the octal representation of 192.168.1.1\'s octets, not a second valid dotted-decimal address. Octal digits only use 0-7, so "300" in octal equals 192 in decimal (3×64 + 0×8 + 0), and it isn\'t meant to be typed back into a normal IPv4 field as if it were decimal.',
+      },
+      {
+        question: 'What input gets rejected?',
+        answer:
+          'Anything that isn\'t a well-formed IPv4 address: fewer or more than four octets, a non-numeric octet, an octet outside 0-255 (like 256), or leading/trailing dots. Each of these produces a clear error rather than a partial or incorrect conversion.',
+      },
+    ],
+    Component: IpToOctalConverter,
+  },
+  {
+    slug: 'ipv6-to-binary-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['ip-address-formatter', 'ip-hex-converter', 'ip-subnet-calculator', 'ip-to-octal-converter'],
+    title: 'IPv6 to Binary Converter',
+    shortDescription: 'Expand a full or compressed IPv6 address and convert each 16-bit group to binary.',
+    longDescription:
+      'Enter an IPv6 address - in full form (all 8 groups) or using "::" zero compression - and see it expanded into its 8 full 16-bit groups, each converted to a zero-padded binary string, plus the complete 128-bit binary value. The "::" compression is expanded correctly by splitting the address on "::" into a left and right side, splitting each side into its own groups, and inserting exactly as many all-zero groups as needed to reach 8 total - not by naively counting colons, which breaks on addresses with an odd or unusual group count. "::" can appear at most once in a valid address (a second occurrence is rejected), and an address with no "::" at all must have exactly 8 groups. An embedded IPv4 tail, like the one in ::ffff:192.168.1.1, is supported by converting that trailing dotted-decimal segment into its two equivalent 16-bit hex groups before expansion. Malformed input - too many groups, invalid hex characters, or more than one "::" - produces a specific error message rather than a crash. Runs entirely client-side.',
+    metaTitle: 'IPv6 to Binary Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert a full or compressed IPv6 address to its 128-bit binary representation online for free, with correct "::" expansion. Runs in your browser.',
+    keywords: ['ipv6 to binary converter', 'ipv6 binary', 'ipv6 address expander', 'ipv6 compression expander', 'convert ipv6 to binary'],
+    useCase: 'Expanding a compressed IPv6 address to check its full binary bit pattern',
+    howItWorks: [
+      {
+        title: 'Enter an IPv6 address',
+        description: 'Full form (8 groups) or compressed with "::", like 2001:db8::1 or ::1.',
+      },
+      {
+        title: 'The "::" is expanded correctly',
+        description: 'The tool calculates exactly how many zero groups the "::" represents, rather than guessing from colon count.',
+      },
+      {
+        title: 'Read each group in binary',
+        description: 'All 8 groups convert to 16-bit binary individually, plus the full 128-bit value concatenated.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How does "::" expansion actually work?',
+        answer:
+          'The address is split on "::" into a left side and a right side, and each side is split further into its own colon-separated groups. Since a full IPv6 address always has exactly 8 groups, the number of zero groups the "::" represents is 8 minus however many groups are already present on the left and right combined - for example, 2001:db8::1 has 2 groups on the left and 1 on the right, so "::" represents 8 − 2 − 1 = 5 zero groups.',
+      },
+      {
+        question: 'Why is "1::2::3" rejected?',
+        answer:
+          '"::" zero-compression is only valid once per address, because if it appeared twice there would be no way to tell how many zero groups belong to each occurrence - the expansion math would be ambiguous. A valid address can compress at most one run of consecutive zero groups this way.',
+      },
+      {
+        question: 'Does this tool support an embedded IPv4 address, like ::ffff:192.168.1.1?',
+        answer:
+          'Yes - a trailing dotted-decimal IPv4 segment is converted into its two equivalent 16-bit hex groups (192.168.1.1 becomes c0a8 and 0101) before the rest of the address is expanded, since that\'s a valid and fairly common IPv6 notation for representing an IPv4 address (an IPv4-mapped IPv6 address).',
+      },
+      {
+        question: 'What counts as an invalid group?',
+        answer:
+          'Each group between colons must be 1 to 4 hexadecimal digits (0-9, a-f). Anything else - empty groups outside of a single valid "::", non-hex characters, or a group longer than 4 digits - is rejected with a specific error message rather than silently truncated.',
+      },
+    ],
+    Component: Ipv6ToBinaryConverter,
+  },
+  {
     slug: 'rgb-cmyk-converter',
     category: 'converters',
     relatedSlugs: ['hex-rgb-hsl-converter', 'css-gradient-generator'],
@@ -7644,7 +7943,7 @@ export const tools: ToolDefinition[] = [
     shortDescription: 'Test a JSONPath expression against your JSON and see exactly which values it matches.',
     longDescription:
       'Paste JSON and a JSONPath expression to see exactly which values it matches, without writing and running a script just to check a query. Supports the JSONPath features people reach for most often: dot notation (.key), array indexing ([n]), wildcards ([*]), slices ([start:end]), multiple indices ([n,n]), and recursive descent (..key) to search at any depth. This covers the common subset most JSONPath usage actually needs - full filter expressions like [?(@.price>20)] aren\'t supported, since implementing a complete filter-expression parser is a much larger undertaking than the path-matching most people are looking for. Runs entirely client-side.',
-    metaTitle: 'JSONPath Tester - Test JSONPath Expressions Online | Formatiq',
+    metaTitle: 'JSONPath Tester - Run JSONPath Expressions | Formatiq',
     metaDescription:
       'Test JSONPath expressions against your JSON online for free and see exactly what matches. Runs entirely in your browser.',
     keywords: ['jsonpath tester', 'jsonpath online', 'test jsonpath', 'jsonpath evaluator', 'jsonpath expression tester'],
@@ -7691,7 +7990,7 @@ export const tools: ToolDefinition[] = [
     shortDescription: 'Convert between seconds, minutes, hours, days, and weeks instantly.',
     longDescription:
       'Convert a value between seconds, minutes, hours, days, and weeks - the units people actually need when figuring out how long something is in a different scale, like how many days a given number of hours works out to, or how many hours are left in a countdown measured in weeks. This is a dedicated time-unit converter, distinct from the Unit Converter (which covers length, weight, and temperature but not time) and from the Timezone Converter (which handles clock time across timezones, not raw duration). Runs entirely client-side.',
-    metaTitle: 'Time Unit Converter - Seconds, Minutes, Hours, Days | Formatiq',
+    metaTitle: 'Time Unit Converter - Sec, Min, Hours, Days | Formatiq',
     metaDescription:
       'Convert between seconds, minutes, hours, days, and weeks online for free. Instant results, runs entirely in your browser.',
     keywords: ['time unit converter', 'hours to days', 'convert hours to days', 'days to hours', 'time converter'],
@@ -8105,6 +8404,288 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: ExcelViewer,
+  },
+  {
+    slug: 'xnor-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['bitwise-calculator', 'nand-calculator', 'nor-calculator'],
+    title: 'XNOR Calculator',
+    shortDescription: 'Compute the bitwise XNOR (NOT XOR) of two numbers, with results in decimal, binary, and hex.',
+    longDescription:
+      'Enter two operands - in decimal, 0b-prefixed binary, or 0x-prefixed hex - and a bit width (8, 16, or 32-bit), and this tool computes their bitwise XNOR: NOT(A XOR B). XNOR flips XOR\'s logic, producing a 1 in every bit position where A and B match (both 0 or both 1) and a 0 where they differ, which makes it useful for bit-level equality checks - comparing two values bit by bit to see which positions agree. The result is shown simultaneously in decimal, binary (zero-padded to the selected width), and hex, and each operand\'s own binary/hex representation is shown as you type so you can verify what you actually entered. This complements bitwise-calculator, which covers AND, OR, XOR, NOT, and shift operations but not XNOR, and shares its bit-masking logic with nand-calculator and nor-calculator so a NOT step behaves consistently (bounded, non-negative) across all three rather than relying on JavaScript\'s unbounded/negative bitwise semantics. Runs entirely client-side.',
+    metaTitle: 'XNOR Calculator - Bitwise NOT XOR | Formatiq',
+    metaDescription:
+      'Calculate the bitwise XNOR (NOT XOR) of two numbers online for free, with decimal, binary, and hex output. No data leaves your browser.',
+    keywords: ['xnor calculator', 'bitwise xnor', 'xnor gate calculator', 'not xor calculator', 'boolean logic calculator'],
+    useCase: 'Checking which bit positions match between two binary values',
+    howItWorks: [
+      {
+        title: 'Enter A and B',
+        description: 'Values can be typed as decimal, 0b-binary, or 0x-hex, and are validated against the selected bit width.',
+      },
+      {
+        title: 'Pick a bit width',
+        description: 'Choose 8, 16, or 32-bit - this controls both the valid input range and how the result is padded.',
+      },
+      {
+        title: 'Read the result',
+        description: 'XNOR = NOT(A XOR B) is shown in decimal, binary, and hex simultaneously.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is XNOR different from XOR?',
+        answer:
+          'XOR produces a 1 wherever the two input bits differ and a 0 where they match. XNOR is its exact inverse - it produces a 1 wherever the bits match (both 0 or both 1) and a 0 where they differ - which is why it\'s computed here as NOT(A XOR B).',
+      },
+      {
+        question: 'Why isn\'t XNOR included in bitwise-calculator?',
+        answer:
+          'bitwise-calculator covers the more commonly needed AND, OR, XOR, NOT, and shift operations. XNOR is a distinct, less frequently needed operation, and giving it (along with NAND and NOR) its own focused tool keeps each page\'s interface simple rather than cramming every possible logic gate into one selector.',
+      },
+      {
+        question: 'What is XNOR used for in practice?',
+        answer:
+          'XNOR is commonly used in digital logic design for bit-level equality comparison (two equal-width binary values are identical exactly when their XNOR is all 1s), parity checking, and certain error-detection circuits.',
+      },
+    ],
+    Component: XnorCalculator,
+  },
+  {
+    slug: 'break-even-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['loan-calculator', 'percentage-calculator'],
+    title: 'Break-Even Calculator',
+    shortDescription: 'Calculate the contribution margin, break-even quantity, and break-even revenue for a product or business.',
+    longDescription:
+      'Enter total fixed costs, the selling price per unit, and the variable cost per unit to find the break-even point - the number of units (and total revenue) needed to cover all costs before a business starts turning a profit. The calculation is built on the contribution margin (selling price minus variable cost per unit), which represents how much each unit sold contributes toward covering fixed costs once its own variable cost is paid; dividing total fixed costs by that contribution margin gives the break-even quantity, and multiplying by the selling price gives the break-even revenue. The contribution margin ratio (contribution margin as a percentage of price) is also shown, since it\'s useful for comparing products with very different price points. If the selling price doesn\'t exceed the variable cost per unit, the tool reports an error rather than a nonsensical negative break-even point, since no volume of sales could ever recover fixed costs under those numbers. Useful for pricing decisions, evaluating a new product line, or sanity-checking a business plan\'s assumptions. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Break-Even Calculator - Units & Revenue | Formatiq',
+    metaDescription:
+      'Calculate break-even units, break-even revenue, and contribution margin online for free from fixed costs, price, and variable cost per unit.',
+    keywords: ['break-even calculator', 'break even point calculator', 'contribution margin calculator', 'break even units calculator', 'business break even analysis'],
+    useCase: 'Figuring out how many units a product must sell before it becomes profitable',
+    howItWorks: [
+      {
+        title: 'Enter fixed costs, price, and variable cost',
+        description: 'Total fixed costs, the selling price per unit, and the variable cost to produce or deliver one unit.',
+      },
+      {
+        title: 'The contribution margin is calculated',
+        description: 'Selling price minus variable cost per unit - how much each sale contributes toward fixed costs.',
+      },
+      {
+        title: 'Read the break-even point',
+        description: 'The number of units and total revenue needed to exactly cover fixed costs, with zero profit or loss.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What happens if the selling price is lower than the variable cost per unit?',
+        answer:
+          'The tool reports an error instead of a break-even point, because in that situation every unit sold actually loses money - there\'s no contribution toward fixed costs at all, let alone a volume of sales that could ever recover them. The selling price must exceed the variable cost per unit for a break-even point to exist.',
+      },
+      {
+        question: 'What\'s the difference between the contribution margin and the contribution margin ratio?',
+        answer:
+          'The contribution margin is a dollar amount per unit (price minus variable cost). The contribution margin ratio expresses that same amount as a percentage of the selling price, which makes it easier to compare products or services with very different price points on equal footing.',
+      },
+      {
+        question: 'Does break-even revenue mean the business is profitable at that point?',
+        answer:
+          'No - break-even revenue is the point where total revenue exactly equals total costs (fixed plus variable), meaning zero profit and zero loss. Selling any amount beyond the break-even quantity is what generates actual profit, since fixed costs are already fully covered at that point.',
+      },
+    ],
+    Component: BreakEvenCalculator,
+  },
+  {
+    slug: 'capm-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['appreciation-calculator', 'apy-calculator'],
+    title: 'CAPM Calculator',
+    shortDescription: 'Calculate expected return using the Capital Asset Pricing Model from risk-free rate, beta, and market return.',
+    longDescription:
+      'Enter the risk-free rate, an asset\'s beta, and the expected market return to calculate its expected return under the Capital Asset Pricing Model (CAPM): E(R) = Rf + β × (Rm − Rf). The model starts from the risk-free rate (typically a government bond yield) as the baseline return with no risk, then adds a risk premium scaled by beta - a measure of how much the asset\'s returns move relative to the overall market. A beta of 1 means the asset is expected to earn exactly the market risk premium on top of the risk-free rate; a beta above 1 amplifies that premium (and losses), while a beta below 1 dampens it. The market risk premium itself (market return minus risk-free rate) is shown as an intermediate result since it\'s a commonly referenced figure on its own. Useful for estimating a stock\'s required or expected return for valuation models, or for coursework covering modern portfolio theory. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'CAPM Calculator - Expected Return Formula | Formatiq',
+    metaDescription:
+      'Calculate expected return with the Capital Asset Pricing Model (CAPM) online for free from risk-free rate, beta, and market return.',
+    keywords: ['capm calculator', 'capital asset pricing model calculator', 'expected return calculator', 'beta calculator', 'market risk premium calculator'],
+    useCase: 'Estimating a stock\'s expected return for a valuation model or finance coursework',
+    howItWorks: [
+      {
+        title: 'Enter the risk-free rate and beta',
+        description: 'The risk-free rate is typically a government bond yield; beta measures the asset\'s volatility relative to the market.',
+      },
+      {
+        title: 'Enter the expected market return',
+        description: 'The return expected from the overall market (e.g. a broad index) over the same period.',
+      },
+      {
+        title: 'Read the expected return',
+        description: 'E(R) = Rf + β × (Rm − Rf), with the market risk premium shown as an intermediate value.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What does a beta of exactly 1 mean?',
+        answer:
+          'A beta of 1 means the asset\'s returns are expected to move in line with the overall market - it earns exactly the market risk premium on top of the risk-free rate, no more and no less amplified.',
+      },
+      {
+        question: 'Can beta be negative, and what would that mean?',
+        answer:
+          'Yes - a negative beta means the asset tends to move opposite the market (rare, but seen in some hedges or certain commodities). Under CAPM, that would subtract from the risk-free rate rather than add to it, since the market risk premium gets multiplied by a negative number.',
+      },
+      {
+        question: 'Is CAPM\'s expected return a guarantee of actual future returns?',
+        answer:
+          'No - CAPM is a theoretical model that estimates a required or expected return based on systematic (market) risk alone. Actual returns are affected by many factors the model doesn\'t capture, and this calculator produces an informational estimate, not a prediction or financial advice.',
+      },
+    ],
+    Component: CapmCalculator,
+  },
+  {
+    slug: 'cash-app-fee-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['loan-calculator', 'percentage-calculator'],
+    title: 'Cash App Fees Calculator',
+    shortDescription: 'Calculate a payment fee (percentage plus a fixed amount) and the net amount received, for Cash App or any similar service.',
+    longDescription:
+      'Enter a transaction amount, a fee percentage, and a fixed fee to calculate the total fee charged and the net amount left after it\'s deducted - the same fee ÷ payment ÷ transfer service math used by Cash App, PayPal, Venmo, and most other peer-to-peer payment apps, which typically charge either a flat percentage, a small fixed amount, or a combination of both, depending on the specific transaction type (standard vs. instant transfer, sending vs. receiving, personal vs. business account). Both the fee percentage and fixed fee are inputs you set yourself, pre-filled with example default values rather than a claimed real-world rate - Cash App\'s actual current fees vary by transaction type and change over time, so hardcoding a specific number here would go stale and could mislead. Enter the actual rate that applies to your situation (check the app or its published fee schedule) to get an accurate result; use this tool for the arithmetic once you know that rate. Runs entirely client-side, and this is an informational estimate, not financial or tax advice.',
+    metaTitle: 'Cash App Fees Calculator - Fee & Net Amount | Formatiq',
+    metaDescription:
+      'Calculate a payment fee and net amount received online for free, for Cash App, PayPal, Venmo, or any similar percentage-plus-fixed-fee service.',
+    keywords: ['cash app fee calculator', 'cash app fees', 'payment fee calculator', 'instant transfer fee calculator', 'venmo fee calculator'],
+    useCase: 'Figuring out the net amount received after a payment app\'s transfer fee',
+    howItWorks: [
+      {
+        title: 'Enter the transaction amount',
+        description: 'The amount being sent, received, or transferred.',
+      },
+      {
+        title: 'Enter the fee percentage and fixed fee',
+        description: 'These are editable example defaults - enter the actual rate for your specific transaction type.',
+      },
+      {
+        title: 'Read the fee and net amount',
+        description: 'Fee = amount × percentage + fixed fee; net amount = amount − fee.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Are the fee percentage and fixed fee shown here Cash App\'s actual current rates?',
+        answer:
+          'No - they\'re editable example defaults, not a live or authoritative rate. Payment apps like Cash App charge different fees for different transaction types (standard vs. instant transfer, sending vs. receiving, personal vs. business), and those rates can change over time, so this tool intentionally leaves the rate as an input rather than hardcoding a specific figure that could go stale or mislead.',
+      },
+      {
+        question: 'Can I use this for PayPal, Venmo, or another payment app instead of Cash App?',
+        answer:
+          'Yes - the fee formula (a percentage of the amount plus an optional fixed fee) is the same arithmetic most peer-to-peer payment and transfer services use. Just enter that service\'s actual percentage and fixed fee for the transaction type you\'re calculating.',
+      },
+      {
+        question: 'Why does the fee include both a percentage and a fixed amount?',
+        answer:
+          'Many payment services combine the two: a percentage that scales with the transaction size, plus a small fixed fee that covers the flat cost of processing any transaction regardless of size. Setting either one to zero here effectively removes it from the calculation if a particular service only charges one or the other.',
+      },
+    ],
+    Component: PaymentFeeCalculator,
+  },
+  {
+    slug: 'cash-flow-to-debt-ratio-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['loan-calculator', 'break-even-calculator'],
+    title: 'Cash Flow to Debt Ratio Calculator',
+    shortDescription: 'Calculate the cash flow to debt ratio from operating cash flow and total debt, with a plain-language assessment.',
+    longDescription:
+      'Enter operating cash flow and total debt to calculate the cash flow to debt ratio - operating cash flow ÷ total debt - a solvency metric that estimates how much of a company\'s total debt could be paid off using one year\'s worth of cash generated from normal operations. A ratio of 1.0 (or 100%) means operating cash flow alone could theoretically retire all outstanding debt within a year; lower ratios indicate debt would take proportionally longer to pay down from operating cash flow alone. The result includes a plain-language assessment (strong, healthy, moderate, or weak) based on commonly cited thresholds, though what counts as healthy varies meaningfully by industry - capital-intensive businesses typically carry more debt relative to cash flow than asset-light ones, so this is a starting point for comparison rather than a universal pass/fail line. Useful for credit analysis, comparing a company\'s solvency year over year, or coursework in financial ratio analysis. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Cash Flow to Debt Ratio Calculator | Formatiq',
+    metaDescription:
+      'Calculate the cash flow to debt ratio online for free from operating cash flow and total debt, with a plain-language solvency assessment.',
+    keywords: ['cash flow to debt ratio calculator', 'operating cash flow to debt ratio', 'solvency ratio calculator', 'debt coverage ratio calculator'],
+    useCase: 'Assessing how well a company\'s operating cash flow covers its total debt',
+    howItWorks: [
+      {
+        title: 'Enter operating cash flow',
+        description: 'Cash generated from normal business operations, typically taken from the cash flow statement.',
+      },
+      {
+        title: 'Enter total debt',
+        description: 'The company\'s total outstanding debt obligations.',
+      },
+      {
+        title: 'Read the ratio and assessment',
+        description: 'The ratio (as a decimal and percentage) along with a plain-language strong/healthy/moderate/weak assessment.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What does a ratio of exactly 1.0 mean?',
+        answer:
+          'It means operating cash flow over the measured period equals total debt - in theory, the company could pay off all its debt using just that one period\'s operating cash flow, with nothing left over for reinvestment, dividends, or a cushion.',
+      },
+      {
+        question: 'Is a higher cash flow to debt ratio always better?',
+        answer:
+          'Generally yes for solvency, but context matters - what counts as a healthy ratio varies significantly by industry. Capital-intensive businesses (utilities, manufacturers) commonly operate with lower ratios than asset-light businesses (software, services) as a normal part of their business model, so this ratio is more useful compared against industry peers or the same company\'s own history than against a single universal benchmark.',
+      },
+      {
+        question: 'How is this different from a debt-to-equity ratio?',
+        answer:
+          'Debt-to-equity compares total debt against shareholder equity - a balance-sheet snapshot of capital structure. Cash flow to debt ratio instead compares debt against operating cash flow - a measure of whether the business actually generates enough cash from its operations to service that debt, which is a more direct signal of near-term repayment capacity.',
+      },
+    ],
+    Component: CashFlowToDebtRatioCalculator,
+  },
+  {
+    slug: 'cd-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['apy-calculator', 'appreciation-calculator', 'loan-calculator'],
+    title: 'CD Calculator',
+    shortDescription: 'Calculate a Certificate of Deposit\'s ending balance and interest earned from a deposit, APR, term, and compounding frequency.',
+    longDescription:
+      'Enter an initial deposit, a nominal annual interest rate (APR), a term in years, and how often interest compounds - daily, monthly, quarterly, semi-annually, or annually - to calculate a Certificate of Deposit\'s ending balance at maturity: balance = deposit × (1 + APR/n)^(n × years), where n is the number of compounding periods per year. This is the same compounding formula behind apy-calculator, extracted into a shared helper so both tools stay consistent, but applied here to project a balance forward over a chosen term rather than just converting a rate. The rate you enter should be the nominal APR the CD compounds at, not an already-annualized APY - if a CD\'s rate is quoted as APY, selecting "Annually" as the compounding frequency treats it correctly, since an APY by definition already represents one full year\'s compounding. Useful for comparing CD offers with different terms, rates, or compounding schedules before committing funds. Runs entirely client-side, and this is an informational estimate, not financial advice - actual CDs may have early-withdrawal penalties, minimum balance requirements, or other terms this calculator doesn\'t model.',
+    metaTitle: 'CD Calculator - Certificate of Deposit Maturity | Formatiq',
+    metaDescription:
+      'Calculate a Certificate of Deposit\'s ending balance and interest earned online for free from deposit, APR, term, and compounding frequency.',
+    keywords: ['cd calculator', 'certificate of deposit calculator', 'cd interest calculator', 'cd maturity calculator', 'compound interest calculator'],
+    useCase: 'Comparing how much a Certificate of Deposit will be worth at maturity across different rates or terms',
+    howItWorks: [
+      {
+        title: 'Enter the deposit, APR, and term',
+        description: 'The initial deposit, the nominal annual interest rate, and the term length in years.',
+      },
+      {
+        title: 'Choose the compounding frequency',
+        description: 'Daily, monthly, quarterly, semi-annually, or annually - matching how the CD actually compounds.',
+      },
+      {
+        title: 'Read the ending balance',
+        description: 'The maturity balance and total interest earned, using balance = deposit × (1 + APR/n)^(n × years).',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Should I enter APR or APY here?',
+        answer:
+          'Enter the nominal APR - the rate before compounding is applied. If your CD\'s rate is quoted as an already-annualized APY instead, select "Annually" as the compounding frequency, since an APY by definition compounds exactly once per year - entering an APY and then compounding it again at a different frequency would overstate the result.',
+      },
+      {
+        question: 'Does this account for early-withdrawal penalties or minimum balance requirements?',
+        answer:
+          'No - this calculator models the pure compound-interest math (deposit, rate, term, and compounding frequency) assuming the CD is held to maturity with no withdrawals. Real CDs often carry early-withdrawal penalties, minimum opening balances, or other terms that this tool doesn\'t account for - check the specific CD\'s disclosure terms for those details.',
+      },
+      {
+        question: 'Why does a more frequent compounding schedule produce a higher ending balance for the same APR?',
+        answer:
+          'More frequent compounding means interest is calculated and added to the balance more often, so each new calculation earns interest on a slightly larger base sooner. Daily compounding at a given APR will always produce a slightly higher balance than annual compounding at that same APR, though the difference is usually small for typical CD rates and terms.',
+      },
+    ],
+    Component: CdCalculator,
   },
 ];
 

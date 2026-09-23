@@ -214,7 +214,7 @@ export default function WordpressPasswordHashGenerator() {
 
       <div className="status-line status-neutral" style={{ marginTop: 12 }}>
         For local dev/testing convenience only - e.g. manually inserting a test user row into a dev database. Not
-        a substitute for WordPress's own registration or password-reset flow in production, and newer WordPress
+        a substitute for WordPress&apos;s own registration or password-reset flow in production, and newer WordPress
         versions default to bcrypt for new passwords rather than this legacy phpass format.
       </div>
 

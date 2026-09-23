@@ -133,8 +133,8 @@ export default function RgbCmykConverter() {
 
       <div className="status-line status-neutral" style={{ marginTop: 12 }}>
         This uses the standard device-independent RGB↔CMYK formula, not an ICC color-profile
-        conversion - it's a close approximation for screen use, but won't exactly match a specific
-        printer's actual ink output.
+        conversion - it&apos;s a close approximation for screen use, but won&apos;t exactly match a specific
+        printer&apos;s actual ink output.
       </div>
     </div>
   );

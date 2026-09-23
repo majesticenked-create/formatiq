@@ -60,8 +60,8 @@ export default function PrivacyPage() {
           entirely in your browser and is never transmitted anywhere, regardless of whether analytics is present.
         </p>
         <p>
-          Analytics only loads after you accept cookies via the banner shown on your first visit - choosing "Reject
-          non-essential" keeps Google Analytics from loading at all. You can review or change your choice at any
+          Analytics only loads after you accept cookies via the banner shown on your first visit - choosing &quot;Reject
+          non-essential&quot; keeps Google Analytics from loading at all. You can review or change your choice at any
           time by clearing this site&apos;s data in your browser. Google&apos;s own handling of Analytics data is
           described in their{' '}
           <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
@@ -95,7 +95,7 @@ export default function PrivacyPage() {
           requested URL, timestamp, and user agent, generated automatically by the act of loading a page over HTTP.
           This is separate from, and unrelated to, the content you paste into a tool, which is never sent to
           Cloudflare or anywhere else since tool processing happens entirely client-side. When accepted, Google
-          Analytics is also used - see "What data we do collect" above for details.
+          Analytics is also used - see &quot;What data we do collect&quot; above for details.
         </p>
 
         <h2>Your rights</h2>

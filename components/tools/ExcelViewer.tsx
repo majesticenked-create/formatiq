@@ -124,7 +124,7 @@ export default function ExcelViewer() {
       </div>
 
       <div className="status-line status-neutral" style={{ marginTop: 12 }}>
-        The file is parsed entirely in your browser - it's never uploaded anywhere.
+        The file is parsed entirely in your browser - it&apos;s never uploaded anywhere.
       </div>
     </div>
   );

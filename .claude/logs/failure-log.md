@@ -31,3 +31,10 @@
 - `2026-08-13 20:25:51` | ERROR | OTHER | Bash | Exit code 1
 - `2026-08-13 20:31:29` | ERROR | OTHER | Bash | Exit code 1
 - `2026-08-13 23:38:07` | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-15 14:28:08` | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-15 14:31:02` | ERROR | OTHER | Read | File does not exist. Note: your current working directory is /Users/beyouenked/projects/formatiq.
+- `2026-08-17 14:32:48` | ERROR | OTHER | Bash | Exit code 6
+- `2026-08-17 14:33:04` | ERROR | OTHER | Bash | Exit code 6
+- `2026-08-27 01:46:30` | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-27 02:31:45` | ERROR | OTHER | Bash | Exit code 1
+- `2026-09-04 02:32:14` | ERROR | OTHER | Bash | Exit code 1

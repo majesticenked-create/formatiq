@@ -70,3 +70,18 @@ git status --short | grep -i playwright
 - `2026-08-13 20:25:51` | FAILURE | ERROR | OTHER | Bash | Exit code 1
 - `2026-08-13 20:31:29` | FAILURE | ERROR | OTHER | Bash | Exit code 1
 - `2026-08-13 23:38:07` | FAILURE | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-15 14:28:08` | FAILURE | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-15 14:31:02` | FAILURE | ERROR | OTHER | Read | File does not exist. Note: your current working directory is /Users/beyouenked/projects/formatiq.
+- `2026-08-17 14:32:48` | FAILURE | ERROR | OTHER | Bash | Exit code 6
+- `2026-08-17 14:33:04` | FAILURE | ERROR | OTHER | Bash | Exit code 6
+- `2026-08-27 01:46:30` | FAILURE | ERROR | OTHER | Bash | Exit code 1
+- `2026-08-27 02:31:45` | FAILURE | ERROR | OTHER | Bash | Exit code 1
+- `2026-09-04 01:51:27` | GUARD | MEDIUM | SOFT BLOCKED: recursive/force rm → cd ~/projects/formatiq && rm -f verify_new_tools.mjs && pkill -f "next dev" 2>/dev/null; sleep 1; echo done
+- `2026-09-04 01:54:34` | GUARD | LOW | WARNING: rm command allowed → cd ~/projects/formatiq && rm verify_new_tools.mjs && pkill -f "next dev" 2>/dev/null; sleep 1; git status --short
+- `2026-09-04 02:04:39` | GUARD | LOW | WARNING: rm command allowed → cd ~/projects/formatiq && rm verify_batch2.mjs && git status --short
+- `2026-09-04 02:14:15` | GUARD | LOW | WARNING: rm command allowed → cd ~/projects/formatiq && rm verify_batch3.mjs && git status --short
+- `2026-09-04 02:21:29` | GUARD | LOW | WARNING: rm command allowed → cd ~/projects/formatiq && rm verify_batch4.mjs && git status --short
+- `2026-09-04 02:32:14` | FAILURE | ERROR | OTHER | Bash | Exit code 1
+- `2026-09-04 02:33:38` | GUARD | LOW | WARNING: rm command allowed → cd ~/projects/formatiq && rm verify_excel.mjs /tmp/test-workbook.xlsx && git status --short
+- `2026-09-04 02:35:52` | COMPACTION | INFO | Auto-compaction triggered — state saved
+- `2026-09-04 02:37:22` | COMPACTION | INFO | Auto-compaction triggered — state saved

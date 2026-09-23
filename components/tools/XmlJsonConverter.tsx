@@ -210,7 +210,7 @@ export default function XmlJsonConverter() {
       </div>
 
       <div className="status-line status-neutral" style={{ marginTop: 12 }}>
-        Attributes become "@name" keys and text content becomes "#text" when an element also has attributes or
+        Attributes become &quot;@name&quot; keys and text content becomes &quot;#text&quot; when an element also has attributes or
         children - repeated child tags become a JSON array. Just need to reformat XML or JSON, not convert between
         them? See the <a href="/tools/formatters/xml-formatter">XML Formatter</a> or{' '}
         <a href="/tools/formatters/json-formatter">JSON Formatter</a>.

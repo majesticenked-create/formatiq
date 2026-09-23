@@ -180,8 +180,8 @@ export default function IniJsonConverter() {
       </div>
 
       <div className="status-line status-neutral" style={{ marginTop: 12 }}>
-        Sections become nested JSON objects, and "true"/"false"/numeric values are inferred to their JSON types
-        rather than kept as strings. INI has no native array syntax, so arrays in JSON input can't convert back to
+        Sections become nested JSON objects, and &quot;true&quot;/&quot;false&quot;/numeric values are inferred to their JSON types
+        rather than kept as strings. INI has no native array syntax, so arrays in JSON input can&apos;t convert back to
         INI. Working with YAML config instead? Try the{' '}
         <a href="/tools/converters/json-yaml-converter">JSON ⇄ YAML Converter</a>. Working with a Java .properties
         file? See the <a href="/tools/converters/properties-json-converter">Properties ⇄ JSON Converter</a>. Need

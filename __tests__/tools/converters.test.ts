@@ -117,7 +117,7 @@ function jyYamlToJson(input: string) {
   const bad = jyJsonToYaml('{a:1}'); // invalid JSON (unquoted key)
   check('json-yaml-converter', 'invalid JSON -> error', bad.ok === false);
   const yamlBad = jyYamlToJson(':::not yaml:::\n  bad indent\nfoo');
-  check('json-yaml-converter', 'edge case: malformed YAML -> error not crash', yamlBad.ok === false || yamlBad.ok === true, true); // js-yaml is lenient with plain scalars; just confirm no throw
+  check('json-yaml-converter', 'edge case: malformed YAML -> error not crash', yamlBad.ok === false || yamlBad.ok === true); // js-yaml is lenient with plain scalars; just confirm no throw
 }
 
 // ---------- timestamp-converter ----------

@@ -190,6 +190,110 @@ function lcCalculateLoan(amount: number, annualRatePercent: number, termMonths: 
   check('loan-calculator', 'edge case: 0% interest rate -> simple division, no divide-by-zero crash', edge.ok === true && edge.monthlyPayment === 1000, JSON.stringify(edge));
 }
 
+// ---------- xnor-calculator ----------
+function xnorCalculate(a: number, b: number, width: number): number {
+  const max = width === 32 ? 0xffffffff : (1 << width) - 1;
+  const xor = (a ^ b) >>> 0;
+  return (~xor >>> 0) & max;
+}
+{
+  const good = xnorCalculate(12, 10, 8);
+  check('xnor-calculator', 'valid: A=12,B=10,8-bit -> 249 (11111001)', good === 249 && good.toString(2).padStart(8, '0') === '11111001', String(good));
+  const equalBits = xnorCalculate(5, 5, 8); // identical operands -> all bits match -> all 1s
+  check('xnor-calculator', 'edge case: identical operands -> all bits set (255 for 8-bit)', equalBits === 255, String(equalBits));
+  const opposite = xnorCalculate(0, 255, 8); // fully opposite bits -> all 0s
+  check('xnor-calculator', 'edge case: fully opposite 8-bit operands -> result is 0', opposite === 0, String(opposite));
+}
+
+// ---------- break-even-calculator ----------
+function beCalculate(fixedCosts: number, pricePerUnit: number, variableCostPerUnit: number) {
+  if (!Number.isFinite(fixedCosts) || fixedCosts < 0) return { ok: false as const, message: 'invalid fixed costs' };
+  if (!Number.isFinite(pricePerUnit) || pricePerUnit <= 0) return { ok: false as const, message: 'invalid price' };
+  if (!Number.isFinite(variableCostPerUnit) || variableCostPerUnit < 0) return { ok: false as const, message: 'invalid variable cost' };
+  const contributionMargin = pricePerUnit - variableCostPerUnit;
+  if (contributionMargin <= 0) return { ok: false as const, message: 'price must exceed variable cost' };
+  const breakEvenUnits = fixedCosts / contributionMargin;
+  const breakEvenRevenue = breakEvenUnits * pricePerUnit;
+  return { ok: true as const, contributionMargin, breakEvenUnits, breakEvenRevenue };
+}
+{
+  const good = beCalculate(10000, 50, 30);
+  check('break-even-calculator', 'valid: fixed=10000,price=50,variable=30 -> margin 20, 500 units, $25000 revenue', good.ok === true && good.contributionMargin === 20 && good.breakEvenUnits === 500 && good.breakEvenRevenue === 25000, JSON.stringify(good));
+  const bad = beCalculate(10000, 20, 30); // price below variable cost
+  check('break-even-calculator', 'price below variable cost -> error not negative break-even', bad.ok === false, JSON.stringify(bad));
+  const edge = beCalculate(10000, 30, 30); // price equals variable cost (zero margin boundary)
+  check('break-even-calculator', 'edge case: price equals variable cost (zero margin) -> error not divide-by-zero', edge.ok === false, JSON.stringify(edge));
+}
+
+// ---------- capm-calculator ----------
+function capmCalculate(riskFreeRate: number, beta: number, marketReturn: number) {
+  if (Number.isNaN(riskFreeRate) || Number.isNaN(beta) || Number.isNaN(marketReturn)) return { ok: false as const };
+  const marketRiskPremium = marketReturn - riskFreeRate;
+  const expectedReturn = riskFreeRate + beta * marketRiskPremium;
+  return { ok: true as const, marketRiskPremium, expectedReturn };
+}
+{
+  const good = capmCalculate(4, 1.2, 10);
+  check('capm-calculator', 'valid: rf=4%,beta=1.2,market=10% -> premium 6%, expected return 11.2%', good.ok === true && good.marketRiskPremium === 6 && Math.abs(good.expectedReturn - 11.2) < 1e-9, JSON.stringify(good));
+  const negBeta = capmCalculate(4, -0.5, 10); // negative beta
+  check('capm-calculator', 'edge case: negative beta subtracts from risk-free rate', negBeta.ok === true && negBeta.expectedReturn === 1, JSON.stringify(negBeta));
+  const zeroBeta = capmCalculate(4, 0, 10); // beta of 0 -> expected return equals risk-free rate
+  check('capm-calculator', 'edge case: beta of 0 -> expected return equals risk-free rate', zeroBeta.ok === true && zeroBeta.expectedReturn === 4, JSON.stringify(zeroBeta));
+}
+
+// ---------- cash-flow-to-debt-ratio-calculator ----------
+function cfdrCalculate(operatingCashFlow: number, totalDebt: number) {
+  if (Number.isNaN(operatingCashFlow)) return { ok: false as const, message: 'invalid cash flow' };
+  if (Number.isNaN(totalDebt) || totalDebt <= 0) return { ok: false as const, message: 'invalid debt' };
+  return { ok: true as const, ratio: operatingCashFlow / totalDebt };
+}
+{
+  const good = cfdrCalculate(250000, 500000);
+  check('cash-flow-to-debt-ratio-calculator', 'valid: 250000/500000 -> 0.5', good.ok === true && good.ratio === 0.5, JSON.stringify(good));
+  const bad = cfdrCalculate(100000, 0); // zero debt
+  check('cash-flow-to-debt-ratio-calculator', 'zero total debt -> error not divide-by-zero/Infinity', bad.ok === false, JSON.stringify(bad));
+  const edge = cfdrCalculate(-50000, 100000); // negative operating cash flow allowed, still computes
+  check('cash-flow-to-debt-ratio-calculator', 'edge case: negative operating cash flow -> negative ratio, not an error', edge.ok === true && edge.ratio === -0.5, JSON.stringify(edge));
+}
+
+// ---------- cd-calculator ----------
+function cdCompoundBalance(principal: number, aprPercent: number, periodsPerYear: number, years: number): number {
+  const r = aprPercent / 100;
+  return principal * Math.pow(1 + r / periodsPerYear, periodsPerYear * years);
+}
+function cdCalculate(deposit: number, apr: number, termYears: number, periodsPerYear: number) {
+  if (!Number.isFinite(deposit) || deposit <= 0) return { ok: false as const, message: 'invalid deposit' };
+  if (!Number.isFinite(apr) || apr < 0) return { ok: false as const, message: 'invalid apr' };
+  if (!Number.isFinite(termYears) || termYears <= 0) return { ok: false as const, message: 'invalid term' };
+  const endingBalance = cdCompoundBalance(deposit, apr, periodsPerYear, termYears);
+  return { ok: true as const, endingBalance, interestEarned: endingBalance - deposit };
+}
+{
+  const good = cdCalculate(10000, 5, 1, 12);
+  check('cd-calculator', 'valid: $10000 @ 5% APR monthly for 1yr -> ending balance ~ $10511.62', good.ok === true && Math.abs(good.endingBalance - 10511.62) < 0.01, JSON.stringify(good));
+  const bad = cdCalculate(-5000, 5, 1, 12); // negative deposit
+  check('cd-calculator', 'negative deposit -> error not crash', bad.ok === false, JSON.stringify(bad));
+  const edge = cdCalculate(10000, 0, 1, 12); // 0% APR boundary
+  check('cd-calculator', 'edge case: 0% APR -> ending balance equals deposit exactly', edge.ok === true && edge.endingBalance === 10000, JSON.stringify(edge));
+}
+
+// ---------- cash-app-fee-calculator (payment-fee-calculator) ----------
+function feeCalculate(amount: number, feePercent: number, fixedFee: number) {
+  if (!Number.isFinite(amount) || amount < 0) return { ok: false as const, message: 'invalid amount' };
+  if (!Number.isFinite(feePercent) || feePercent < 0) return { ok: false as const, message: 'invalid fee percent' };
+  if (!Number.isFinite(fixedFee) || fixedFee < 0) return { ok: false as const, message: 'invalid fixed fee' };
+  const fee = amount * (feePercent / 100) + fixedFee;
+  return { ok: true as const, fee, net: amount - fee };
+}
+{
+  const good = feeCalculate(100, 1.5, 0.25);
+  check('cash-app-fee-calculator', 'valid: $100 @ 1.5% + $0.25 -> fee $1.75, net $98.25', good.ok === true && Math.abs(good.fee - 1.75) < 1e-9 && Math.abs(good.net - 98.25) < 1e-9, JSON.stringify(good));
+  const zeroFee = feeCalculate(100, 0, 0); // no fee at all
+  check('cash-app-fee-calculator', 'edge case: 0% and $0 fixed fee -> net equals amount exactly', zeroFee.ok === true && zeroFee.fee === 0 && zeroFee.net === 100, JSON.stringify(zeroFee));
+  const bad = feeCalculate(100, -1, 0); // negative fee percent
+  check('cash-app-fee-calculator', 'negative fee percent -> error not crash', bad.ok === false, JSON.stringify(bad));
+}
+
 describe('Calculators', () => {
   results.forEach((r) => {
     it(`${r.tool}: ${r.test}`, () => {
