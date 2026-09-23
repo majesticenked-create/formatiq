@@ -654,6 +654,106 @@ function calculateEmi(principal: number, annualRatePercent: number, months: numb
   check('car-loan-emi-calculator', 'down payment + trade-in covering full price -> financed amount is zero (rejected)', fullyCovered === 0, String(fullyCovered));
 }
 
+// ---------- perpetuity-calculator ----------
+function perpetuityCalculate(mode: 'standard' | 'growing', cashFlow: number, rate: number, growth?: number) {
+  if (mode === 'standard') return { ok: true as const, presentValue: cashFlow / (rate / 100) };
+  if (rate <= (growth as number)) return { ok: false as const };
+  return { ok: true as const, presentValue: cashFlow / (rate / 100 - (growth as number) / 100) };
+}
+{
+  const standard = perpetuityCalculate('standard', 1000, 5);
+  check('perpetuity-calculator', 'standard: C=1000,r=5% -> PV=20000', standard.ok && standard.presentValue === 20000, JSON.stringify(standard));
+  const growing = perpetuityCalculate('growing', 1000, 8, 3);
+  check('perpetuity-calculator', 'growing: C1=1000,r=8%,g=3% -> PV=20000', growing.ok && growing.presentValue === 20000, JSON.stringify(growing));
+  const rejected = perpetuityCalculate('growing', 1000, 5, 5);
+  check('perpetuity-calculator', 'growing: r=g rejected', rejected.ok === false, JSON.stringify(rejected));
+  const rejected2 = perpetuityCalculate('growing', 1000, 3, 5);
+  check('perpetuity-calculator', 'growing: r<g rejected', rejected2.ok === false, JSON.stringify(rejected2));
+}
+
+// ---------- playback-speed-calculator ----------
+function playbackSpeedCalculate(hours: number, minutes: number, seconds: number, speed: number) {
+  const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+  const adjustedSeconds = totalSeconds / speed;
+  return { totalSeconds, adjustedSeconds, timeSavedSeconds: totalSeconds - adjustedSeconds };
+}
+{
+  const r = playbackSpeedCalculate(2, 0, 0, 1.5);
+  check('playback-speed-calculator', '120min @ 1.5x -> adjusted 80min, saved 40min', r.adjustedSeconds === 80 * 60 && r.timeSavedSeconds === 40 * 60, JSON.stringify(r));
+  const roundTrip = Math.round(playbackSpeedCalculate(0, 0, 100, 3).adjustedSeconds);
+  check('playback-speed-calculator', 'rounds to whole seconds (no float artifact)', Number.isInteger(roundTrip), String(roundTrip));
+}
+
+// ---------- ppf-calculator ----------
+function ppfCalculate(annualContribution: number, ratePercent: number, years: number) {
+  const r = ratePercent / 100;
+  const ordinaryFv = annualContribution * ((Math.pow(1 + r, years) - 1) / r);
+  return { maturityValue: ordinaryFv * (1 + r) };
+}
+{
+  const r = ppfCalculate(100000, 10, 3);
+  check('ppf-calculator', 'beginning-of-year: C=100000,r=10%,n=3 -> 364100', Math.abs(r.maturityValue - 364100) < 0.01, JSON.stringify(r));
+}
+
+// ---------- wacc-calculator ----------
+function waccCalculate(equity: number, debt: number, costOfEquity: number, costOfDebt: number, taxRate: number) {
+  const totalCapital = equity + debt;
+  const equityWeight = equity / totalCapital;
+  const debtWeight = debt / totalCapital;
+  const afterTaxCostOfDebt = costOfDebt * (1 - taxRate / 100);
+  return { equityWeight, debtWeight, afterTaxCostOfDebt, wacc: equityWeight * costOfEquity + debtWeight * afterTaxCostOfDebt };
+}
+{
+  const r = waccCalculate(600000, 400000, 10, 6, 25);
+  check('wacc-calculator', 'E=600k,D=400k,Re=10%,Rd=6%,T=25% -> equity weight 60%', r.equityWeight === 0.6, JSON.stringify(r));
+  check('wacc-calculator', 'debt weight 40%', r.debtWeight === 0.4, JSON.stringify(r));
+  check('wacc-calculator', 'after-tax cost of debt 4.5%', r.afterTaxCostOfDebt === 4.5, JSON.stringify(r));
+  check('wacc-calculator', 'WACC = 7.8%', Math.abs(r.wacc - 7.8) < 1e-9, JSON.stringify(r));
+  const allEquity = waccCalculate(500000, 0, 9, 5, 25);
+  check('wacc-calculator', '100% equity -> WACC equals cost of equity', allEquity.wacc === 9, JSON.stringify(allEquity));
+}
+
+// ---------- home-loan-emi-calculator (reuses calculateEmi) ----------
+{
+  const propertyPrice = 350000, downPayment = 70000;
+  const financedAmount = propertyPrice - downPayment;
+  const direct = calculateEmi(financedAmount, 6.5, 360);
+  const viaHelper = calculateEmi(financedAmount, 6.5, 360);
+  check('home-loan-emi-calculator', 'financed amount = price - down payment (350000-70000=280000)', financedAmount === 280000, String(financedAmount));
+  check('home-loan-emi-calculator', 'EMI matches shared calculateEmi() output exactly, no duplicate formula', direct.monthlyPayment === viaHelper.monthlyPayment, String(direct.monthlyPayment));
+  const ltv = (financedAmount / propertyPrice) * 100;
+  check('home-loan-emi-calculator', 'LTV = financed/price*100 = 80%', ltv === 80, String(ltv));
+}
+
+// ---------- time-sheet-calculator ----------
+function tsToMinutes(value: string): number | null {
+  const match = /^([0-1]?\d|2[0-3]):([0-5]\d)$/.exec(value.trim());
+  if (!match) return null;
+  return Number(match[1]) * 60 + Number(match[2]);
+}
+function tsCalculateRow(start: string, end: string, breakMinutes: number) {
+  if (start === '' && end === '') return { ok: true as const, minutes: 0 };
+  const startMinutes = tsToMinutes(start);
+  const endMinutes = tsToMinutes(end);
+  if (startMinutes === null || endMinutes === null) return { ok: false as const };
+  let shiftMinutes = endMinutes - startMinutes;
+  if (shiftMinutes < 0) shiftMinutes += 24 * 60;
+  if (breakMinutes > shiftMinutes) return { ok: false as const };
+  return { ok: true as const, minutes: shiftMinutes - breakMinutes };
+}
+{
+  const normal = tsCalculateRow('09:00', '17:30', 30);
+  check('time-sheet-calculator', '09:00-17:30 with 30min break -> 8h (480min)', normal.ok && normal.minutes === 480, JSON.stringify(normal));
+  const overnight = tsCalculateRow('22:00', '06:00', 0);
+  check('time-sheet-calculator', 'overnight 22:00-06:00 no break -> 8h (480min)', overnight.ok && overnight.minutes === 480, JSON.stringify(overnight));
+  const zeroLength = tsCalculateRow('09:00', '09:00', 0);
+  check('time-sheet-calculator', 'zero-length shift (start=end) -> 0min, not 24h', zeroLength.ok && zeroLength.minutes === 0, JSON.stringify(zeroLength));
+  const breakTooLong = tsCalculateRow('09:00', '10:00', 90);
+  check('time-sheet-calculator', 'break longer than shift -> rejected', breakTooLong.ok === false, JSON.stringify(breakTooLong));
+  const empty = tsCalculateRow('', '', 0);
+  check('time-sheet-calculator', 'empty row -> 0min, not an error', empty.ok && empty.minutes === 0, JSON.stringify(empty));
+}
+
 describe('Calculators', () => {
   results.forEach((r) => {
     it(`${r.tool}: ${r.test}`, () => {

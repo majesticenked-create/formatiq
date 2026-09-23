@@ -163,6 +163,12 @@ import MarketCapitalizationCalculator from '@/components/tools/MarketCapitalizat
 import NetProfitMarginCalculator from '@/components/tools/NetProfitMarginCalculator';
 import NopatCalculator from '@/components/tools/NopatCalculator';
 import CarLoanEmiCalculator from '@/components/tools/CarLoanEmiCalculator';
+import PerpetuityCalculator from '@/components/tools/PerpetuityCalculator';
+import PlaybackSpeedCalculator from '@/components/tools/PlaybackSpeedCalculator';
+import PpfCalculator from '@/components/tools/PpfCalculator';
+import WaccCalculator from '@/components/tools/WaccCalculator';
+import HomeLoanEmiCalculator from '@/components/tools/HomeLoanEmiCalculator';
+import TimeSheetCalculator from '@/components/tools/TimeSheetCalculator';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -9903,6 +9909,292 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: CarLoanEmiCalculator,
+  },
+  {
+    slug: 'perpetuity-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['dividend-discount-model-calculator', 'discounted-cash-flow-calculator', 'dividend-calculator'],
+    title: 'Perpetuity Calculator',
+    shortDescription: 'Calculate the present value of a standard or growing perpetuity - an infinite stream of periodic cash flows.',
+    longDescription:
+      'Calculate the present value of a perpetuity - a stream of equal (or steadily growing) cash flows that continues forever - using two clearly separated modes. The standard perpetuity mode computes PV = C ÷ r, for a level cash flow C discounted at rate r. The growing perpetuity mode computes PV = C1 ÷ (r − g), for a cash flow that grows at a constant rate g each period, where C1 is next period\'s cash flow. The growing perpetuity requires the discount rate to be strictly greater than the growth rate - if r ≤ g, the formula implies an infinite or negative present value, which isn\'t a real result, so the calculator rejects that input with a clear message instead of showing Infinity or NaN. The two modes are kept as an explicit toggle rather than blended into one form, since mixing a standard cash flow with a growth rate (or vice versa) would silently compute the wrong model. Useful for valuing preferred stock, certain bonds, or any theoretical infinite cash flow stream, and a building block for the Gordon Growth (dividend discount) and other constant-growth valuation models. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Perpetuity Calculator - Standard & Growing PV | Formatiq',
+    metaDescription:
+      'Calculate the present value of a standard or growing perpetuity online for free from a periodic cash flow, discount rate, and growth rate.',
+    keywords: ['perpetuity calculator', 'growing perpetuity calculator', 'present value of perpetuity', 'perpetuity formula'],
+    useCase: 'Valuing an infinite stream of level or steadily growing cash flows, such as preferred stock',
+    howItWorks: [
+      {
+        title: 'Choose standard or growing',
+        description: 'Standard: a level cash flow forever. Growing: a cash flow that increases by a constant rate each period.',
+      },
+      {
+        title: 'Enter the cash flow and discount rate',
+        description: 'For growing perpetuities, enter next period\'s cash flow (C1) and an expected growth rate (g) as well.',
+      },
+      {
+        title: 'Read the present value',
+        description: 'PV = C ÷ r (standard), or PV = C1 ÷ (r − g) (growing).',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What happens if the discount rate is less than or equal to the growth rate?',
+        answer:
+          'The calculator rejects the input with a clear error message rather than showing Infinity or a negative number. Mathematically, r ≤ g makes the (r − g) denominator zero or negative, implying an infinitely large or negative present value - a sign the growing perpetuity\'s constant-growth assumption doesn\'t hold for those inputs.',
+      },
+      {
+        question: 'How does this relate to the Dividend Discount Model (DDM) Calculator?',
+        answer:
+          'The Gordon Growth Model used in the DDM Calculator is a growing perpetuity applied specifically to dividends - it uses exactly the same PV = C1 ÷ (r − g) formula, just with C1 being a dividend rather than a generic cash flow. This calculator is the general-purpose version, useful for any perpetual cash flow stream, not only dividends.',
+      },
+      {
+        question: 'Is a perpetuity a realistic assumption?',
+        answer:
+          'No real cash flow stream lasts literally forever, but perpetuities are a useful simplifying model for valuing instruments with very long or indefinite lives - such as certain preferred shares or government consols - and as the terminal-value building block inside more detailed models like a multi-stage DCF.',
+      },
+    ],
+    Component: PerpetuityCalculator,
+  },
+  {
+    slug: 'playback-speed-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['time-unit-converter', 'time-format-converter', 'timestamp-converter'],
+    title: 'Playback Speed Calculator',
+    shortDescription: 'Calculate the adjusted duration and time saved when watching or listening at a faster playback speed.',
+    longDescription:
+      'Enter a video, podcast, or audiobook\'s original duration (in hours, minutes, and seconds) and a playback speed multiplier to see the adjusted duration and how much time you save. Adjusted duration = Original duration ÷ Speed, and Time saved = Original duration − Adjusted duration. Durations are handled as whole seconds internally and rounded before display, so results always read as a clean "Xh Ym Zs" rather than a floating-point artifact like "39.999s" that can appear when dividing an odd duration by a speed like 1.5x. Useful for estimating how much time a 1.25x, 1.5x, or 2x playback speed actually saves across a long lecture series, podcast backlog, or audiobook. Runs entirely client-side.',
+    metaTitle: 'Playback Speed Calculator - Time Saved at 1.5x, 2x | Formatiq',
+    metaDescription:
+      'Calculate adjusted video or audio duration and time saved at any playback speed online for free. Runs entirely in your browser.',
+    keywords: ['playback speed calculator', 'video speed calculator', 'time saved calculator', '1.5x speed calculator', '2x speed calculator'],
+    useCase: 'Estimating how much time a faster podcast, video, or audiobook playback speed actually saves',
+    howItWorks: [
+      {
+        title: 'Enter the original duration',
+        description: 'Hours, minutes, and seconds fields - fill in whichever apply, blank fields default to zero.',
+      },
+      {
+        title: 'Enter the playback speed',
+        description: 'A multiplier greater than zero, such as 1.25, 1.5, or 2.',
+      },
+      {
+        title: 'Read the adjusted duration and time saved',
+        description: 'The new, shorter duration at that speed, and exactly how much time it saves versus the original.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why does the result show clean seconds instead of a decimal?',
+        answer:
+          'Dividing an arbitrary duration by a speed like 1.5x rarely produces a whole number of seconds internally. The calculator rounds to the nearest whole second before formatting the result, so you see a clean value like "1h 20m 0s" instead of a floating-point artifact like "1h 19m 59.999s".',
+      },
+      {
+        question: 'What speed values are supported?',
+        answer:
+          'Any speed greater than zero, including fractional values like 0.75x (slower than normal) as well as speeds faster than 1x. A speed of zero or a negative value is rejected, since it doesn\'t correspond to a real playback rate.',
+      },
+      {
+        question: 'Does this account for skipped intros, ads, or pauses?',
+        answer:
+          'No - it purely divides the original duration by the speed multiplier. Any time you separately skip (intros, ads, pauses) isn\'t part of this calculation and would need to be subtracted from the original duration yourself before entering it.',
+      },
+    ],
+    Component: PlaybackSpeedCalculator,
+  },
+  {
+    slug: 'ppf-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['compound-interest-calculator', 'future-value-calculator', 'apy-calculator', 'cd-calculator'],
+    title: 'PPF Calculator',
+    shortDescription: 'Calculate the maturity value of a Public Provident Fund (PPF) account from annual contributions, rate, and tenure.',
+    longDescription:
+      'Enter an annual contribution amount, an annual interest rate, and a tenure in years to calculate the maturity value of a Public Provident Fund (PPF) account - a long-term, government-backed savings scheme built around fixed annual (not arbitrary-frequency) deposits. This calculator explicitly assumes each year\'s contribution is deposited at the BEGINNING of that year (an annuity-due), which is the standard real-world PPF convention, since a deposit made early in the financial year earns a full year of interest rather than none: FV = C × (((1+r)^n − 1) ÷ r) × (1 + r). This differs from the Future Value Calculator\'s periodic-contribution mode, which models END-of-period (ordinary annuity) deposits at any frequency you choose - PPF\'s annual, beginning-of-year deposit structure is a distinct, well-known workflow of its own. The interest rate is a fully editable input with a labeled example default, not a hardcoded "current" rate, since PPF rates are set quarterly by the relevant government authority and change over time. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'PPF Calculator - Public Provident Fund Maturity Value | Formatiq',
+    metaDescription:
+      'Calculate PPF (Public Provident Fund) maturity value online for free from annual contribution, interest rate, and tenure. Beginning-of-year deposit convention.',
+    keywords: ['ppf calculator', 'public provident fund calculator', 'ppf maturity calculator', 'ppf interest calculator'],
+    useCase: 'Estimating the maturity value of a long-term PPF account from yearly contributions',
+    howItWorks: [
+      {
+        title: 'Enter the annual contribution',
+        description: 'The amount deposited once per year, assumed to land at the beginning of each year.',
+      },
+      {
+        title: 'Enter the interest rate and tenure',
+        description: 'The annual interest rate (editable - not a hardcoded "current" rate) and the number of years.',
+      },
+      {
+        title: 'Read the maturity value',
+        description: 'Total contributed, total interest earned, and the final maturity value.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this assume deposits at the beginning or end of each year?',
+        answer:
+          'Beginning of each year (an annuity-due) - the standard real-world PPF convention, since a deposit made early in the financial year earns a full year\'s interest. This is explicitly documented rather than left ambiguous, and it\'s why the formula includes an extra × (1 + r) factor compared to a plain end-of-period annuity.',
+      },
+      {
+        question: 'Why is this different from the Future Value Calculator\'s periodic contribution mode?',
+        answer:
+          'The Future Value Calculator\'s contribution mode assumes deposits land at the END of each compounding period (an ordinary annuity) and supports arbitrary frequencies (monthly, quarterly, etc.). PPF is specifically an annual, beginning-of-year deposit scheme, so this calculator models that exact convention rather than the more general, but timing-different, ordinary-annuity math.',
+      },
+      {
+        question: 'Is the default interest rate accurate?',
+        answer:
+          'No - it\'s a labeled example only. PPF interest rates are set quarterly by the relevant government authority and change over time, so always enter the actual current rate rather than relying on this calculator\'s default.',
+      },
+    ],
+    Component: PpfCalculator,
+  },
+  {
+    slug: 'wacc-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['capm-calculator', 'economic-value-added-calculator', 'nopat-calculator', 'discounted-cash-flow-calculator'],
+    title: 'WACC Calculator',
+    shortDescription: 'Calculate a company\'s Weighted Average Cost of Capital (WACC) from equity, debt, cost of capital, and tax rate.',
+    longDescription:
+      'Enter the market value of equity and debt, the cost of equity, the cost of debt, and the corporate tax rate to calculate a company\'s Weighted Average Cost of Capital: WACC = (E/V × Re) + (D/V × Rd × (1 − T)), where V = E + D is total capital, and the after-tax cost of debt (Rd × (1 − T)) reflects the fact that interest payments are tax-deductible while dividend payments to equity holders are not. Total capital (equity plus debt) must be greater than zero, but either component alone can be zero - a fully equity-financed or fully debt-financed capital structure is a valid, supported edge case, not an error. WACC represents the minimum return a company must earn on its existing assets to satisfy both its shareholders and its lenders, and is the standard discount rate used in a discounted cash flow (DCF) valuation. Useful alongside the CAPM Calculator (which computes only the cost of equity, one of WACC\'s two inputs), the EVA and NOPAT Calculators (which use a similar after-tax framing), and the DCF Calculator (which needs a discount rate as an input). Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'WACC Calculator - Weighted Average Cost of Capital | Formatiq',
+    metaDescription:
+      'Calculate WACC (Weighted Average Cost of Capital) online for free from equity, debt, cost of equity, cost of debt, and tax rate.',
+    keywords: ['wacc calculator', 'weighted average cost of capital calculator', 'wacc formula', 'cost of capital calculator'],
+    useCase: 'Finding the discount rate to use in a discounted cash flow valuation or comparing a company\'s cost of capital over time',
+    howItWorks: [
+      {
+        title: 'Enter market value of equity and debt',
+        description: 'These determine the equity weight (E/V) and debt weight (D/V) of the capital structure.',
+      },
+      {
+        title: 'Enter cost of equity and cost of debt',
+        description: 'The cost of equity (e.g. from the CAPM Calculator) and the pre-tax cost of debt (e.g. the interest rate on the company\'s debt).',
+      },
+      {
+        title: 'Enter the tax rate',
+        description: 'Used to compute the after-tax cost of debt, since interest is tax-deductible.',
+      },
+      {
+        title: 'Read the WACC',
+        description: 'The weighted blend of the after-tax cost of debt and the cost of equity - the company\'s overall cost of capital.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why is the cost of debt adjusted for taxes but the cost of equity isn\'t?',
+        answer:
+          'Interest paid on debt is tax-deductible, which lowers its effective cost to the company - a $100 interest payment with a 25% tax rate only really costs the company $75 after the tax shield. Dividends paid to equity holders are not tax-deductible, so the cost of equity is used as-is, with no equivalent adjustment.',
+      },
+      {
+        question: 'Can WACC be calculated for a company with no debt, or no equity?',
+        answer:
+          'Yes - both are valid edge cases. A fully equity-financed company (debt = 0) has a WACC equal to its cost of equity; a fully debt-financed company (equity = 0) has a WACC equal to its after-tax cost of debt. The calculator only requires that equity and debt aren\'t both zero, since a company needs at least some capital to have a cost of capital.',
+      },
+      {
+        question: 'How is this different from the CAPM Calculator?',
+        answer:
+          'The CAPM Calculator computes only the cost of equity (Re) - one of two inputs this calculator needs. WACC combines that cost of equity with the cost of debt, weighted by how much of the company\'s capital structure is equity versus debt, to arrive at the company\'s single overall cost of capital.',
+      },
+    ],
+    Component: WaccCalculator,
+  },
+  {
+    slug: 'home-loan-emi-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['loan-calculator', 'car-loan-emi-calculator'],
+    title: 'Home Loan EMI Calculator',
+    shortDescription: 'Calculate home loan EMI from property price, down payment, rate, and term, including loan-to-value.',
+    longDescription:
+      'Enter a property price, down payment, annual interest rate, and loan term (in years) to calculate your home loan EMI (equated monthly installment). Like the Car Loan EMI Calculator, this tool is built around how mortgage financing actually works: you don\'t finance the full property price - you first subtract your down payment to arrive at the financed amount, and the standard amortization formula (EMI = P × r × (1+r)^n / ((1+r)^n − 1)) is then applied to that financed amount. It also reports the resulting loan-to-value (LTV) ratio - the financed amount as a percentage of the property price - a figure lenders commonly use to assess mortgage risk. If the down payment covers the full property price, there\'s nothing left to finance and the tool flags that instead of computing a payment. Runs entirely client-side, and this is an informational estimate, not financial advice - it doesn\'t account for property tax, homeowners insurance, PMI, or closing costs.',
+    metaTitle: 'Home Loan EMI Calculator - Mortgage Payment & LTV | Formatiq',
+    metaDescription:
+      'Calculate home loan EMI and loan-to-value (LTV) online for free from property price, down payment, interest rate, and term.',
+    keywords: ['home loan emi calculator', 'mortgage calculator', 'home loan payment calculator', 'loan to value calculator'],
+    useCase: 'Estimating monthly mortgage payments and loan-to-value after accounting for a down payment',
+    howItWorks: [
+      {
+        title: 'Enter property price and down payment',
+        description: 'These determine the financed amount and the loan-to-value (LTV) ratio.',
+      },
+      {
+        title: 'Enter rate and term',
+        description: 'Annual interest rate and loan term in years.',
+      },
+      {
+        title: 'Read the EMI',
+        description: 'Financed amount, LTV, monthly payment, total interest, and total amount paid over the life of the loan.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why not just use the generic Loan Calculator for a mortgage?',
+        answer:
+          'The generic Loan Calculator takes a single loan amount as input, leaving it up to you to work out the financed amount and loan-to-value by hand. This tool takes property price and down payment as separate fields, computes the financed amount and LTV itself, and applies the EMI formula to that financed amount - mirroring how an actual mortgage is structured, the same way the Car Loan EMI Calculator does for auto loans.',
+      },
+      {
+        question: 'What is loan-to-value (LTV) and why does it matter?',
+        answer:
+          'LTV is the financed amount expressed as a percentage of the property price - a $280,000 loan on a $350,000 property is an 80% LTV. Lenders use LTV to assess risk: a lower LTV (bigger down payment relative to price) generally means better loan terms and no requirement for mortgage insurance, while a higher LTV is viewed as riskier.',
+      },
+      {
+        question: 'Does this include property tax, insurance, or PMI?',
+        answer:
+          'No - it calculates payments purely on the financed amount (property price minus down payment). Property tax, homeowners insurance, private mortgage insurance (PMI), and closing costs vary by location and lender, so factor those in separately if you want an all-in monthly cost.',
+      },
+    ],
+    Component: HomeLoanEmiCalculator,
+  },
+  {
+    slug: 'time-sheet-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['time-unit-converter', 'time-format-converter', 'timestamp-converter'],
+    title: 'Time Sheet Calculator',
+    shortDescription: 'Add up total hours worked across multiple shifts, each with its own start time, end time, and break.',
+    longDescription:
+      'Enter one or more shifts - each with a start time, end time, and break length in minutes - to calculate total hours worked across all of them. Each row\'s shift length is computed as plain clock-time arithmetic in minutes-since-midnight (end minus start), with an overnight adjustment (adding 24 hours worth of minutes) applied only when the end time is earlier than the start time, such as a shift running from 22:00 to 06:00. This deliberately avoids using JavaScript Date objects across day boundaries, which would introduce timezone or daylight-saving effects into what should be pure time-of-day math with no calendar or timezone involved. Rows can be added or removed freely, an empty row is simply skipped (contributing zero), and a break longer than the shift itself is rejected with a clear message rather than producing a negative total. Useful for freelancers, hourly employees, or anyone manually reconciling a week of shifts against a timesheet. Runs entirely client-side.',
+    metaTitle: 'Time Sheet Calculator - Total Hours Worked | Formatiq',
+    metaDescription:
+      'Add up total hours worked across multiple shifts online for free, with start time, end time, and break per row, including overnight shifts.',
+    keywords: ['time sheet calculator', 'timesheet calculator', 'hours worked calculator', 'work hours calculator'],
+    useCase: 'Adding up total hours worked across a week of shifts, each with its own start, end, and break',
+    howItWorks: [
+      {
+        title: 'Enter each shift\'s start and end time',
+        description: 'In 24-hour HH:MM format, plus the break length in minutes for that shift.',
+      },
+      {
+        title: 'Add or remove rows as needed',
+        description: 'One row per shift - add more for additional days, or remove rows you don\'t need.',
+      },
+      {
+        title: 'Read the total',
+        description: 'All valid rows\' worked time (shift length minus break) summed together.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How are overnight shifts (e.g. 22:00 to 06:00) handled?',
+        answer:
+          'When the end time is earlier than the start time, the calculator treats it as an overnight shift and adds 24 hours worth of minutes before subtracting - so 22:00 to 06:00 correctly computes as 8 hours, not a negative number. This is done with plain minutes-since-midnight arithmetic, not Date objects, so there\'s no timezone or daylight-saving effect.',
+      },
+      {
+        question: 'What happens if the break is longer than the shift?',
+        answer:
+          'That row is rejected with a clear error message, since a break can\'t exceed the total length of the shift it\'s subtracted from - allowing it would silently produce a negative worked time for that row.',
+      },
+      {
+        question: 'What if I leave a row completely empty?',
+        answer:
+          'An empty row (no start or end time entered) is treated as zero worked time and simply doesn\'t contribute to the total, rather than being flagged as an error - useful for leaving spare rows in place for days you haven\'t filled in yet.',
+      },
+    ],
+    Component: TimeSheetCalculator,
   },
 ];
 
