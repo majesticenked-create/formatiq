@@ -169,6 +169,9 @@ import PpfCalculator from '@/components/tools/PpfCalculator';
 import WaccCalculator from '@/components/tools/WaccCalculator';
 import HomeLoanEmiCalculator from '@/components/tools/HomeLoanEmiCalculator';
 import TimeSheetCalculator from '@/components/tools/TimeSheetCalculator';
+import BbcodeEditor from '@/components/tools/BbcodeEditor';
+import JavaFormatter from '@/components/tools/JavaFormatter';
+import JsValidator from '@/components/tools/JsValidator';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -10195,6 +10198,213 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: TimeSheetCalculator,
+  },
+  {
+    slug: 'bbcode-editor',
+    category: 'formatters',
+    isNew: true,
+    relatedSlugs: ['html-formatter', 'markdown-html-converter', 'html-stripper'],
+    title: 'BBCode Editor & Preview',
+    shortDescription: 'Write BBCode with a formatting toolbar and see a safe, live rendered preview.',
+    longDescription:
+      'Write forum-style BBCode - the [b]bold[/b], [i]italic[/i], [url] and [quote] markup used on phpBB, vBulletin, and countless forum and comment systems - and see it rendered instantly in a live preview pane, without needing an actual forum account to check your formatting. Every tag is converted through a strict allowlist: the raw input is fully HTML-escaped first, so any literal HTML you paste (including a stray <script> tag) is neutralized into inert text before a single BBCode tag is ever applied, and link/image URLs are restricted to plain http(s) addresses while color values are restricted to a fixed set of named colors. Nothing is sent anywhere - the toolbar buttons insert tags directly into the textarea and the preview re-renders in your browser as you type.',
+    metaTitle: 'BBCode Editor & Live Preview - Free, Browser-Based | Formatiq',
+    metaDescription:
+      'Write and preview BBCode online for free with a formatting toolbar - bold, italic, links, images, quotes, lists, and color, safely rendered client-side.',
+    keywords: ['bbcode editor', 'bbcode preview', 'bbcode to html', 'forum bbcode formatter', 'bbcode tester'],
+    useCase: 'Drafting a forum post and checking the formatting before submitting it',
+    howItWorks: [
+      {
+        title: 'Type or paste BBCode',
+        description: 'Use the toolbar buttons to insert [b], [i], [url], and [color] tags, or type them directly.',
+      },
+      {
+        title: 'Input is escaped first',
+        description: 'Every character is HTML-entity-encoded before any tag substitution, so raw HTML can never survive.',
+      },
+      {
+        title: 'Only allowlisted tags render',
+        description: 'A fixed set of BBCode tags convert to a fixed set of safe HTML tags - nothing else passes through.',
+      },
+      {
+        title: 'See the live preview',
+        description: 'The rendered preview pane updates immediately, or copy the generated safe HTML directly.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Escape-then-substitute sanitization',
+        description: 'Raw text is HTML-escaped before any BBCode tag is applied, so embedded HTML can never execute.',
+      },
+      {
+        title: 'URLs restricted to http(s)',
+        description: '[url] and [img] reject javascript:, data:, and any other non-http(s) scheme outright.',
+      },
+      {
+        title: 'Colors restricted to an allowlist',
+        description: '[color] only honors a fixed set of named CSS colors - no arbitrary CSS can be injected.',
+      },
+      {
+        title: 'Runs entirely client-side',
+        description: 'Nothing you type is ever uploaded - the toolbar, parser, and preview all run in your browser.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is it safe to paste BBCode from an untrusted forum post here?',
+        answer:
+          'Yes - the input is HTML-escaped before any BBCode conversion happens, so a literal <script> tag or an onerror= attribute typed into the box is rendered as plain, inert text in the preview rather than executed. Only a small fixed set of BBCode tags ([b], [i], [u], [s], [url], [img], [quote], [code], [list]/[*], [color], [size]) are ever converted into HTML, and each one is restricted (http(s)-only URLs, an allowlisted color set) rather than passed through as-is.',
+      },
+      {
+        question: 'Which BBCode tags are supported?',
+        answer:
+          '[b] bold, [i] italic, [u] underline, [s] strikethrough, [url]/[url=href] links, [img] images, [quote] blockquotes, [code] inline code, [list] with [*] items, [color=name] with an allowlisted color, and [size=NN] font sizing. Anything outside that set is left as plain escaped text rather than guessed at.',
+      },
+      {
+        question: 'Does this upload anything I type?',
+        answer:
+          'No - parsing and rendering both happen entirely in your browser. Nothing you write is sent to a server.',
+      },
+    ],
+    Component: BbcodeEditor,
+  },
+  {
+    slug: 'java-formatter',
+    category: 'formatters',
+    isNew: true,
+    relatedSlugs: ['js-formatter', 'php-formatter', 'css-formatter'],
+    title: 'Java Formatter & Beautifier',
+    shortDescription: 'Reformat Java source with consistent brace placement and indentation.',
+    longDescription:
+      'Paste Java source with inconsistent indentation or brace placement and get it reformatted with one brace per new line and four-space indentation that tracks nesting depth accurately. Unlike a naive regex reformatter, this tool first tokenizes the input into code, string literals, char literals, and comments (both // and /* */ styles) so that a brace or semicolon that happens to sit inside a string, a char literal, or a comment is never mistaken for real code structure - only actual code braces drive indentation. Java 15+ text blocks (triple-quoted strings) are explicitly unsupported and rejected with a clear message rather than silently mishandled, since they can contain unescaped braces and quotes that this tokenizer isn\'t built to track. Runs entirely client-side - nothing you paste is uploaded.',
+    metaTitle: 'Java Formatter & Beautifier - Free, Browser-Based | Formatiq',
+    metaDescription:
+      'Format and beautify Java code online for free. Brace, string, and comment-aware reindenting - nothing you paste is ever uploaded.',
+    keywords: ['java formatter', 'java beautifier', 'format java online', 'java pretty print', 'indent java code'],
+    useCase: 'Cleaning up inconsistently indented Java pasted from a chat or ticket',
+    howItWorks: [
+      {
+        title: 'Paste Java source',
+        description: 'Code with inconsistent indentation, brace placement, or line breaks.',
+      },
+      {
+        title: 'The tokenizer separates code from literals',
+        description: 'Strings, char literals, and comments are identified first so their contents are never touched.',
+      },
+      {
+        title: 'Braces drive indentation',
+        description: 'Only real code braces increase or decrease nesting depth, tracked with a running counter.',
+      },
+      {
+        title: 'Copy the reformatted output',
+        description: 'Four-space indentation, one brace per line, with else/catch/finally kept on the closing line.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'String and comment aware',
+        description: 'A brace or quote inside a string, char literal, or comment never throws off indentation.',
+      },
+      {
+        title: 'No hidden logic changes',
+        description: 'Only whitespace, indentation, and line breaks change - identifiers and logic are untouched.',
+      },
+      {
+        title: 'Honest about its limits',
+        description: 'Java text blocks are explicitly rejected rather than reformatted incorrectly.',
+      },
+      {
+        title: 'Client-side only',
+        description: 'Nothing you paste is sent to a server - formatting happens entirely in your browser.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this use a real Java parser?',
+        answer:
+          'No - there is no lightweight, dependency-free Java AST parser available for the browser. Instead, this tool uses a tokenizer that correctly separates strings, char literals, and both comment styles from real code before reindenting based on brace depth, which avoids the most common failure mode of naive formatters: braces or quotes inside a string or comment being miscounted as code structure.',
+      },
+      {
+        question: 'Why are text blocks not supported?',
+        answer:
+          'Java 15+ triple-quoted text blocks ("""…""") can contain unescaped braces, quotes, and newlines that don\'t follow normal string-literal escaping rules. Rather than risk silently corrupting a text block\'s contents, this tool detects them and rejects the input with a clear message instead of guessing.',
+      },
+      {
+        question: 'Will this change what my code does?',
+        answer:
+          'No - only whitespace, line breaks, and indentation are changed. Identifiers, literals, and logic are copied through unchanged.',
+      },
+    ],
+    Component: JavaFormatter,
+  },
+  {
+    slug: 'javascript-validator',
+    category: 'validators',
+    isNew: true,
+    relatedSlugs: ['js-formatter', 'json-validator', 'regex-tester'],
+    title: 'JavaScript Validator',
+    shortDescription: 'Check JavaScript for syntax errors without running the code.',
+    longDescription:
+      'Paste a JavaScript snippet and check whether it parses as valid syntax - without ever executing it. This works by constructing a Function from your source (the standard, well-understood technique for safe syntax-only checking) and immediately discarding it unread: compiling code is not the same as running it, and the function this tool builds is never called anywhere, so nothing in the pasted code executes no matter what it contains. No eval is used anywhere in this tool. Modern syntax - arrow functions, template literals, optional chaining, nullish coalescing, and both comment styles - is checked using the browser\'s own JavaScript engine, so support tracks whatever the browser you\'re using already understands. A syntax error is reported with the engine\'s own error message and, where available, the line it was found near.',
+    metaTitle: 'JavaScript Validator - Check JS Syntax Online | Formatiq',
+    metaDescription:
+      'Validate JavaScript syntax online for free without running the code. No eval - client-side only, checks modern syntax like arrow functions and optional chaining.',
+    keywords: ['javascript validator', 'js syntax checker', 'validate javascript', 'javascript syntax error checker'],
+    useCase: 'Checking a pasted code snippet for a syntax error before debugging further',
+    howItWorks: [
+      {
+        title: 'Paste a JavaScript snippet',
+        description: 'A function body, script, or code block you want to check for syntax errors.',
+      },
+      {
+        title: 'The code is compiled, never run',
+        description: 'A Function is constructed from the source and immediately discarded - it is never called.',
+      },
+      {
+        title: 'Errors surface with a message',
+        description: 'A syntax error is reported using the browser engine\'s own error message.',
+      },
+      {
+        title: 'Valid code is confirmed instantly',
+        description: 'No syntax errors means the snippet is confirmed as parseable JavaScript.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'No eval, ever',
+        description: 'This tool never calls eval - syntax checking uses the Function constructor instead.',
+      },
+      {
+        title: 'Constructed, never invoked',
+        description: 'The function built from your code is thrown away unread and is never executed.',
+      },
+      {
+        title: 'Understands modern syntax',
+        description: 'Arrow functions, template literals, optional chaining, and nullish coalescing are all checked correctly.',
+      },
+      {
+        title: 'Fully client-side',
+        description: 'Nothing you paste is sent anywhere - checking happens entirely in your browser.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this actually run my code?',
+        answer:
+          'No. The code is compiled by constructing a Function from it, which parses and validates syntax exactly like eval would, but the resulting function is never invoked - it\'s discarded immediately after construction. No side effect in your code, such as a network call or a console log, will ever run here.',
+      },
+      {
+        question: 'Is this the same as the JavaScript Formatter?',
+        answer:
+          'No - the JavaScript Formatter reformats already-valid code for readability and doesn\'t check syntax on its own. This tool does the opposite job: it only checks whether code parses correctly and reports a syntax error if it doesn\'t, without reformatting anything.',
+      },
+      {
+        question: 'Why does pasting import/export syntax fail even though it\'s valid JavaScript?',
+        answer:
+          'Top-level import and export statements are only valid inside an ES module, not inside a plain function body, which is the context this tool checks code in. Paste just the function or script logic (without the module-level import/export lines) to validate that part on its own.',
+      },
+    ],
+    Component: JsValidator,
   },
 ];
 

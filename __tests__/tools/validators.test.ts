@@ -233,6 +233,33 @@ function ivTryValidate(input: string) {
   check('iban-validator', 'edge case: unrecognized country code -> error not crash', edge.ok === false && edge.message === 'unknown country', JSON.stringify(edge));
 }
 
+// ---------- javascript-validator ----------
+function jsCheckSyntax(input: string): { ok: boolean; message?: string } {
+  try {
+    // eslint-disable-next-line no-new-func
+    new Function(input);
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, message: err instanceof Error ? err.message : 'Syntax error' };
+  }
+}
+{
+  const good = jsCheckSyntax('const x = 5;');
+  check('javascript-validator', 'valid const declaration -> ok', good.ok === true, JSON.stringify(good));
+  const bad = jsCheckSyntax('const x = ;');
+  check('javascript-validator', 'invalid syntax -> error with message', bad.ok === false && !!bad.message, JSON.stringify(bad));
+  const arrow = jsCheckSyntax('const f = (a, b) => a + b;');
+  check('javascript-validator', 'arrow function -> ok', arrow.ok === true, JSON.stringify(arrow));
+  const template = jsCheckSyntax('const s = `hello ${1 + 1}`;');
+  check('javascript-validator', 'template literal -> ok', template.ok === true, JSON.stringify(template));
+  const optionalChaining = jsCheckSyntax('const v = obj?.prop?.nested;');
+  check('javascript-validator', 'optional chaining -> ok', optionalChaining.ok === true, JSON.stringify(optionalChaining));
+  const withComment = jsCheckSyntax('// a comment\nconst x = 1; /* block comment */');
+  check('javascript-validator', 'code with comments -> ok', withComment.ok === true, JSON.stringify(withComment));
+  const unbalanced = jsCheckSyntax('function f() { return 1;');
+  check('javascript-validator', 'unbalanced braces -> error', unbalanced.ok === false, JSON.stringify(unbalanced));
+}
+
 describe('Validators', () => {
   results.forEach((r) => {
     it(`${r.tool}: ${r.test}`, () => {

@@ -330,6 +330,186 @@ function lintHtml(html: string): string[] {
   check('html-viewer (lintHtml)', 'edge case: duplicate ids detected', dupIds.some((w) => w.includes('Duplicate id')), JSON.stringify(dupIds));
 }
 
+// ---------- bbcode-editor ----------
+const ALLOWED_COLORS = new Set(['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'black', 'white']);
+function bbEscapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+function bbIsSafeUrl(raw: string): boolean {
+  return /^https?:\/\/[^\s"'<>]+$/i.test(raw.trim());
+}
+function bbcodeToSafeHtml(raw: string): string {
+  let text = bbEscapeHtml(raw);
+  const simple: [RegExp, string, string][] = [
+    [/\[b\]([\s\S]*?)\[\/b\]/gi, '<b>', '</b>'],
+    [/\[i\]([\s\S]*?)\[\/i\]/gi, '<i>', '</i>'],
+  ];
+  for (const [pattern, open, close] of simple) {
+    text = text.replace(pattern, (_m, inner: string) => `${open}${inner}${close}`);
+  }
+  text = text.replace(/\[url=([^\]]+)\]([\s\S]*?)\[\/url\]/gi, (_m, href: string, label: string) => {
+    if (!bbIsSafeUrl(href)) return bbEscapeHtml(label);
+    return `<a href="${bbEscapeHtml(href)}">${label}</a>`;
+  });
+  text = text.replace(/\[color=([a-zA-Z]+)\]([\s\S]*?)\[\/color\]/gi, (_m, color: string, inner: string) => {
+    const safe = ALLOWED_COLORS.has(color.toLowerCase()) ? color.toLowerCase() : null;
+    return safe ? `<span style="color:${safe}">${inner}</span>` : inner;
+  });
+  return text;
+}
+{
+  const out = bbcodeToSafeHtml('[b]<script>alert(1)</script>[/b]');
+  check(
+    'bbcode-editor',
+    'script injection inside [b] is neutralized, not executed',
+    out.includes('&lt;script&gt;') && !out.includes('<script>'),
+    out
+  );
+  const link = bbcodeToSafeHtml('[url=javascript:alert(1)]click[/url]');
+  check('bbcode-editor', 'javascript: URL scheme is rejected', !link.includes('javascript:'), link);
+  const goodLink = bbcodeToSafeHtml('[url=https://example.com]click[/url]');
+  check('bbcode-editor', 'valid https URL is allowed', goodLink.includes('href="https://example.com"'), goodLink);
+  const color = bbcodeToSafeHtml('[color=red]hi[/color]');
+  check('bbcode-editor', 'allowlisted color is applied', color.includes('color:red'), color);
+  const badColor = bbcodeToSafeHtml('[color=expression(alert(1))]hi[/color]');
+  check(
+    'bbcode-editor',
+    'non-allowlisted color value never reaches a style attribute',
+    !badColor.includes('style="color:expression'),
+    badColor
+  );
+}
+
+// ---------- java-formatter ----------
+interface JavaToken {
+  type: 'code' | 'string' | 'char' | 'comment';
+  text: string;
+}
+function javaTokenize(input: string): JavaToken[] {
+  const tokens: JavaToken[] = [];
+  let i = 0;
+  let buf = '';
+  const flush = () => {
+    if (buf) {
+      tokens.push({ type: 'code', text: buf });
+      buf = '';
+    }
+  };
+  while (i < input.length) {
+    const ch = input[i];
+    const two = input.slice(i, i + 2);
+    if (ch === '"') {
+      flush();
+      let str = ch;
+      i++;
+      while (i < input.length) {
+        const c = input[i];
+        if (c === '\\' && i + 1 < input.length) {
+          str += c + input[i + 1];
+          i += 2;
+          continue;
+        }
+        str += c;
+        i++;
+        if (c === '"' || c === '\n') break;
+      }
+      tokens.push({ type: 'string', text: str });
+      continue;
+    }
+    if (ch === "'") {
+      flush();
+      let str = ch;
+      i++;
+      while (i < input.length) {
+        const c = input[i];
+        if (c === '\\' && i + 1 < input.length) {
+          str += c + input[i + 1];
+          i += 2;
+          continue;
+        }
+        str += c;
+        i++;
+        if (c === "'" || c === '\n') break;
+      }
+      tokens.push({ type: 'char', text: str });
+      continue;
+    }
+    if (two === '//') {
+      flush();
+      const start = i;
+      while (i < input.length && input[i] !== '\n') i++;
+      tokens.push({ type: 'comment', text: input.slice(start, i) });
+      continue;
+    }
+    if (two === '/*') {
+      flush();
+      const start = i;
+      i += 2;
+      while (i < input.length && input.slice(i, i + 2) !== '*/') i++;
+      i += 2;
+      tokens.push({ type: 'comment', text: input.slice(start, Math.min(i, input.length)) });
+      continue;
+    }
+    buf += ch;
+    i++;
+  }
+  flush();
+  return tokens;
+}
+function formatJavaForTest(input: string): string {
+  if (input.includes('"""')) throw new Error('text blocks unsupported');
+  const tokens = javaTokenize(input);
+  let out = '';
+  let parenDepth = 0;
+  for (const token of tokens) {
+    if (token.type !== 'code') {
+      out += token.text;
+      if (token.type === 'comment') out += '\n';
+      continue;
+    }
+    for (const ch of token.text) {
+      if (ch === '(') { parenDepth++; out += ch; continue; }
+      if (ch === ')') { parenDepth--; out += ch; continue; }
+      if (ch === '{') { out += '{\n'; continue; }
+      if (ch === '}') { out += '\n}\n'; continue; }
+      if (ch === ';') { out += parenDepth <= 0 ? ';\n' : ';'; continue; }
+      out += ch;
+    }
+  }
+  const rawLines = out.split('\n').map((l) => l.trim()).filter(Boolean);
+  let depth = 0;
+  const indented: string[] = [];
+  for (const line of rawLines) {
+    const leadingCloses = /^\}/.test(line) ? 1 : 0;
+    const thisDepth = Math.max(0, depth - leadingCloses);
+    indented.push('    '.repeat(thisDepth) + line);
+    let opens = 0, closes = 0;
+    for (const ch of line) { if (ch === '{') opens++; if (ch === '}') closes++; }
+    depth = Math.max(0, depth + opens - closes);
+  }
+  return indented.join('\n');
+}
+{
+  const input = 'class A {\nvoid m() {\nif (true) {\nString s = "a { fake brace } b";\n}\n}\n}';
+  const out = formatJavaForTest(input);
+  check('java-formatter', 'brace inside string does not corrupt indentation', out.includes('"a { fake brace } b"'), out);
+  check('java-formatter', 'nested braces are indented', out.split('\n').some((l) => l.startsWith('        ')), out);
+  const comment = formatJavaForTest('class A { // has a { brace in a comment\nint x = 1;\n}');
+  check('java-formatter', 'brace inside line comment does not corrupt structure', comment.includes('// has a { brace in a comment'), comment);
+  let threw = false;
+  try {
+    formatJavaForTest('class A { String s = """block { with braces }"""; }');
+  } catch {
+    threw = true;
+  }
+  check('java-formatter', 'text blocks are rejected rather than mangled', threw);
+}
+
 // Print results
 
 describe('Formatters', () => {
