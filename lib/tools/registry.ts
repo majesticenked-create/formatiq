@@ -146,6 +146,23 @@ import DepreciationCalculator from '@/components/tools/DepreciationCalculator';
 import DiscountedCashFlowCalculator from '@/components/tools/DiscountedCashFlowCalculator';
 import DividendCalculator from '@/components/tools/DividendCalculator';
 import DividendDiscountModelCalculator from '@/components/tools/DividendDiscountModelCalculator';
+import EpsCalculator from '@/components/tools/EpsCalculator';
+import EbitCalculator from '@/components/tools/EbitCalculator';
+import EbitdaCalculator from '@/components/tools/EbitdaCalculator';
+import EbitdaMultipleCalculator from '@/components/tools/EbitdaMultipleCalculator';
+import EconomicValueAddedCalculator from '@/components/tools/EconomicValueAddedCalculator';
+import EnterpriseValueCalculator from '@/components/tools/EnterpriseValueCalculator';
+import EquivalentRateCalculator from '@/components/tools/EquivalentRateCalculator';
+import FreeCashFlowCalculator from '@/components/tools/FreeCashFlowCalculator';
+import FleschKincaidGradeLevelCalculator from '@/components/tools/FleschKincaidGradeLevelCalculator';
+import FutureValueCalculator from '@/components/tools/FutureValueCalculator';
+import InterestCoverageRatioCalculator from '@/components/tools/InterestCoverageRatioCalculator';
+import InventoryTurnoverCalculator from '@/components/tools/InventoryTurnoverCalculator';
+import MarginalCostCalculator from '@/components/tools/MarginalCostCalculator';
+import MarketCapitalizationCalculator from '@/components/tools/MarketCapitalizationCalculator';
+import NetProfitMarginCalculator from '@/components/tools/NetProfitMarginCalculator';
+import NopatCalculator from '@/components/tools/NopatCalculator';
+import CarLoanEmiCalculator from '@/components/tools/CarLoanEmiCalculator';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -5565,6 +5582,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'loan-calculator',
     category: 'calculators',
+    relatedSlugs: ['car-loan-emi-calculator', 'break-even-calculator'],
     title: 'Loan Calculator',
     shortDescription: 'Estimate monthly payment, total interest, and total cost for a fixed-rate loan.',
     longDescription:
@@ -9070,6 +9088,821 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: DividendDiscountModelCalculator,
+  },
+  {
+    slug: 'earnings-per-share-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['ebit-calculator', 'ebitda-calculator', 'dividend-calculator', 'capm-calculator'],
+    title: 'Earnings Per Share (EPS) Calculator',
+    shortDescription: 'Calculate earnings per share from net income, preferred dividends, and weighted average shares outstanding.',
+    longDescription:
+      'Enter a company\'s net income, any preferred dividends paid, and its weighted average shares outstanding to calculate earnings per share: EPS = (Net Income − Preferred Dividends) ÷ Weighted Average Shares. Preferred dividends are subtracted first because that income belongs to preferred shareholders, not common shareholders - EPS measures what\'s left over per common share. Net income can be entered as a negative number for a reporting period with a net loss, which produces a negative EPS (a loss per share) rather than an error, since a loss-making quarter is a normal, valid input, not an edge case to reject. Preferred dividends default to zero if left blank, matching companies with no preferred stock outstanding. Useful for a quick per-share profitability check, comparing EPS across companies, or verifying a figure reported in an earnings release. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'EPS Calculator - Earnings Per Share | Formatiq',
+    metaDescription:
+      'Calculate earnings per share (EPS) online for free from net income, preferred dividends, and weighted average shares outstanding.',
+    keywords: ['eps calculator', 'earnings per share calculator', 'eps formula', 'basic eps calculator'],
+    useCase: 'Checking a company\'s per-share profitability from its net income and share count',
+    howItWorks: [
+      {
+        title: 'Enter net income',
+        description: 'The company\'s net income for the period - enter a negative number for a net loss.',
+      },
+      {
+        title: 'Enter preferred dividends (optional)',
+        description: 'Any dividends paid to preferred shareholders, which come out of income before common shareholders see any of it.',
+      },
+      {
+        title: 'Enter weighted average shares outstanding',
+        description: 'The average number of common shares outstanding over the period.',
+      },
+      {
+        title: 'Read the EPS',
+        description: 'Income available to common shareholders, divided by shares outstanding.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can EPS be negative?',
+        answer:
+          'Yes - if net income is negative (a net loss) or preferred dividends exceed net income, the result is a negative EPS, meaning a loss per share. This calculator allows negative net income as a normal input rather than treating it as an error.',
+      },
+      {
+        question: 'Why subtract preferred dividends before dividing by shares?',
+        answer:
+          'Preferred dividends are a claim on net income that belongs to preferred shareholders, not common shareholders. EPS is meant to show what\'s left over per common share, so that amount is removed from net income before dividing by the common share count.',
+      },
+      {
+        question: 'Is this basic EPS or diluted EPS?',
+        answer:
+          'This calculates basic EPS, using the actual weighted average shares outstanding. Diluted EPS additionally accounts for shares that could be created from options, warrants, or convertible securities, which would require those instruments as separate inputs and isn\'t modeled here.',
+      },
+    ],
+    Component: EpsCalculator,
+  },
+  {
+    slug: 'ebit-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['ebitda-calculator', 'enterprise-value-calculator', 'nopat-calculator', 'earnings-per-share-calculator'],
+    title: 'EBIT Calculator',
+    shortDescription: 'Calculate Earnings Before Interest and Taxes from either revenue and expenses, or from net income.',
+    longDescription:
+      'Calculate EBIT (Earnings Before Interest and Taxes) using whichever set of figures you have on hand, through two clearly separated modes that never mix inputs: the operating mode computes EBIT = Revenue − COGS − Operating Expenses, working directly from the top of the income statement; the net-income mode computes EBIT = Net Income + Interest + Taxes, working backward from the bottom line by adding back the two items EBIT excludes. Both modes produce the same figure when applied to a consistent set of financials for the same company - they\'re two paths to the same number, not two different metrics - so the tool keeps them as an explicit toggle rather than blending fields from both into one form, which would silently produce a wrong answer if you mixed a revenue-side COGS with a net-income-side interest figure. Useful for a quick operating-profitability check, comparing companies with different capital structures or tax rates, or as an input into an EBITDA or valuation calculation. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'EBIT Calculator - Earnings Before Interest and Taxes | Formatiq',
+    metaDescription:
+      'Calculate EBIT online for free from revenue, COGS, and operating expenses, or from net income, interest, and taxes.',
+    keywords: ['ebit calculator', 'earnings before interest and taxes calculator', 'operating income calculator', 'ebit formula'],
+    useCase: 'Comparing operating profitability across companies with different debt loads or tax rates',
+    howItWorks: [
+      {
+        title: 'Choose a mode',
+        description: 'Revenue − COGS − OpEx (working from the top of the income statement), or Net Income + Interest + Taxes (working from the bottom).',
+      },
+      {
+        title: 'Enter the figures for that mode',
+        description: 'Only the fields for the selected mode are used - the two modes don\'t share or blend inputs.',
+      },
+      {
+        title: 'Read the EBIT',
+        description: 'Earnings before interest and taxes are excluded, isolating operating performance from financing and tax decisions.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Do the two modes give different answers?',
+        answer:
+          'No - for a consistent, complete set of financials from the same company, both modes arrive at the same EBIT figure, since they\'re two different starting points (top of the income statement versus the bottom) for the same underlying number. The tool keeps them as separate, non-mixed modes so you only need whichever set of figures you actually have.',
+      },
+      {
+        question: 'Why does EBIT exclude interest and taxes?',
+        answer:
+          'Excluding interest removes the effect of how a company is financed (debt versus equity), and excluding taxes removes differences in tax rate or jurisdiction - both of which can vary widely between companies for reasons unrelated to how well the core business operates. EBIT isolates operating performance from those financing and tax decisions.',
+      },
+      {
+        question: 'How does EBIT relate to EBITDA?',
+        answer:
+          'EBITDA takes EBIT and adds back depreciation and amortization as well, further isolating cash operating performance from non-cash accounting charges. EBIT still includes depreciation and amortization as expenses; EBITDA does not.',
+      },
+    ],
+    Component: EbitCalculator,
+  },
+  {
+    slug: 'ebitda-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['ebit-calculator', 'ebitda-multiple-calculator', 'enterprise-value-calculator'],
+    title: 'EBITDA Calculator',
+    shortDescription: 'Calculate Earnings Before Interest, Taxes, Depreciation, and Amortization from net income and add-backs.',
+    longDescription:
+      'Enter net income along with interest, taxes, depreciation, and amortization to calculate EBITDA: Net Income + Interest + Taxes + Depreciation + Amortization. Each of these four items is added back to net income because EBITDA is designed to strip out financing decisions (interest), tax jurisdiction and rate differences (taxes), and non-cash accounting charges (depreciation and amortization), leaving a figure meant to approximate cash operating performance before those factors. EBITDA can come out negative for a company whose core operations are genuinely unprofitable even before those add-backs - this calculator allows that rather than treating it as invalid input, since a negative EBITDA is a real (if concerning) result, not a calculation error. Widely used for comparing companies with different capital structures, tax situations, or depreciation schedules, and as the denominator in valuation multiples like EV/EBITDA. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'EBITDA Calculator - EBITDA from Net Income | Formatiq',
+    metaDescription:
+      'Calculate EBITDA online for free from net income, interest, taxes, depreciation, and amortization.',
+    keywords: ['ebitda calculator', 'ebitda formula', 'earnings before interest taxes depreciation amortization calculator'],
+    useCase: 'Comparing operating cash profitability across companies with different debt, tax, or depreciation profiles',
+    howItWorks: [
+      {
+        title: 'Enter net income',
+        description: 'The company\'s net income for the period.',
+      },
+      {
+        title: 'Enter interest, taxes, depreciation, and amortization',
+        description: 'The four items EBITDA adds back to net income.',
+      },
+      {
+        title: 'Read the EBITDA',
+        description: 'Net Income + Interest + Taxes + Depreciation + Amortization.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can EBITDA be negative?',
+        answer:
+          'Yes - if a company\'s net income is deeply negative even after adding back interest, taxes, depreciation, and amortization, EBITDA itself comes out negative. This calculator allows that as a valid result rather than rejecting it, since it reflects genuinely unprofitable core operations, not an input error.',
+      },
+      {
+        question: 'Why is EBITDA sometimes calculated differently, starting from EBIT instead of net income?',
+        answer:
+          'EBITDA = EBIT + Depreciation + Amortization is mathematically equivalent to Net Income + Interest + Taxes + Depreciation + Amortization, since EBIT itself equals Net Income + Interest + Taxes. This calculator starts from net income because that\'s typically the figure most readily available from a company\'s income statement.',
+      },
+      {
+        question: 'Why is EBITDA often criticized as a profitability metric?',
+        answer:
+          'Because it excludes real cash costs - interest actually has to be paid on debt, taxes actually have to be paid to the government, and depreciation reflects real capital assets wearing out that will eventually need replacing. EBITDA is useful for comparing operating performance across companies with different structures, but it isn\'t a substitute for net income or free cash flow when assessing actual cash profitability.',
+      },
+    ],
+    Component: EbitdaCalculator,
+  },
+  {
+    slug: 'ebitda-multiple-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['ebitda-calculator', 'ebit-calculator', 'enterprise-value-calculator'],
+    title: 'EBITDA Multiple Calculator',
+    shortDescription: 'Calculate the EV/EBITDA valuation multiple from enterprise value and EBITDA.',
+    longDescription:
+      'Enter a company\'s enterprise value and EBITDA to calculate the EV/EBITDA multiple: Enterprise Value ÷ EBITDA, formatted as a multiple like "5.00x". This is one of the most commonly quoted valuation multiples because it compares total company value (equity plus debt, minus cash) against a profitability measure that\'s less distorted by financing structure or tax rate than net income or P/E - which makes it a common way to compare companies with different amounts of debt. EBITDA cannot be zero, since dividing by zero would produce an undefined multiple rather than a real number - the calculator rejects that input with a clear message instead of showing Infinity. Useful for a quick relative-valuation check, comparing an acquisition target\'s multiple against industry peers, or sanity-checking a reported deal multiple. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'EBITDA Multiple Calculator - EV/EBITDA | Formatiq',
+    metaDescription:
+      'Calculate the EV/EBITDA valuation multiple online for free from enterprise value and EBITDA.',
+    keywords: ['ebitda multiple calculator', 'ev/ebitda calculator', 'ev to ebitda calculator', 'valuation multiple calculator'],
+    useCase: 'Comparing an acquisition target\'s valuation multiple against industry peers',
+    howItWorks: [
+      {
+        title: 'Enter enterprise value',
+        description: 'Total company value: market cap plus debt and minority interest, minus cash.',
+      },
+      {
+        title: 'Enter EBITDA',
+        description: 'Earnings before interest, taxes, depreciation, and amortization - must be non-zero.',
+      },
+      {
+        title: 'Read the multiple',
+        description: 'Enterprise Value ÷ EBITDA, formatted as a multiple such as "5.00x".',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why does EBITDA have to be non-zero?',
+        answer:
+          'Dividing by zero EBITDA would produce an undefined result (mathematically, infinity), which isn\'t a meaningful multiple. The calculator rejects a zero EBITDA input with a clear error message instead of showing Infinity or an unhandled value.',
+      },
+      {
+        question: 'What counts as a "good" EV/EBITDA multiple?',
+        answer:
+          'It varies enormously by industry, growth rate, and market conditions - a multiple that looks expensive in one sector can be cheap in another with structurally higher growth or margins. This tool computes the multiple itself and leaves the comparison against peers or historical norms to you.',
+      },
+      {
+        question: 'Why use EV/EBITDA instead of a P/E ratio?',
+        answer:
+          'EV/EBITDA compares total company value (which includes debt) against a pre-interest, pre-tax profitability measure, making it more comparable across companies with different capital structures or tax situations than P/E, which uses equity value divided by after-interest, after-tax earnings.',
+      },
+    ],
+    Component: EbitdaMultipleCalculator,
+  },
+  {
+    slug: 'economic-value-added-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['capm-calculator', 'enterprise-value-calculator', 'ebitda-calculator', 'nopat-calculator'],
+    title: 'Economic Value Added (EVA) Calculator',
+    shortDescription: 'Calculate Economic Value Added from NOPAT, invested capital, and WACC.',
+    longDescription:
+      'Enter Net Operating Profit After Tax (NOPAT), invested capital, and a weighted average cost of capital (WACC) to calculate Economic Value Added: EVA = NOPAT − (Invested Capital × WACC). The term being subtracted, invested capital multiplied by WACC, is the capital charge - the minimum dollar return investors require for tying up that capital, given its risk. A positive EVA means the company generated more profit than that minimum required return, genuinely creating value beyond its cost of capital; a negative EVA means it didn\'t clear that bar, even if it was still profitable in an accounting sense. WACC is taken here as a direct percentage input rather than computed from a separate formula, since a company\'s WACC depends on its specific mix and cost of debt and equity - if you need to derive an expected return on equity first, see the CAPM Calculator. This tool reports the number without attaching a "good" or "bad" verdict, since what counts as an acceptable EVA depends heavily on industry, growth stage, and capital intensity. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'EVA Calculator - Economic Value Added | Formatiq',
+    metaDescription:
+      'Calculate Economic Value Added (EVA) online for free from NOPAT, invested capital, and WACC.',
+    keywords: ['eva calculator', 'economic value added calculator', 'eva formula', 'nopat calculator'],
+    useCase: 'Checking whether a company\'s profit exceeds the minimum return investors require on its invested capital',
+    howItWorks: [
+      {
+        title: 'Enter NOPAT',
+        description: 'Net Operating Profit After Tax - operating profit adjusted for taxes, before financing costs.',
+      },
+      {
+        title: 'Enter invested capital',
+        description: 'The total capital (debt plus equity) tied up in the business\'s operations.',
+      },
+      {
+        title: 'Enter WACC (%)',
+        description: 'The weighted average cost of capital - the required return given the company\'s specific financing mix.',
+      },
+      {
+        title: 'Read the EVA',
+        description: 'NOPAT minus the capital charge (invested capital × WACC).',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why does this tool take WACC as a direct input instead of calculating it?',
+        answer:
+          'WACC depends on a company\'s specific mix of debt and equity, its cost of debt, and its cost of equity - each of which requires its own set of inputs and assumptions. Rather than bundling a separate WACC-derivation formula into this tool, WACC is entered directly as a percentage; the CAPM Calculator can help estimate the cost-of-equity piece of that calculation.',
+      },
+      {
+        question: 'Does this tool tell me if my EVA is good or bad?',
+        answer:
+          'No - it reports the number without a verdict, since what counts as a strong EVA varies enormously by industry, company size, and how capital-intensive the business is. A positive EVA generally indicates value creation above the cost of capital, and a negative EVA indicates the opposite, but comparing it against a benchmark is left to you.',
+      },
+      {
+        question: 'How is EVA different from just looking at net income?',
+        answer:
+          'Net income doesn\'t account for the cost of the capital used to generate it - a company can be profitable on paper while still not earning enough to compensate investors for the risk and opportunity cost of that capital. EVA subtracts that capital charge explicitly, which is why a profitable company can still have negative EVA.',
+      },
+    ],
+    Component: EconomicValueAddedCalculator,
+  },
+  {
+    slug: 'enterprise-value-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['ebitda-multiple-calculator', 'discounted-cash-flow-calculator', 'free-cash-flow-calculator', 'ebitda-calculator'],
+    title: 'Enterprise Value Calculator',
+    shortDescription: 'Calculate a company\'s enterprise value from market cap, debt, cash, and optional preferred stock or minority interest.',
+    longDescription:
+      'Enter a company\'s market capitalization, total debt, and cash and equivalents, plus optional preferred stock and minority interest, to calculate enterprise value: EV = Market Cap + Debt + Preferred Stock + Minority Interest − Cash. Enterprise value represents the theoretical total cost of acquiring a company outright - you\'d need to buy all the equity (market cap), assume its debt, and account for any preferred stock or minority interests in subsidiaries, but you\'d also immediately recover the cash sitting on its balance sheet, which is why cash is subtracted rather than added. Preferred stock and minority interest default to zero and can be left blank, since most companies don\'t carry either - only debt, market cap, and cash are required inputs. Enterprise value is the standard numerator for valuation multiples like EV/EBITDA and EV/Revenue, since it captures the whole capital structure rather than just the equity value that market cap represents. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Enterprise Value Calculator - EV Formula | Formatiq',
+    metaDescription:
+      'Calculate enterprise value (EV) online for free from market cap, debt, cash, and optional preferred stock or minority interest.',
+    keywords: ['enterprise value calculator', 'ev calculator', 'enterprise value formula', 'ev formula calculator'],
+    useCase: 'Estimating the total theoretical acquisition cost of a company, including its debt and excluding its cash',
+    howItWorks: [
+      {
+        title: 'Enter market cap, debt, and cash',
+        description: 'Market capitalization, total debt, and cash and equivalents - the three required inputs.',
+      },
+      {
+        title: 'Add preferred stock or minority interest if applicable',
+        description: 'Both are optional and default to zero if left blank.',
+      },
+      {
+        title: 'Read the enterprise value',
+        description: 'Market Cap + Debt + Preferred Stock + Minority Interest − Cash.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why is cash subtracted instead of added?',
+        answer:
+          'An acquirer buying the whole company would immediately gain access to its cash and equivalents, effectively reducing the net cost of the acquisition - so cash is subtracted from the sum of equity and debt-like claims to arrive at the true net cost of taking over the business.',
+      },
+      {
+        question: 'Do I need to fill in preferred stock and minority interest?',
+        answer:
+          'No - both default to zero and can be left blank. Most companies don\'t carry preferred stock or have minority (non-controlling) interests in consolidated subsidiaries, so only market cap, debt, and cash are required for the majority of calculations.',
+      },
+      {
+        question: 'How is enterprise value used in valuation?',
+        answer:
+          'It\'s the standard numerator in valuation multiples like EV/EBITDA and EV/Revenue, because it represents the value of the entire business (equity plus debt, minus cash) rather than just the equity value that market cap alone represents - making it more comparable across companies with different amounts of debt.',
+      },
+    ],
+    Component: EnterpriseValueCalculator,
+  },
+  {
+    slug: 'equivalent-rate-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['apy-calculator', 'compound-interest-calculator', 'compound-interest-rate-calculator'],
+    title: 'Equivalent Rate Calculator',
+    shortDescription: 'Convert an interest rate from any compounding period to its equivalent rate at any other compounding period.',
+    longDescription:
+      'Enter a rate and choose any two compounding periods - daily, monthly, quarterly, semi-annually, or annually - to convert that rate into the equivalent rate at the other period, using i2 = (1 + i1)^(m1/m2) − 1, where m1 and m2 are the number of compounding periods per year for the "from" and "to" selections. Two rates are equivalent when they compound to the exact same effective return over a year - a 1% monthly rate, for instance, is equivalent to roughly 12.6825% compounded annually, since compounding 1% twelve times produces slightly more growth than a flat 12%. This generalizes the site\'s APY Calculator, which only converts a nominal rate into its once-a-year effective rate (APY): this tool lets either side of the conversion be any period, not just "to annual," so it also handles conversions like an annual rate down to its equivalent quarterly rate, or a quarterly rate up to its equivalent semi-annual rate. Useful for comparing financial products quoted with different compounding conventions, or converting a rate to match another calculator\'s expected input period. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Equivalent Rate Calculator - AER Period Conversion | Formatiq',
+    metaDescription:
+      'Convert an interest rate between any two compounding periods online for free - monthly to annual, annual to quarterly, and more.',
+    keywords: ['equivalent rate calculator', 'aer calculator', 'rate conversion calculator', 'monthly to annual rate calculator'],
+    useCase: 'Comparing a monthly-quoted rate against an annual-quoted rate on an apples-to-apples basis',
+    howItWorks: [
+      {
+        title: 'Enter the rate (%)',
+        description: 'The periodic rate you already have, at the "from" period below.',
+      },
+      {
+        title: 'Choose the "from" and "to" periods',
+        description: 'Daily, monthly, quarterly, semi-annually, or annually - either side can be any of the five.',
+      },
+      {
+        title: 'Read the equivalent rate',
+        description: 'The rate at the "to" period that compounds to the exact same effective annual return.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the APY Calculator?',
+        answer:
+          'The APY Calculator only converts a nominal rate into its once-a-year effective rate (a fixed "convert to annual" operation). This tool generalizes that: either the "from" or "to" period can be any of daily, monthly, quarterly, semi-annually, or annually, so it also handles conversions the APY Calculator doesn\'t, like annual-to-quarterly or quarterly-to-semi-annual.',
+      },
+      {
+        question: 'Why is a 1% monthly rate equivalent to more than 12% annually?',
+        answer:
+          'Because compounding 1% twelve times means each month\'s interest also earns interest in later months, not just the original principal. That compounding effect pushes the equivalent annual rate to roughly 12.6825% rather than exactly 12%, which would be the case only without compounding.',
+      },
+      {
+        question: 'Does the direction of conversion matter?',
+        answer:
+          'No - the same formula works in either direction. Converting monthly to annual and then converting that annual result back to monthly (with "from" and "to" swapped) returns you to the original monthly rate, since the two rates are defined as producing an identical effective annual return.',
+      },
+    ],
+    Component: EquivalentRateCalculator,
+  },
+  {
+    slug: 'free-cash-flow-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['discounted-cash-flow-calculator', 'cash-flow-to-debt-ratio-calculator', 'enterprise-value-calculator'],
+    title: 'Free Cash Flow (FCF) Calculator',
+    shortDescription: 'Calculate free cash flow from operating cash flow and capital expenditures.',
+    longDescription:
+      'Enter operating cash flow and capital expenditures (CapEx) to calculate free cash flow: FCF = Operating Cash Flow − CapEx. Free cash flow represents the cash a business generates after covering the spending needed to maintain and grow its asset base - the cash that\'s actually left over for paying down debt, paying dividends, buying back shares, or reinvesting elsewhere, rather than being tied up in equipment, property, or other capital projects. FCF can come out negative, most often for capital-intensive or rapidly growing businesses whose CapEx currently exceeds their operating cash flow - this is allowed as a normal result here rather than an error, and isn\'t automatically framed as bad, since heavy near-term investment can be a deliberate and reasonable choice depending on the business. This calculator computes the standalone FCF figure only; it doesn\'t break out the further variants unlevered free cash flow to the firm (FCFF) or free cash flow to equity (FCFE), which require additional adjustments for interest, debt principal, and non-operating items. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Free Cash Flow Calculator - FCF Formula | Formatiq',
+    metaDescription:
+      'Calculate free cash flow (FCF) online for free from operating cash flow and capital expenditures.',
+    keywords: ['free cash flow calculator', 'fcf calculator', 'free cash flow formula', 'fcf formula'],
+    useCase: 'Checking how much cash a business actually has left after funding its capital spending',
+    howItWorks: [
+      {
+        title: 'Enter operating cash flow',
+        description: 'Cash generated by core operations, from the cash flow statement.',
+      },
+      {
+        title: 'Enter capital expenditures',
+        description: 'Spending on property, plant, equipment, and other capital assets.',
+      },
+      {
+        title: 'Read the free cash flow',
+        description: 'Operating Cash Flow − CapEx.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can free cash flow be negative?',
+        answer:
+          'Yes - if capital expenditures exceed operating cash flow in a given period, FCF is negative. This calculator allows that as a valid result rather than an error, and doesn\'t automatically frame it as a problem, since it\'s common and often deliberate for capital-intensive or fast-growing businesses investing heavily in their asset base.',
+      },
+      {
+        question: 'Does this calculate FCFF or FCFE instead of plain FCF?',
+        answer:
+          'No - this calculates standalone free cash flow (Operating Cash Flow − CapEx) only. Unlevered free cash flow to the firm (FCFF) and free cash flow to equity (FCFE) are related but distinct variants that require additional adjustments for interest expense, debt principal changes, and other non-operating items, which this tool doesn\'t model.',
+      },
+      {
+        question: 'How does FCF relate to the Discounted Cash Flow Calculator?',
+        answer:
+          'Free cash flow is frequently the exact cash flow figure projected forward and discounted in a DCF valuation - this calculator computes a single period\'s FCF from its two inputs, while the DCF Calculator takes a series of projected cash flows (which could be FCF figures) and discounts them to a present value.',
+      },
+    ],
+    Component: FreeCashFlowCalculator,
+  },
+  {
+    slug: 'flesch-kincaid-grade-level-calculator',
+    category: 'text-tools',
+    isNew: true,
+    relatedSlugs: ['word-counter', 'case-converter', 'text-diff-checker'],
+    title: 'Flesch-Kincaid Grade Level Calculator',
+    shortDescription: 'Estimate the U.S. school grade level needed to understand a piece of text.',
+    longDescription:
+      'Paste any text to estimate its Flesch-Kincaid Grade Level: 0.39 × (words ÷ sentences) + 11.8 × (syllables ÷ words) − 15.59, a readability formula that maps sentence length and syllable complexity onto the approximate U.S. school grade a reader would need to comfortably follow the text. Longer sentences and longer, more syllable-heavy words push the score higher; short sentences built from short, common words push it lower. Syllables are counted with a plain vowel-group heuristic (each run of vowels counts as one syllable, with an adjustment for silent trailing "e" in words like "like" or "name") rather than a dictionary lookup, so the result is a genuine estimate, not an exact count - it\'s labeled that way in the output. Empty text, or text with no actual words, is handled with a clear message instead of a divide-by-zero error or a NaN result, and text with no sentence-ending punctuation is treated as one sentence rather than zero. Useful for checking whether a piece of writing matches its intended audience, from a children\'s book to technical documentation. Runs entirely client-side, so nothing you paste is uploaded anywhere.',
+    metaTitle: 'Flesch-Kincaid Grade Level Calculator - Free Tool | Formatiq',
+    metaDescription:
+      'Estimate the Flesch-Kincaid Grade Level of any text online for free - paste text and get an instant readability grade estimate.',
+    keywords: ['flesch-kincaid calculator', 'flesch kincaid grade level', 'readability calculator', 'reading level calculator'],
+    useCase: 'Checking whether a piece of writing matches its intended audience\'s reading level',
+    howItWorks: [
+      {
+        title: 'Paste or type your text',
+        description: 'Anything from a single paragraph to a full article.',
+      },
+      {
+        title: 'Read the estimated grade level',
+        description: 'Along with the word, sentence, and estimated syllable counts behind it.',
+      },
+      {
+        title: 'Simplify if needed',
+        description: 'Shorter sentences and simpler, fewer-syllable words bring the grade level down.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is the syllable count exact?',
+        answer:
+          'No - syllables are estimated using a vowel-group heuristic (each run of vowels counts as one syllable, with an adjustment for common silent-e endings) rather than a dictionary lookup, so it\'s a close approximation rather than a guaranteed-exact count. This is labeled clearly in the result.',
+      },
+      {
+        question: 'What happens if I paste empty text or text with no words?',
+        answer:
+          'The calculator shows a clear message asking for text to analyze, rather than attempting the calculation and producing a divide-by-zero error or a NaN result. Text with no sentence-ending punctuation is treated as a single sentence rather than zero, which would otherwise also cause a divide-by-zero.',
+      },
+      {
+        question: 'What does a given grade level actually mean?',
+        answer:
+          'It\'s the approximate U.S. school grade a reader would need to have completed to comfortably understand the text on a first read - for example, a score around 8 suggests writing understandable to an eighth grader. Most general-audience writing aims for somewhere in the 7-9 range; technical or academic writing often scores meaningfully higher.',
+      },
+    ],
+    Component: FleschKincaidGradeLevelCalculator,
+  },
+  {
+    slug: 'future-value-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['compound-interest-calculator', 'compound-interest-rate-calculator', 'cd-calculator', 'apy-calculator'],
+    title: 'Future Value Calculator',
+    shortDescription: 'Calculate the future value of a lump sum plus recurring periodic contributions.',
+    longDescription:
+      'Enter a starting principal, an optional recurring contribution per period, an annual interest rate, a time period, and a compounding frequency to calculate future value: the lump sum grows with standard compound interest, and the recurring contributions grow as an ordinary annuity (each contribution is assumed to land at the END of its period, so the very last contribution earns no interest before the term ends - the standard convention, and the one used here). The two pieces are added together for the total future value. This differs from the Compound Interest Calculator, which only grows a single starting principal and has no way to model recurring deposits - use this tool when you\'re modeling contributions on top of (or instead of) a lump sum, such as a savings plan with monthly deposits. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Future Value Calculator - Lump Sum + Contributions | Formatiq',
+    metaDescription:
+      'Calculate the future value of an investment online for free, including a starting principal plus recurring periodic contributions.',
+    keywords: ['future value calculator', 'fv calculator', 'future value of annuity', 'compound growth with contributions'],
+    useCase: 'Projecting how much a savings or investment plan will be worth, including regular recurring deposits',
+    howItWorks: [
+      {
+        title: 'Enter starting principal',
+        description: 'The lump sum you\'re starting with (can be zero if you\'re only contributing periodically).',
+      },
+      {
+        title: 'Enter a periodic contribution',
+        description: 'The amount added at the end of each compounding period (can be zero for a lump-sum-only projection).',
+      },
+      {
+        title: 'Enter rate, time, and frequency',
+        description: 'Annual interest rate, time period in years, and how often interest compounds.',
+      },
+      {
+        title: 'Read the future value',
+        description: 'The combined lump-sum growth plus the future value of your contribution series.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the Compound Interest Calculator?',
+        answer:
+          'The Compound Interest Calculator only grows a single starting principal - it has no fields for recurring deposits. This tool adds that: a contribution entered here is assumed to be added at the end of every compounding period, and its own future value (as an ordinary annuity) is added to the lump sum\'s future value.',
+      },
+      {
+        question: 'Why end-of-period contributions instead of beginning-of-period?',
+        answer:
+          'End-of-period ("ordinary annuity") is the more common convention and the one used here. It assumes each contribution is deposited at the close of a period rather than the start, so the final contribution in the series doesn\'t have time to earn interest before the term ends. Beginning-of-period contributions would produce a slightly higher total.',
+      },
+      {
+        question: 'Can I use this for a lump sum with no contributions?',
+        answer:
+          'Yes - set the periodic contribution to zero and it behaves exactly like a standard compound interest projection.',
+      },
+    ],
+    Component: FutureValueCalculator,
+  },
+  {
+    slug: 'interest-coverage-ratio-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['ebit-calculator', 'ebitda-calculator', 'net-profit-margin-calculator'],
+    title: 'Interest Coverage Ratio Calculator',
+    shortDescription: 'Calculate the interest coverage ratio from EBIT and interest expense.',
+    longDescription:
+      'Enter EBIT and interest expense to calculate the interest coverage ratio: EBIT ÷ interest expense. This ratio measures how many times over a company\'s operating earnings could cover its interest payments on debt - a higher ratio generally indicates more comfortable debt-servicing capacity, while a ratio near or below 1 suggests operating earnings barely cover (or don\'t cover) interest obligations. EBIT can be negative (an operating loss), in which case the ratio comes out negative; this tool reports that number as-is without attaching a "safe" or "unsafe" verdict, since acceptable thresholds vary by industry and capital structure. Interest expense cannot be zero, since it\'s the denominator. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Interest Coverage Ratio Calculator | Formatiq',
+    metaDescription:
+      'Calculate the interest coverage ratio online for free from EBIT and interest expense.',
+    keywords: ['interest coverage ratio calculator', 'times interest earned calculator', 'ebit to interest expense'],
+    useCase: 'Assessing how comfortably a company\'s operating earnings cover its interest expense on debt',
+    howItWorks: [
+      {
+        title: 'Enter EBIT',
+        description: 'Earnings before interest and taxes - can be negative if the company posted an operating loss.',
+      },
+      {
+        title: 'Enter interest expense',
+        description: 'Total interest owed on outstanding debt for the period - must be greater than zero.',
+      },
+      {
+        title: 'Read the ratio',
+        description: 'EBIT divided by interest expense, expressed as a multiple (e.g. 5.0x).',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What does the interest coverage ratio tell you?',
+        answer:
+          'It shows how many times a company\'s operating earnings (EBIT) could cover its interest payments. A ratio of 5x means EBIT is five times the interest expense - generally comfortable. A ratio close to or below 1x means operating earnings barely cover, or don\'t cover, interest obligations.',
+      },
+      {
+        question: 'What happens if EBIT is negative?',
+        answer:
+          'The ratio comes out negative, which this tool displays as-is - it does not attach a pass/fail verdict, since what counts as an acceptable ratio varies significantly by industry and how leveraged the business is expected to be.',
+      },
+      {
+        question: 'Why can\'t interest expense be zero?',
+        answer:
+          'Interest expense is the denominator in the formula, so a value of zero would make the ratio undefined (division by zero). If a company genuinely has no interest expense, this ratio isn\'t a meaningful metric for it.',
+      },
+    ],
+    Component: InterestCoverageRatioCalculator,
+  },
+  {
+    slug: 'inventory-turnover-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['current-ratio-calculator', 'cash-flow-to-debt-ratio-calculator', 'net-profit-margin-calculator'],
+    title: 'Inventory Turnover Calculator',
+    shortDescription: 'Calculate inventory turnover and days inventory outstanding from COGS and inventory levels.',
+    longDescription:
+      'Enter cost of goods sold (COGS), beginning inventory, and ending inventory to calculate inventory turnover: COGS ÷ average inventory, where average inventory is (beginning + ending) ÷ 2. This measures how many times inventory is sold and replaced over the period - a higher turnover generally indicates efficient inventory management and strong sales relative to stock held, while a low turnover can signal overstocking or weak sales. The tool also derives days inventory outstanding (365 ÷ turnover), the average number of days inventory sits before being sold. Average inventory cannot be zero, since it\'s the denominator. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Inventory Turnover Calculator | Formatiq',
+    metaDescription:
+      'Calculate inventory turnover and days inventory outstanding online for free from COGS and inventory levels.',
+    keywords: ['inventory turnover calculator', 'days inventory outstanding calculator', 'inventory turnover ratio'],
+    useCase: 'Measuring how efficiently a business sells through and replaces its inventory',
+    howItWorks: [
+      {
+        title: 'Enter COGS',
+        description: 'Cost of goods sold for the period.',
+      },
+      {
+        title: 'Enter beginning and ending inventory',
+        description: 'Inventory value at the start and end of the period, used to compute the average.',
+      },
+      {
+        title: 'Read turnover and days inventory',
+        description: 'How many times inventory turned over, and the average days it sat before being sold.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why use average inventory instead of just ending inventory?',
+        answer:
+          'Averaging the beginning and ending inventory smooths out the effect of inventory levels that spike or dip at a single point in time, giving a more representative denominator for the period as a whole.',
+      },
+      {
+        question: 'What does days inventory outstanding mean?',
+        answer:
+          'It converts the turnover ratio into a time measure: roughly how many days, on average, a unit of inventory sits before being sold. It\'s calculated as 365 divided by the turnover ratio.',
+      },
+      {
+        question: 'Is a higher turnover always better?',
+        answer:
+          'Generally yes, up to a point - it suggests inventory isn\'t sitting idle. But extremely high turnover can also indicate a business is understocked and risking stockouts, so it\'s best read alongside sales trends and industry norms rather than in isolation.',
+      },
+    ],
+    Component: InventoryTurnoverCalculator,
+  },
+  {
+    slug: 'marginal-cost-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['break-even-calculator', 'degree-of-operating-leverage-calculator', 'net-profit-margin-calculator'],
+    title: 'Marginal Cost Calculator',
+    shortDescription: 'Calculate marginal cost from the change in total cost and the change in quantity produced.',
+    longDescription:
+      'Enter the change in total cost and the change in quantity produced to calculate marginal cost: Δ total cost ÷ Δ quantity. This is the additional cost of producing one more unit of output, a core concept for pricing and production decisions - if marginal cost is below the selling price, producing more units generally adds to profit; if it rises above the selling price, additional production starts eating into profit. The change in quantity can be negative if you\'re comparing a decrease in output, and the result is computed either way rather than blocked; it just cannot be exactly zero, since it\'s the denominator. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Marginal Cost Calculator | Formatiq',
+    metaDescription:
+      'Calculate marginal cost online for free from the change in total cost and change in quantity.',
+    keywords: ['marginal cost calculator', 'marginal cost formula', 'change in total cost divided by change in quantity'],
+    useCase: 'Estimating the additional cost of producing one more unit of output',
+    howItWorks: [
+      {
+        title: 'Enter the change in total cost',
+        description: 'How much total production cost changed between the two output levels being compared.',
+      },
+      {
+        title: 'Enter the change in quantity',
+        description: 'How many additional (or fewer) units were produced - cannot be zero.',
+      },
+      {
+        title: 'Read the marginal cost',
+        description: 'The cost per additional unit produced.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can the change in quantity be negative?',
+        answer:
+          'Yes - if you\'re comparing a decrease in output, enter a negative change in quantity and the calculator will compute the result accordingly rather than blocking it. It only rejects a change of exactly zero, since that would be division by zero.',
+      },
+      {
+        question: 'Why does marginal cost matter for pricing?',
+        answer:
+          'A business generally benefits from producing additional units as long as marginal cost stays below the price each unit sells for. Once marginal cost rises above that price - which is common as production scales and resources get stretched - additional output starts reducing overall profit.',
+      },
+      {
+        question: 'How is this different from average cost?',
+        answer:
+          'Average cost is total cost divided by total units. Marginal cost only looks at the cost of the next unit (or batch), which can be very different from the average - especially in businesses with high fixed costs, where marginal cost is often much lower than average cost.',
+      },
+    ],
+    Component: MarginalCostCalculator,
+  },
+  {
+    slug: 'market-capitalization-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['enterprise-value-calculator', 'ebitda-multiple-calculator', 'earnings-per-share-calculator'],
+    title: 'Market Capitalization Calculator',
+    shortDescription: 'Calculate market capitalization from share price and shares outstanding.',
+    longDescription:
+      'Enter a share price and the number of shares outstanding to calculate market capitalization: price × shares outstanding. Market cap is the total value the market currently places on a company\'s equity, and is commonly used to categorize companies by size (small-cap, mid-cap, large-cap) and as an input to other metrics like Enterprise Value. The result is shown both as an exact dollar figure and, for large values, in a compact millions/billions format for readability. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Market Capitalization Calculator | Formatiq',
+    metaDescription:
+      'Calculate market capitalization online for free from share price and shares outstanding.',
+    keywords: ['market capitalization calculator', 'market cap calculator', 'market cap formula'],
+    useCase: 'Determining a company\'s total equity market value from its share price and share count',
+    howItWorks: [
+      {
+        title: 'Enter share price',
+        description: 'The current market price per share.',
+      },
+      {
+        title: 'Enter shares outstanding',
+        description: 'The total number of shares currently held by all shareholders.',
+      },
+      {
+        title: 'Read the market cap',
+        description: 'Price multiplied by shares outstanding, shown exactly and in a compact millions/billions form.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is market cap different from Enterprise Value?',
+        answer:
+          'Market cap only reflects the value of a company\'s equity (price × shares outstanding). Enterprise Value goes further, adding debt and subtracting cash to reflect the total cost of acquiring the whole business, not just its equity - see the Enterprise Value Calculator.',
+      },
+      {
+        question: 'Why show a compact millions/billions figure alongside the exact number?',
+        answer:
+          'Market cap values are often extremely large, and financial media typically reports them in shorthand (e.g. "$500M" or "$2.1B"). This tool shows both so you have the exact number for calculations and the compact form for quick reading.',
+      },
+      {
+        question: 'Does market cap tell you what it would cost to buy the whole company?',
+        answer:
+          'Not exactly - market cap only values the equity. It ignores the company\'s debt and cash, both of which a full acquisition would need to account for. Enterprise Value is the more complete measure for that purpose.',
+      },
+    ],
+    Component: MarketCapitalizationCalculator,
+  },
+  {
+    slug: 'net-profit-margin-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['ebit-calculator', 'ebitda-calculator', 'break-even-calculator'],
+    title: 'Net Profit Margin Calculator',
+    shortDescription: 'Calculate net profit margin from net income and revenue.',
+    longDescription:
+      'Enter net income (or loss) and revenue to calculate net profit margin: (net income ÷ revenue) × 100. This shows what percentage of revenue remains as profit after all expenses, interest, and taxes are deducted - it\'s one of the most commonly cited profitability metrics because it captures the bottom line, not just operating performance. A negative net income produces a negative margin, shown as-is rather than treated as an error; only a revenue of exactly zero is rejected, since it\'s the denominator. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'Net Profit Margin Calculator | Formatiq',
+    metaDescription:
+      'Calculate net profit margin online for free from net income and revenue.',
+    keywords: ['net profit margin calculator', 'net margin calculator', 'net income to revenue ratio'],
+    useCase: 'Measuring what percentage of revenue converts into bottom-line profit',
+    howItWorks: [
+      {
+        title: 'Enter net income',
+        description: 'Bottom-line profit (or loss) after all expenses, interest, and taxes.',
+      },
+      {
+        title: 'Enter revenue',
+        description: 'Total revenue for the same period - cannot be zero.',
+      },
+      {
+        title: 'Read the margin',
+        description: 'Net income as a percentage of revenue.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What does a negative net profit margin mean?',
+        answer:
+          'It means the company had a net loss for the period - expenses, interest, and taxes exceeded revenue. This tool computes and displays the negative percentage directly rather than blocking it, since a loss is a valid (if undesirable) business outcome.',
+      },
+      {
+        question: 'How is net profit margin different from EBIT or EBITDA?',
+        answer:
+          'EBIT and EBITDA measure operating profitability before interest, taxes (and, for EBITDA, depreciation and amortization) are deducted. Net profit margin uses net income, the true bottom line after everything has been subtracted, so it\'s a stricter, more complete profitability measure.',
+      },
+      {
+        question: 'What counts as a good net profit margin?',
+        answer:
+          'It varies widely by industry - software companies often post margins above 20%, while grocery retailers commonly operate in the low single digits. Comparing a margin to industry peers is generally more useful than judging it against a single universal benchmark.',
+      },
+    ],
+    Component: NetProfitMarginCalculator,
+  },
+  {
+    slug: 'nopat-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['ebit-calculator', 'economic-value-added-calculator', 'ebitda-calculator'],
+    title: 'NOPAT Calculator',
+    shortDescription: 'Calculate Net Operating Profit After Tax from EBIT and tax rate.',
+    longDescription:
+      'Enter EBIT and a tax rate to calculate Net Operating Profit After Tax (NOPAT): EBIT × (1 − tax rate). NOPAT represents a company\'s operating profit as if it had no debt - it strips out the effect of financing decisions (interest) while still applying taxes, which makes it a cleaner measure for comparing operating performance across companies with different capital structures. NOPAT is also a direct input to Economic Value Added: EVA = NOPAT − (invested capital × WACC), so if you\'re building toward an EVA figure, start here. Tax rate must be between 0 and 100. Runs entirely client-side, and this is an informational estimate, not financial advice.',
+    metaTitle: 'NOPAT Calculator - Net Operating Profit After Tax | Formatiq',
+    metaDescription:
+      'Calculate NOPAT (Net Operating Profit After Tax) online for free from EBIT and tax rate.',
+    keywords: ['nopat calculator', 'net operating profit after tax calculator', 'nopat formula'],
+    useCase: 'Calculating after-tax operating profit, independent of financing structure, often as an input to EVA',
+    howItWorks: [
+      {
+        title: 'Enter EBIT',
+        description: 'Earnings before interest and taxes - use the EBIT Calculator if you need to derive it first.',
+      },
+      {
+        title: 'Enter tax rate (%)',
+        description: 'The effective tax rate applied to operating profit, between 0 and 100.',
+      },
+      {
+        title: 'Read NOPAT',
+        description: 'EBIT after tax, with interest expense excluded entirely.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is NOPAT different from net income?',
+        answer:
+          'Net income subtracts interest expense as well as taxes, so it reflects a company\'s specific financing structure. NOPAT deliberately excludes interest, taxing operating profit as if the company had no debt - which makes it more useful for comparing companies with different amounts of leverage.',
+      },
+      {
+        question: 'Why does NOPAT matter for EVA?',
+        answer:
+          'Economic Value Added is calculated as NOPAT minus a capital charge (invested capital × WACC). NOPAT is the starting profit figure that charge gets subtracted from, so an accurate NOPAT is a prerequisite for a meaningful EVA - see the Economic Value Added (EVA) Calculator.',
+      },
+      {
+        question: 'Where do I get EBIT if I don\'t already have it?',
+        answer:
+          'The EBIT Calculator derives EBIT from either revenue minus COGS and operating expenses, or from net income plus interest and taxes - use whichever inputs you have on hand, then bring the result here.',
+      },
+    ],
+    Component: NopatCalculator,
+  },
+  {
+    slug: 'car-loan-emi-calculator',
+    category: 'calculators',
+    isNew: true,
+    relatedSlugs: ['loan-calculator'],
+    title: 'Car Loan EMI Calculator',
+    shortDescription: 'Calculate car loan EMI from vehicle price, down payment, trade-in value, rate, and term.',
+    longDescription:
+      'Enter a vehicle price, down payment, trade-in value, annual interest rate, and loan term to calculate your car loan EMI (equated monthly installment). Unlike a generic loan calculator, this tool is built around how car financing actually works: you don\'t finance the full sticker price - you first subtract your down payment and any trade-in value to arrive at the financed amount, and the standard amortization formula (EMI = P × r × (1+r)^n / ((1+r)^n − 1)) is then applied to that financed amount, not the vehicle price itself. If your down payment and trade-in together cover the full price, there\'s nothing left to finance and the tool flags that instead of computing a payment. Runs entirely client-side, and this is an informational estimate, not financial advice - it doesn\'t account for sales tax, fees, or a specific lender\'s terms.',
+    metaTitle: 'Car Loan EMI Calculator | Formatiq',
+    metaDescription:
+      'Calculate car loan EMI online for free from vehicle price, down payment, trade-in value, interest rate, and term.',
+    keywords: ['car loan emi calculator', 'auto loan calculator', 'car loan payment calculator', 'vehicle financing calculator'],
+    useCase: 'Estimating monthly car payments after accounting for a down payment and trade-in value',
+    howItWorks: [
+      {
+        title: 'Enter vehicle price',
+        description: 'The full purchase price of the vehicle before any down payment or trade-in.',
+      },
+      {
+        title: 'Enter down payment and trade-in value',
+        description: 'These are subtracted from the vehicle price to determine the amount actually financed.',
+      },
+      {
+        title: 'Enter rate and term',
+        description: 'Annual interest rate and loan term in months.',
+      },
+      {
+        title: 'Read the EMI',
+        description: 'Monthly payment, total interest, and total amount paid over the life of the loan.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why not just use a generic loan or EMI calculator for a car loan?',
+        answer:
+          'A generic loan calculator takes a single loan amount as an input, leaving it up to you to work out the financed amount by hand. This tool does that step for you: it takes the vehicle price, down payment, and trade-in value as separate fields and computes the financed amount itself before applying the EMI formula - which mirrors how an actual auto loan is structured.',
+      },
+      {
+        question: 'What if my down payment and trade-in cover the whole price?',
+        answer:
+          'The tool detects this and shows a message explaining there\'s nothing left to finance, rather than trying to compute a payment on a zero or negative loan amount.',
+      },
+      {
+        question: 'Does this include sales tax or dealer fees?',
+        answer:
+          'No - it calculates payments purely on the financed amount you enter (vehicle price minus down payment and trade-in). Sales tax, registration fees, and dealer add-ons vary by location and dealer, so factor those into the vehicle price yourself if you want them reflected in the payment.',
+      },
+    ],
+    Component: CarLoanEmiCalculator,
   },
 ];
 

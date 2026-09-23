@@ -62,3 +62,41 @@ export function solveForRate(
   const ratio = futureValue / principal;
   return n * (Math.pow(ratio, 1 / (n * years)) - 1) * 100;
 }
+
+/**
+ * Converts a periodic interest rate compounding m1 times per year into the equivalent rate
+ * that would compound m2 times per year and produce the exact same effective annual return:
+ * i2 = (1 + i1)^(m1/m2) - 1, where i1 and i2 are the periodic (per-compounding-period) rates
+ * as percentages, not annualized rates. This generalizes nominalRateToApy (which only converts
+ * a nominal rate to its once-a-year equivalent) to convert between any two arbitrary
+ * compounding frequencies in either direction.
+ */
+export function equivalentPeriodicRate(
+  rate1Percent: number,
+  periodsPerYear1: number,
+  periodsPerYear2: number,
+): number {
+  const i1 = rate1Percent / 100;
+  const i2 = Math.pow(1 + i1, periodsPerYear1 / periodsPerYear2) - 1;
+  return i2 * 100;
+}
+
+/**
+ * Future value of an ordinary annuity (end-of-period contributions): the sum of a series of
+ * equal periodic contributions, each compounding from the moment it's deposited until the end
+ * of the term. Contributions are assumed to land at the END of each compounding period (the
+ * standard "ordinary annuity" convention), not the beginning - so the final contribution earns
+ * no interest. FV = C × (((1+r)^n − 1) / r), with the r = 0 case handled as C × n.
+ */
+export function futureValueOfContributions(
+  contribution: number,
+  aprPercent: number,
+  frequency: CompoundingFrequency,
+  years: number,
+): number {
+  const n = COMPOUNDING_PERIODS_PER_YEAR[frequency];
+  const r = aprPercent / 100 / n;
+  const periods = n * years;
+  if (r === 0) return contribution * periods;
+  return contribution * ((Math.pow(1 + r, periods) - 1) / r);
+}

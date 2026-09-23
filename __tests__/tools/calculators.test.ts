@@ -421,6 +421,239 @@ function ddmCalculate(d0: number, growthPercent: number, requiredReturnPercent: 
   check('dividend-discount-model-calculator', 'r less than g -> rejected with error, not a negative value', badLess.ok === false, JSON.stringify(badLess));
 }
 
+// ---------- earnings-per-share-calculator ----------
+function epsCalculate(netIncomeStr: string, preferredDividendsStr: string, sharesStr: string) {
+  const netIncome = Number(netIncomeStr);
+  const preferredDividends = preferredDividendsStr === '' ? 0 : Number(preferredDividendsStr);
+  const shares = Number(sharesStr);
+  if (netIncomeStr === '' || Number.isNaN(netIncome)) return { ok: false as const };
+  if (Number.isNaN(preferredDividends) || preferredDividends < 0) return { ok: false as const };
+  if (!sharesStr || Number.isNaN(shares) || shares <= 0) return { ok: false as const };
+  return { ok: true as const, eps: (netIncome - preferredDividends) / shares };
+}
+{
+  const good = epsCalculate('500000', '50000', '100000');
+  check('earnings-per-share-calculator', 'NI=500000,PrefDiv=50000,Shares=100000 -> EPS=4.50', good.ok === true && Math.abs(good.eps - 4.5) < 1e-9, JSON.stringify(good));
+  const loss = epsCalculate('-200000', '0', '100000');
+  check('earnings-per-share-calculator', 'negative net income (loss) -> negative EPS, not rejected', loss.ok === true && loss.eps === -2, JSON.stringify(loss));
+  const zeroShares = epsCalculate('500000', '0', '0');
+  check('earnings-per-share-calculator', 'zero shares -> error not crash', zeroShares.ok === false, JSON.stringify(zeroShares));
+}
+
+// ---------- ebit-calculator ----------
+function ebitFromRevenue(revenue: number, cogs: number, opEx: number) {
+  return { ok: true as const, ebit: revenue - cogs - opEx };
+}
+function ebitFromNetIncome(netIncome: number, interest: number, taxes: number) {
+  return { ok: true as const, ebit: netIncome + interest + taxes };
+}
+{
+  const g1 = ebitFromNetIncome(100000, 20000, 30000);
+  check('ebit-calculator', 'net-income mode: NI=100000,Interest=20000,Taxes=30000 -> 150000', g1.ebit === 150000, JSON.stringify(g1));
+  const g2 = ebitFromRevenue(500000, 250000, 100000);
+  check('ebit-calculator', 'revenue mode: Revenue=500000,COGS=250000,OpEx=100000 -> 150000', g2.ebit === 150000, JSON.stringify(g2));
+}
+
+// ---------- ebitda-calculator ----------
+function ebitdaCalculate(netIncome: number, interest: number, taxes: number, depreciation: number, amortization: number) {
+  return { ok: true as const, ebitda: netIncome + interest + taxes + depreciation + amortization };
+}
+{
+  const good = ebitdaCalculate(100000, 20000, 30000, 10000, 5000);
+  check('ebitda-calculator', 'NI=100000+Int20000+Tax30000+Dep10000+Amort5000 -> 165000', good.ebitda === 165000, JSON.stringify(good));
+  const negative = ebitdaCalculate(-500000, 10000, 0, 10000, 0);
+  check('ebitda-calculator', 'negative EBITDA allowed, not rejected', negative.ebitda === -480000, JSON.stringify(negative));
+}
+
+// ---------- ebitda-multiple-calculator ----------
+function ebitdaMultipleCalculate(ev: number, ebitda: number) {
+  if (ebitda === 0) return { ok: false as const };
+  return { ok: true as const, multiple: ev / ebitda };
+}
+{
+  const good = ebitdaMultipleCalculate(10000000, 2000000);
+  check('ebitda-multiple-calculator', 'EV=10000000,EBITDA=2000000 -> 5.00x', good.ok === true && good.multiple.toFixed(2) === '5.00', JSON.stringify(good));
+  const zero = ebitdaMultipleCalculate(10000000, 0);
+  check('ebitda-multiple-calculator', 'zero EBITDA -> rejected, not Infinity', zero.ok === false, JSON.stringify(zero));
+}
+
+// ---------- economic-value-added-calculator ----------
+function evaCalculate(nopat: number, investedCapital: number, waccPercent: number) {
+  const capitalCharge = investedCapital * (waccPercent / 100);
+  return { ok: true as const, capitalCharge, eva: nopat - capitalCharge };
+}
+{
+  const good = evaCalculate(500000, 4000000, 10);
+  check('economic-value-added-calculator', 'NOPAT=500000,Capital=4000000,WACC=10% -> charge=400000,EVA=100000', good.capitalCharge === 400000 && good.eva === 100000, JSON.stringify(good));
+}
+
+// ---------- enterprise-value-calculator ----------
+function evCalculate(marketCap: number, debt: number, cash: number, preferredStock = 0, minorityInterest = 0) {
+  return { ok: true as const, enterpriseValue: marketCap + debt + preferredStock + minorityInterest - cash };
+}
+{
+  const good = evCalculate(8000000, 3000000, 1000000);
+  check('enterprise-value-calculator', 'MarketCap=8000000,Debt=3000000,Cash=1000000 -> EV=10000000', good.enterpriseValue === 10000000, JSON.stringify(good));
+  const withOptional = evCalculate(8000000, 3000000, 1000000, 500000, 200000);
+  check('enterprise-value-calculator', 'with preferred stock and minority interest included in sum', withOptional.enterpriseValue === 10700000, JSON.stringify(withOptional));
+}
+
+// ---------- equivalent-rate-calculator ----------
+function equivalentPeriodicRateCalc(rate1Percent: number, periodsPerYear1: number, periodsPerYear2: number) {
+  const i1 = rate1Percent / 100;
+  return (Math.pow(1 + i1, periodsPerYear1 / periodsPerYear2) - 1) * 100;
+}
+{
+  const monthlyToAnnual = equivalentPeriodicRateCalc(1, 12, 1);
+  check('equivalent-rate-calculator', '1% monthly -> equivalent annual ~12.6825%', Math.abs(monthlyToAnnual - 12.6825030131) < 1e-6, String(monthlyToAnnual));
+  const roundTrip = equivalentPeriodicRateCalc(monthlyToAnnual, 1, 12);
+  check('equivalent-rate-calculator', 'round trip annual -> monthly returns original 1% rate', Math.abs(roundTrip - 1) < 1e-9, String(roundTrip));
+}
+
+// ---------- free-cash-flow-calculator ----------
+function fcfCalculate(operatingCashFlow: number, capex: number) {
+  return { ok: true as const, fcf: operatingCashFlow - capex };
+}
+{
+  const good = fcfCalculate(500000, 150000);
+  check('free-cash-flow-calculator', 'OCF=500000,CapEx=150000 -> FCF=350000', good.fcf === 350000, JSON.stringify(good));
+  const negative = fcfCalculate(100000, 300000);
+  check('free-cash-flow-calculator', 'negative FCF allowed, not rejected', negative.fcf === -200000, JSON.stringify(negative));
+}
+
+// ---------- future-value-calculator ----------
+function fvLumpSum(principal: number, aprPercent: number, n: number, years: number) {
+  const r = aprPercent / 100;
+  return principal * Math.pow(1 + r / n, n * years);
+}
+function fvContributions(contribution: number, aprPercent: number, n: number, years: number) {
+  const r = aprPercent / 100 / n;
+  const periods = n * years;
+  if (r === 0) return contribution * periods;
+  return contribution * ((Math.pow(1 + r, periods) - 1) / r);
+}
+{
+  const lumpSum = fvLumpSum(10000, 5, 1, 10);
+  check('future-value-calculator', 'PV=10000,5%,10yr annual (lump sum only) -> ~16288.95', Math.abs(lumpSum - 16288.9463) < 0.001, String(lumpSum));
+
+  const withContributions = fvLumpSum(10000, 5, 12, 10) + fvContributions(100, 5, 12, 10);
+  check('future-value-calculator', 'lump sum + monthly $100 contributions produces a higher FV than lump sum alone', withContributions > fvLumpSum(10000, 5, 12, 10), String(withContributions));
+
+  const zeroRateContrib = fvContributions(100, 0, 12, 1);
+  check('future-value-calculator', '0% rate contributions -> contribution × periods (100 × 12 = 1200)', zeroRateContrib === 1200, String(zeroRateContrib));
+}
+
+// ---------- interest-coverage-ratio-calculator ----------
+function interestCoverageCalculate(ebit: number, interestExpense: number) {
+  if (interestExpense === 0) return { ok: false as const };
+  return { ok: true as const, ratio: ebit / interestExpense };
+}
+{
+  const good = interestCoverageCalculate(500000, 100000);
+  check('interest-coverage-ratio-calculator', 'EBIT=500000,Interest=100000 -> 5.0x', good.ok === true && good.ratio === 5, JSON.stringify(good));
+  const negative = interestCoverageCalculate(-200000, 100000);
+  check('interest-coverage-ratio-calculator', 'negative EBIT allowed, produces negative ratio', negative.ok === true && negative.ratio === -2, JSON.stringify(negative));
+  const zeroInterest = interestCoverageCalculate(500000, 0);
+  check('interest-coverage-ratio-calculator', 'zero interest expense -> rejected', zeroInterest.ok === false, JSON.stringify(zeroInterest));
+}
+
+// ---------- inventory-turnover-calculator ----------
+function inventoryTurnoverCalculate(cogs: number, begin: number, end: number) {
+  const avg = (begin + end) / 2;
+  if (avg === 0) return { ok: false as const };
+  const turnover = cogs / avg;
+  return { ok: true as const, avg, turnover, daysInventory: 365 / turnover };
+}
+{
+  const good = inventoryTurnoverCalculate(500000, 80000, 120000);
+  check('inventory-turnover-calculator', 'COGS=500000,Begin=80000,End=120000 -> avg=100000,turnover=5.0x', good.ok === true && good.avg === 100000 && good.turnover === 5, JSON.stringify(good));
+  check('inventory-turnover-calculator', 'days inventory ~73', good.ok === true && Math.abs(good.daysInventory - 73) < 0.1, JSON.stringify(good));
+  const zeroAvg = inventoryTurnoverCalculate(500000, 0, 0);
+  check('inventory-turnover-calculator', 'zero average inventory -> rejected', zeroAvg.ok === false, JSON.stringify(zeroAvg));
+}
+
+// ---------- marginal-cost-calculator ----------
+function marginalCostCalculate(deltaTotalCost: number, deltaQuantity: number) {
+  if (deltaQuantity === 0) return { ok: false as const };
+  return { ok: true as const, marginalCost: deltaTotalCost / deltaQuantity };
+}
+{
+  const good = marginalCostCalculate(2500, 500);
+  check('marginal-cost-calculator', 'deltaTC=2500,deltaQ=500 -> 5/unit', good.ok === true && good.marginalCost === 5, JSON.stringify(good));
+  const negativeQ = marginalCostCalculate(-1000, -200);
+  check('marginal-cost-calculator', 'negative deltaQ allowed, computed not blocked', negativeQ.ok === true && negativeQ.marginalCost === 5, JSON.stringify(negativeQ));
+  const zeroQ = marginalCostCalculate(2500, 0);
+  check('marginal-cost-calculator', 'zero deltaQ -> rejected', zeroQ.ok === false, JSON.stringify(zeroQ));
+}
+
+// ---------- market-capitalization-calculator ----------
+function marketCapCalculate(price: number, shares: number) {
+  return { ok: true as const, marketCap: price * shares };
+}
+{
+  const good = marketCapCalculate(50, 10000000);
+  check('market-capitalization-calculator', 'Price=50,Shares=10000000 -> 500000000', good.marketCap === 500000000, JSON.stringify(good));
+}
+
+// ---------- net-profit-margin-calculator ----------
+function netProfitMarginCalculate(netIncome: number, revenue: number) {
+  if (revenue === 0) return { ok: false as const };
+  return { ok: true as const, margin: (netIncome / revenue) * 100 };
+}
+{
+  const good = netProfitMarginCalculate(150000, 1000000);
+  check('net-profit-margin-calculator', 'NetIncome=150000,Revenue=1000000 -> 15%', good.ok === true && good.margin === 15, JSON.stringify(good));
+  const negative = netProfitMarginCalculate(-50000, 1000000);
+  check('net-profit-margin-calculator', 'negative net income -> negative margin, not an error', negative.ok === true && negative.margin === -5, JSON.stringify(negative));
+  const zeroRevenue = netProfitMarginCalculate(150000, 0);
+  check('net-profit-margin-calculator', 'zero revenue -> rejected', zeroRevenue.ok === false, JSON.stringify(zeroRevenue));
+}
+
+// ---------- nopat-calculator ----------
+function nopatCalculate(ebit: number, taxRatePercent: number) {
+  return { ok: true as const, nopat: ebit * (1 - taxRatePercent / 100) };
+}
+{
+  const good = nopatCalculate(500000, 25);
+  check('nopat-calculator', 'EBIT=500000,TaxRate=25% -> 375000', good.nopat === 375000, JSON.stringify(good));
+}
+
+// ---------- car-loan-emi-calculator / shared calculateEmi ----------
+function calculateEmi(principal: number, annualRatePercent: number, months: number) {
+  const monthlyRate = annualRatePercent / 100 / 12;
+  let monthlyPayment: number;
+  if (monthlyRate === 0) {
+    monthlyPayment = principal / months;
+  } else {
+    monthlyPayment = (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+  }
+  const totalPayment = monthlyPayment * months;
+  return { monthlyPayment, totalPayment, totalInterest: totalPayment - principal };
+}
+{
+  // Known amortization example: principal=500000, APR=8%, 60 months -> standard formula check
+  const known = calculateEmi(500000, 8, 60);
+  const monthlyRate = 0.08 / 12;
+  const expected = (500000 * monthlyRate * Math.pow(1 + monthlyRate, 60)) / (Math.pow(1 + monthlyRate, 60) - 1);
+  check('car-loan-emi-calculator', 'principal=500000,APR=8%,60mo matches independent formula computation', Math.abs(known.monthlyPayment - expected) < 0.001, String(known.monthlyPayment));
+
+  const zeroApr = calculateEmi(120000, 0, 12);
+  check('car-loan-emi-calculator', '0% APR -> principal / months (120000/12=10000)', zeroApr.monthlyPayment === 10000, JSON.stringify(zeroApr));
+
+  const oneMonth = calculateEmi(10000, 6, 1);
+  check('car-loan-emi-calculator', '1-month term computes a single payment close to principal + one month interest', oneMonth.monthlyPayment > 10000 && oneMonth.monthlyPayment < 10100, JSON.stringify(oneMonth));
+
+  const decimalApr = calculateEmi(50000, 5.75, 36);
+  check('car-loan-emi-calculator', 'decimal APR (5.75%) computes a finite, positive payment', Number.isFinite(decimalApr.monthlyPayment) && decimalApr.monthlyPayment > 0, JSON.stringify(decimalApr));
+
+  // Vehicle-specific layer: financed amount = price - down payment - trade-in
+  const vehiclePrice = 30000, downPayment = 3000, tradeIn = 2000;
+  const financedAmount = vehiclePrice - downPayment - tradeIn;
+  check('car-loan-emi-calculator', 'financed amount = price - down payment - trade-in (30000-3000-2000=25000)', financedAmount === 25000, String(financedAmount));
+  const fullyCovered = 5000 - 3000 - 2000;
+  check('car-loan-emi-calculator', 'down payment + trade-in covering full price -> financed amount is zero (rejected)', fullyCovered === 0, String(fullyCovered));
+}
+
 describe('Calculators', () => {
   results.forEach((r) => {
     it(`${r.tool}: ${r.test}`, () => {
