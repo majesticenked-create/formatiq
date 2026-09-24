@@ -7986,7 +7986,7 @@ export const tools: ToolDefinition[] = [
   {
     slug: 'rgb-cmyk-converter',
     category: 'converters',
-    relatedSlugs: ['hex-rgb-hsl-converter', 'css-gradient-generator'],
+    relatedSlugs: ['hex-rgb-converter', 'css-gradient-generator'],
     isNew: true,
     title: 'RGB to CMYK Converter',
     shortDescription: 'Convert between RGB and CMYK color values instantly, in your browser.',
@@ -10259,7 +10259,7 @@ export const tools: ToolDefinition[] = [
     slug: 'bbcode-editor',
     category: 'formatters',
     isNew: true,
-    relatedSlugs: ['html-formatter', 'markdown-html-converter', 'html-stripper'],
+    relatedSlugs: ['html-formatter', 'markdown-html-converter', 'html-tag-stripper'],
     title: 'BBCode Editor & Preview',
     shortDescription: 'Write BBCode with a formatting toolbar and see a safe, live rendered preview.',
     longDescription:
@@ -12759,7 +12759,7 @@ export const tools: ToolDefinition[] = [
           'The computation happens entirely in your browser via the Web Crypto API - the secret and message are never sent to any server. That said, treat any real production secret with the same caution you would anywhere: prefer a disposable test key when just verifying behavior.',
       },
     ],
-    relatedSlugs: ['hash-generator', 'jwt-decoder', 'crc32-checksum-calculator'],
+    relatedSlugs: ['hash-generator', 'jwt-decoder', 'crc32-checksum'],
     Component: HmacGenerator,
   },
   {

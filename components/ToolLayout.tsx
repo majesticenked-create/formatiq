@@ -4,10 +4,10 @@ import type { ToolDefinition } from '@/lib/tools/types';
 import { getCategory, getRelatedTools } from '@/lib/tools/registry';
 import AdSlot from './AdSlot';
 import RelatedTools from './RelatedTools';
-import FaqAccordion from './FaqAccordion';
 import CopyLinkButton from './CopyLinkButton';
 import ToolCta from './ToolCta';
 import ToolActionBar from './ToolActionBar';
+import ToolGuide from './tools/ToolGuide';
 
 export default function ToolLayout({ tool, children }: { tool: ToolDefinition; children: ReactNode }) {
   const category = getCategory(tool.category);
@@ -79,21 +79,6 @@ export default function ToolLayout({ tool, children }: { tool: ToolDefinition; c
         </div>
       </div>
 
-      {tool.howItWorks && tool.howItWorks.length > 0 && (
-        <div className="container how-it-works">
-          <h2 className="section-title">How this tool works</h2>
-          <div className="how-it-works-steps">
-            {tool.howItWorks.map((step, index) => (
-              <div className="how-it-works-step" key={step.title}>
-                <div className="how-it-works-badge">{index + 1}</div>
-                <h3>{step.title}</h3>
-                <p>{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       <div className="container tool-workbench">
         {tool.useCase && (
           <div className="quick-facts">
@@ -119,66 +104,7 @@ export default function ToolLayout({ tool, children }: { tool: ToolDefinition; c
 
       <ToolActionBar toolTitle={tool.title} category={tool.category} slug={tool.slug} />
 
-      <div className="container seo-content">
-        <h2>About this tool</h2>
-        <p>{tool.longDescription}</p>
-
-        {tool.extendedContent && tool.extendedContent.length > 0 && (
-          <>
-            {tool.extendedContent.map((section) => (
-              <div key={section.heading}>
-                <h2 style={{ marginTop: 32 }}>{section.heading}</h2>
-                {/* eslint-disable-next-line react/no-danger */}
-                <div dangerouslySetInnerHTML={{ __html: section.body }} />
-              </div>
-            ))}
-          </>
-        )}
-
-        {tool.comparisonTable && (
-          <div className="comparison-table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  {tool.comparisonTable.headers.map((header) => (
-                    <th key={header}>{header}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {tool.comparisonTable.rows.map((row, i) => (
-                  <tr key={i}>
-                    {row.map((cell, j) => (
-                      <td key={j}>{cell}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {tool.benefits && tool.benefits.length > 0 && (
-          <>
-            <h2 style={{ marginTop: 32 }}>Why use this tool</h2>
-            <div className="benefits-grid">
-              {tool.benefits.map((benefit) => (
-                <div className="benefit-card" key={benefit.title}>
-                  <h3>{benefit.title}</h3>
-                  <p>{benefit.description}</p>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {tool.faqs.length > 0 && (
-          <>
-            <h2 style={{ marginTop: 32 }}>Frequently asked questions</h2>
-            <FaqAccordion faqs={tool.faqs} />
-          </>
-        )}
-      </div>
+      <ToolGuide tool={tool} />
 
       <div className="container">
         <RelatedTools tools={related} />

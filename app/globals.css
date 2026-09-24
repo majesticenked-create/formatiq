@@ -1620,6 +1620,164 @@ textarea.mono,
   border-bottom: none;
 }
 
+/* Long-form tool guide */
+.tool-guide {
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+}
+
+.guide-article {
+  max-width: 70ch;
+}
+
+.guide-intro {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.guide-toc {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 28px;
+}
+
+.guide-toc summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.guide-toc ul {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.guide-toc a {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.guide-toc a:hover {
+  color: var(--accent);
+}
+
+.guide-section {
+  margin-bottom: 32px;
+  scroll-margin-top: 24px;
+}
+
+.guide-section h2 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.guide-section p {
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.guide-subheading {
+  font-size: 15px;
+  margin: 20px 0 8px;
+}
+
+.guide-list {
+  color: var(--text-secondary);
+  margin: 0 0 12px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guide-note {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.guide-formula {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.guide-formula-expr {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.guide-formula-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+}
+
+.guide-formula-legend > div {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.guide-formula-legend dt {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  flex: 0 0 auto;
+  min-width: 2ch;
+}
+
+.guide-formula-legend dd {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.guide-example {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.guide-example h4 {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.guide-example ol {
+  color: var(--text-secondary);
+  font-size: 14px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.guide-code {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
 /* Tool action bar (helpful/not-helpful vote, feedback, share, embed) */
 .tool-action-bar-wrap {
   padding: 20px 24px;
