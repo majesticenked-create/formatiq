@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google';
-import Header from '@/components/Header';
+import SiteHeader from '@/components/layout/SiteHeader';
 import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
@@ -85,7 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <Header />
+        <SiteHeader />
         <main>{children}</main>
         <Footer />
         <CookieConsent />

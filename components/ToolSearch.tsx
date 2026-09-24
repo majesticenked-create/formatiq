@@ -3,12 +3,29 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useRef, useState } from 'react';
-import { tools } from '@/lib/tools/registry';
+import { categories, tools } from '@/lib/tools/registry';
 import { filterTools } from '@/lib/tools/search';
 
 const MAX_RESULTS = 8;
 
-export default function ToolSearch() {
+interface ToolSearchProps {
+  /** Distinguishes DOM ids when more than one ToolSearch is mounted at once
+   *  (e.g. the compact header search alongside the homepage hero search) so
+   *  ids/aria-controls never collide. */
+  idPrefix?: string;
+  /** 'compact' is used for the persistent header search: smaller footprint,
+   *  shorter placeholder. 'default' is the larger, primary hero search. */
+  variant?: 'default' | 'compact';
+  label?: string;
+  placeholder?: string;
+}
+
+export default function ToolSearch({
+  idPrefix = 'site',
+  variant = 'default',
+  label = 'Search tools by name or keyword',
+  placeholder,
+}: ToolSearchProps = {}) {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -45,17 +62,20 @@ export default function ToolSearch() {
     }
   }
 
+  const inputId = `${idPrefix}-tool-search`;
+  const listboxId = `${idPrefix}-tool-search-listbox`;
+
   return (
-    <div className="tool-search">
-      <label htmlFor="site-tool-search" className="sr-only">
-        Search tools by name or keyword
+    <div className={`tool-search${variant === 'compact' ? ' tool-search-compact' : ''}`} role="search">
+      <label htmlFor={inputId} className="sr-only">
+        {label}
       </label>
       <input
-        id="site-tool-search"
+        id={inputId}
         ref={inputRef}
         type="text"
         className="tool-search-input mono"
-        placeholder="Search 200+ tools by name or keyword…"
+        placeholder={placeholder ?? (variant === 'compact' ? 'Search tools…' : 'Search 200+ tools by name or keyword…')}
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);
@@ -66,13 +86,13 @@ export default function ToolSearch() {
         onKeyDown={handleKeyDown}
         role="combobox"
         aria-expanded={showDropdown}
-        aria-controls="tool-search-listbox"
+        aria-controls={listboxId}
         aria-autocomplete="list"
         autoComplete="off"
       />
 
       {showDropdown && (
-        <div className="tool-search-dropdown" id="tool-search-listbox" role="listbox">
+        <div className="tool-search-dropdown" id={listboxId} role="listbox">
           {results.length === 0 ? (
             <div className="tool-search-empty">No tools found for &ldquo;{query}&rdquo;.</div>
           ) : (
@@ -85,7 +105,12 @@ export default function ToolSearch() {
                 aria-selected={index === activeIndex}
                 onMouseEnter={() => setActiveIndex(index)}
               >
-                <span className="tool-search-result-title">{tool.title}</span>
+                <span className="tool-search-result-title">
+                  {tool.title}
+                  <span className="tool-search-result-category">
+                    {categories.find((c) => c.slug === tool.category)?.navLabel ?? tool.category}
+                  </span>
+                </span>
                 <span className="tool-search-result-desc">{tool.shortDescription}</span>
               </Link>
             ))

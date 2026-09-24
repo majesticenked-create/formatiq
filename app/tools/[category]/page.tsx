@@ -37,7 +37,6 @@ export default function CategoryPage({ params }: { params: { category: string } 
   if (!category) notFound();
 
   const toolsInCategory = [...getToolsByCategory(category.slug)].sort((a, b) => a.title.localeCompare(b.title));
-  const otherCategories = categories.filter((c) => c.slug !== category.slug);
 
   const baseUrl = 'https://formatiq.tools';
   const structuredData = {
@@ -65,14 +64,6 @@ export default function CategoryPage({ params }: { params: { category: string } 
       <div className="tool-header" style={{ paddingLeft: 0, paddingRight: 0, borderBottom: 'none' }}>
         <div className="breadcrumb">
           <Link href="/">Formatiq</Link> / {category.title}
-        </div>
-
-        <div className="category-tool-tags" style={{ marginTop: 0, marginBottom: 16 }}>
-          {otherCategories.map((c) => (
-            <Link key={c.slug} href={`/tools/${c.slug}`} className="tool-tag">
-              {c.title}
-            </Link>
-          ))}
         </div>
 
         <h1>{category.title}</h1>

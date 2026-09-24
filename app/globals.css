@@ -135,6 +135,12 @@ textarea.mono,
   padding: 0 24px;
 }
 
+/* Two-row global header: row 1 (brand + search + theme toggle) is a fixed
+   64px band; row 2 (CategoryNav) is a shorter, horizontally-scrollable strip
+   of plain-text category links. Sticky so the persistent search stays
+   reachable, but each row is its own flex box so nothing here relies on
+   position:absolute/fixed - the only earlier fixed-position element (the old
+   mobile drawer) is gone along with it, so there's no leftover offset math. */
 .site-header {
   border-bottom: 1px solid var(--border);
   position: sticky;
@@ -144,10 +150,10 @@ textarea.mono,
   z-index: 10;
 }
 
-.site-header-inner {
+.site-header-row1 {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 16px;
   height: 64px;
 }
 
@@ -158,124 +164,71 @@ textarea.mono,
   font-family: var(--font-display);
   font-size: 20px;
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .brand-mark {
   color: var(--accent);
 }
 
-.nav-links {
+.site-header-row1 .tool-search {
+  flex: 1 1 auto;
+  max-width: 520px;
+  margin-left: auto;
+}
+
+.site-header-row2 {
+  border-top: 1px solid var(--border);
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* Firefox/most browsers scrollbar styling; Safari falls back to its own
+     thin overlay bar, which is an acceptable difference for a scroll strip. */
+  scrollbar-width: thin;
+}
+
+.site-category-nav-track {
   display: flex;
   align-items: center;
-  gap: 24px;
-  font-size: 14px;
+  gap: 4px;
+  padding: 0 24px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  white-space: nowrap;
+}
+
+.site-category-nav-link {
+  display: inline-block;
+  padding: 10px 12px;
+  font-size: 13px;
   color: var(--text-secondary);
-}
-
-.nav-links a:hover {
-  color: var(--text-primary);
-}
-
-.site-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.mobile-nav-toggle {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  margin: 0;
-  padding: 0;
-  line-height: 1;
-  font: inherit;
-  box-sizing: border-box;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--text-secondary);
-  cursor: pointer;
+  border-bottom: 2px solid transparent;
   flex-shrink: 0;
-  transition: color 150ms ease, border-color 150ms ease, transform 120ms var(--ease-out);
+  transition: color 150ms ease, border-color 150ms ease;
 }
 
-.mobile-nav-toggle:hover {
+.site-category-nav-link:hover {
   color: var(--text-primary);
-  border-color: var(--text-secondary);
 }
 
-.mobile-nav-toggle:active {
-  transform: scale(0.94);
-}
-
-/* Slide-down drawer, not a scale-from-trigger popover: this panel spans the full
-   viewport width, so there's no single trigger point to scale from the way a small
-   anchored popover would - the closest match in the skill's own vocabulary is the
-   iOS-style drawer curve, using translateY instead of a scale-based entrance. */
-.mobile-nav-panel {
-  position: fixed;
-  top: 64px;
-  left: 0;
-  right: 0;
-  max-height: calc(100vh - 64px);
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  padding: 8px 24px 16px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-  z-index: 60;
-  opacity: 1;
-  transform: translateY(0);
-  transition: transform 220ms var(--ease-drawer), opacity 200ms ease-out;
-}
-
-.mobile-nav-panel[data-state='closing'] {
-  opacity: 0;
-  transform: translateY(-8px);
-  transition: transform 180ms cubic-bezier(0.4, 0, 1, 1), opacity 150ms ease-in;
-}
-
-@starting-style {
-  .mobile-nav-panel {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-}
-
-.mobile-nav-panel a {
-  padding: 13px 8px;
-  font-size: 15px;
-  color: var(--text-secondary);
-  border-radius: 8px;
-}
-
-.mobile-nav-panel a:hover {
+.site-category-nav-link[aria-current='page'] {
   color: var(--text-primary);
-  background: var(--surface-raised);
+  border-bottom-color: var(--accent);
 }
 
-/* 900px, not 768px, for this specific breakpoint - at 7 categories the desktop
-   nav row (~750px) plus brand and theme toggle gets tight below ~940px viewport
-   width, so the hamburger needs to take over earlier than the site's usual
-   tablet breakpoint to avoid overflow in that in-between range. */
-@media (max-width: 900px) {
-  .nav-links {
-    display: none;
+@media (max-width: 640px) {
+  .site-header-row1 {
+    height: auto;
+    flex-wrap: wrap;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    row-gap: 10px;
   }
 
-  /* Sized here, not in the 768px touch-target block below - this is the
-     breakpoint where the hamburger actually becomes the interactive nav
-     trigger, so its 44px touch target needs to hold for the full range
-     it's shown in, not just the last 768px of it. */
-  .mobile-nav-toggle {
-    display: inline-flex;
-    width: 44px;
-    height: 44px;
+  .site-header-row1 .tool-search {
+    order: 3;
+    flex: 1 1 100%;
+    max-width: none;
+    margin-left: 0;
   }
 }
 
@@ -885,13 +838,36 @@ textarea.mono,
 }
 
 .tool-search-result-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   font-size: 14px;
   color: var(--text-primary);
+}
+
+.tool-search-result-category {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text-tertiary);
 }
 
 .tool-search-result-desc {
   font-size: 12px;
   color: var(--text-secondary);
+}
+
+/* Compact variant used in the persistent header (row 1), as distinct from
+   the larger primary hero search on the homepage - same component, smaller
+   footprint, shorter placeholder; see ToolSearch's `variant` prop. */
+.tool-search-compact .tool-search-input {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.tool-search-compact .tool-search-dropdown {
+  max-height: 360px;
 }
 
 .tool-search-empty {
