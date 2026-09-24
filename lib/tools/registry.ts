@@ -215,6 +215,14 @@ import OctalToBase64Converter from '@/components/tools/OctalToBase64Converter';
 import Mp3ToBase64Converter from '@/components/tools/Mp3ToBase64Converter';
 import Utf8AsciiConverter from '@/components/tools/Utf8AsciiConverter';
 import RedirectCodeGenerator from '@/components/tools/RedirectCodeGenerator';
+import HmacGenerator from '@/components/tools/HmacGenerator';
+import BlobGenerator from '@/components/tools/BlobGenerator';
+import BarGraphMaker from '@/components/tools/BarGraphMaker';
+import AestheticEmojiGenerator from '@/components/tools/AestheticEmojiGenerator';
+import AestheticUsernameGenerator from '@/components/tools/AestheticUsernameGenerator';
+import AnimalFusionGenerator from '@/components/tools/AnimalFusionGenerator';
+import BookTitleGenerator from '@/components/tools/BookTitleGenerator';
+import CharacterTraitGenerator from '@/components/tools/CharacterTraitGenerator';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -12684,6 +12692,423 @@ export const tools: ToolDefinition[] = [
     ],
     relatedSlugs: ['http-status-code-lookup', 'url-encoder-decoder', 'meta-tag-generator'],
     Component: RedirectCodeGenerator,
+  },
+  {
+    slug: 'hmac-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'HMAC Generator',
+    shortDescription: 'Compute a real HMAC (SHA-1/256/384/512) from a secret key and message using Web Crypto.',
+    longDescription:
+      'Enter a secret key and a message to compute a genuine HMAC (Hash-based Message Authentication Code) using the browser\'s native Web Crypto API - not a simplified "hash(secret + message)" approximation, which is an insecure anti-pattern that behaves very differently from a real HMAC. Under the hood this imports your key with `crypto.subtle.importKey` using the HMAC algorithm and the hash function you pick (SHA-256, SHA-384, or SHA-512, plus SHA-1 clearly marked as legacy for interoperating with older systems), then signs the message with `crypto.subtle.sign`, exactly the construction a real backend or API client would use. Output is available in hex or Base64. HMAC is fundamentally different from plain hashing: it requires a shared secret, which is what lets a recipient prove a message came from someone holding that secret and wasn\'t altered in transit - it is an integrity and authentication mechanism, not encryption, and it does not hide or protect the message contents themselves. Useful for verifying a webhook signature by hand, testing an API integration that signs requests, or checking that your own HMAC implementation matches the standard. Runs entirely client-side, asynchronously via Web Crypto - your secret and message are never sent anywhere.',
+    metaTitle: 'HMAC Generator (SHA-256/384/512) - Free Online Tool | Formatiq',
+    metaDescription:
+      'Compute a real HMAC-SHA256/384/512 (or legacy SHA-1) online for free using the Web Crypto API. Hex or Base64 output. Runs entirely in your browser.',
+    keywords: ['hmac generator', 'hmac sha256', 'hmac sha512', 'hash based message authentication code', 'web crypto hmac'],
+    useCase: 'Verifying a webhook signature by hand or testing that a custom API integration signs requests correctly',
+    howItWorks: [
+      {
+        title: 'Enter your secret key and message',
+        description: 'Both are UTF-8 encoded before signing, matching how most HMAC implementations treat string input.',
+      },
+      {
+        title: 'Pick a hash algorithm',
+        description: 'SHA-256, SHA-384, or SHA-512 for modern use, or SHA-1 when you need to match a legacy system.',
+      },
+      {
+        title: 'Choose hex or Base64 output',
+        description: 'Match whichever format the system you\'re comparing against expects.',
+      },
+      {
+        title: 'Compare against your real signature',
+        description: 'Match the computed value against a webhook header or API signature to confirm your implementation is correct.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Real Web Crypto HMAC, not a workaround',
+        description: 'Uses crypto.subtle.importKey and crypto.subtle.sign with the HMAC algorithm directly - never a hash(secret+message) substitute.',
+      },
+      {
+        title: 'Never sent anywhere',
+        description: 'The secret and message are processed entirely in your browser and never transmitted, matching the sensitivity of a real signing key.',
+      },
+      {
+        title: 'Multiple algorithms and encodings',
+        description: 'SHA-256/384/512 for modern use, legacy SHA-1 clearly marked, and both hex and Base64 output.',
+      },
+      {
+        title: 'Clear about what HMAC is (and isn\'t)',
+        description: 'Explicitly explained as integrity/authentication, not encryption - the message itself is never hidden.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the hash-generator tool?',
+        answer:
+          'hash-generator computes a plain, unkeyed hash (MD5/SHA-1/256/512) of text alone. HMAC additionally requires a secret key and uses a specific, standardized construction (not just concatenating the secret and message before hashing, which is insecure) so that only someone holding the same key can produce or verify the same signature - it proves both integrity and authenticity, not just that the data matches a known value.',
+      },
+      {
+        question: 'Is HMAC encryption?',
+        answer:
+          'No. HMAC proves a message wasn\'t tampered with and came from someone holding the secret key, but it doesn\'t hide the message contents at all - the message itself is sent in the clear. Use actual encryption (like AES) if you need confidentiality; use HMAC alongside it (or on its own) when you need to detect tampering or authenticate the sender.',
+      },
+      {
+        question: 'Is my secret key safe to type in here?',
+        answer:
+          'The computation happens entirely in your browser via the Web Crypto API - the secret and message are never sent to any server. That said, treat any real production secret with the same caution you would anywhere: prefer a disposable test key when just verifying behavior.',
+      },
+    ],
+    relatedSlugs: ['hash-generator', 'jwt-decoder', 'crc32-checksum-calculator'],
+    Component: HmacGenerator,
+  },
+  {
+    slug: 'blob-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Blob Shape Generator',
+    shortDescription: 'Generate an organic, randomized SVG blob shape with a seedable random generator.',
+    longDescription:
+      'Generate an organic-looking closed SVG blob shape - the kind of soft, irregular background shape common in modern web design - by placing a set of points evenly around a circle, perturbing each one\'s radius by a random amount, and connecting them with a smooth curve so the result reads as an organic outline rather than a jagged polygon. Controls include the number of points (more points means finer, more complex wobble), an irregularity amount (how far each point can deviate from a perfect circle), overall size, and fill color. Randomness is driven by a small seeded pseudo-random generator (not the browser\'s unseeded Math.random), so the exact same seed and settings always reproduce the identical shape - reroll for a fresh random seed, or note a seed down to recreate a shape later. Output includes a live preview, the raw SVG markup shown as plain text for you to copy, and a one-click SVG download. Runs entirely client-side.',
+    metaTitle: 'Blob Shape Generator (SVG) - Free Online Tool | Formatiq',
+    metaDescription:
+      'Generate an organic, randomized SVG blob shape online for free. Adjustable points, irregularity, size, and color, with a seed for reproducible shapes.',
+    keywords: ['blob generator', 'svg blob generator', 'organic shape generator', 'blob shape svg', 'random blob svg'],
+    useCase: 'Generating a soft, organic background shape for a hero section or card design',
+    howItWorks: [
+      {
+        title: 'Set point count and irregularity',
+        description: 'More points add finer detail; a higher irregularity makes the wobble more pronounced.',
+      },
+      {
+        title: 'Pick a size and fill color',
+        description: 'The preview and downloaded SVG both update instantly.',
+      },
+      {
+        title: 'Reroll or keep the seed',
+        description: 'Reroll for a fresh random shape, or keep the current seed to reproduce this exact one later.',
+      },
+      {
+        title: 'Copy the markup or download the SVG',
+        description: 'The raw SVG markup is shown as plain text, ready to paste into your own code.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Deterministic with a seed',
+        description: 'The same seed and settings always produce the identical path, driven by a small seeded PRNG rather than unseeded randomness.',
+      },
+      {
+        title: 'Always a closed, organic path',
+        description: 'Points are connected with a smooth closed curve, never a jagged polygon or an open shape.',
+      },
+      {
+        title: 'Plain SVG, no dependency',
+        description: 'Pure hand-rolled SVG path generation - no new charting or shape library added to the project.',
+      },
+      {
+        title: 'Markup shown as text, never re-injected raw',
+        description: 'The SVG markup is displayed in a read-only textarea, not rendered via dangerouslySetInnerHTML from user input.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Will the same seed always produce the same blob?',
+        answer:
+          'Yes - the shape is generated using a small seeded pseudo-random number generator, so the same seed combined with the same point count, irregularity, and size always produces an identical path. Only the fill color and displayed size can be changed afterward without altering the underlying shape.',
+      },
+      {
+        question: 'Can I edit the SVG markup directly?',
+        answer:
+          'The markup shown is read-only in this tool, but it\'s plain, valid SVG you can copy and paste into your own code or design tool and edit freely there.',
+      },
+      {
+        question: 'Is this generator safe from injection issues if I use custom colors?',
+        answer:
+          'Yes - any text value (like the fill color) is escaped before being inserted into the SVG attribute, so it can\'t break out of the markup structure.',
+      },
+    ],
+    relatedSlugs: ['bar-graph-maker', 'meta-tag-generator', 'hash-generator'],
+    Component: BlobGenerator,
+  },
+  {
+    slug: 'bar-graph-maker',
+    category: 'generators',
+    isNew: true,
+    title: 'Bar Graph Maker',
+    shortDescription: 'Build a bar chart from your own label/value data and export it as clean, hand-rolled SVG.',
+    longDescription:
+      'Enter a set of label/value rows, add a chart title and axis label, and get a bar chart rendered as plain, hand-rolled SVG - no charting library dependency, just computed rectangle positions and text labels. Choose vertical or horizontal bar orientation depending on how many categories you have and how long the labels are. Bars are always rendered from a zero baseline: negative or non-numeric values are flagged with a clear warning and treated as zero in the chart itself, since a bar chart has no established convention for representing a bar below its own baseline without misleading the reader. Every label you type is escaped before being inserted into the generated SVG or HTML, so pasted text can never break out of the markup or inject unexpected elements. Alongside the visual chart, an accessible data table renders the same label/value pairs in plain HTML, so anyone using a screen reader or navigating by keyboard has full access to the underlying data, not just the visual bars. Download the finished chart as a standalone .svg file, or copy the raw markup directly. Runs entirely client-side.',
+    metaTitle: 'Bar Graph Maker (SVG) - Free Online Tool | Formatiq',
+    metaDescription:
+      'Build a bar chart from your own data online for free, rendered as clean SVG with no library dependency. Vertical or horizontal bars, SVG export, accessible data table.',
+    keywords: ['bar graph maker', 'bar chart generator', 'svg bar chart', 'online bar graph', 'make a bar chart'],
+    useCase: 'Turning a quick label/value dataset into a shareable chart image without opening a spreadsheet app',
+    howItWorks: [
+      {
+        title: 'Add label/value rows',
+        description: 'Type a label and a numeric value for each bar, adding or removing rows as needed.',
+      },
+      {
+        title: 'Set a title and axis label',
+        description: 'Optional chart title and category axis label, shown above and below the bars.',
+      },
+      {
+        title: 'Pick vertical or horizontal bars',
+        description: 'Horizontal bars often read better with long labels or many categories.',
+      },
+      {
+        title: 'Download the SVG or copy the markup',
+        description: 'Get a standalone .svg file, or copy the raw markup to embed directly in your own page.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'No new dependency',
+        description: 'Bars are computed and rendered as plain SVG rect/text elements - no charting library was added to the project.',
+      },
+      {
+        title: 'Accessible by default',
+        description: 'A plain HTML data table alongside the chart gives screen reader and keyboard users the same data as the visual bars.',
+      },
+      {
+        title: 'Safe with arbitrary label text',
+        description: 'Labels are escaped before being placed into the SVG, so pasted text can never inject markup.',
+      },
+      {
+        title: 'Clear zero-baseline handling',
+        description: 'Negative or invalid values are flagged and treated as zero rather than silently producing a misleading chart.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What happens if I enter a negative value?',
+        answer:
+          'It\'s flagged with a clear warning above the chart and treated as zero in the rendered bars and the accessible data table\'s corresponding value, since a standard bar chart from a zero baseline has no widely-understood way to represent a bar going below its own baseline without misleading the reader.',
+      },
+      {
+        question: 'Why is there a data table below the chart?',
+        answer:
+          'An SVG chart alone isn\'t reliably readable by screen readers or navigable by keyboard, so the same label/value pairs are also rendered as a plain HTML table, giving every visitor full access to the underlying data regardless of how they browse.',
+      },
+      {
+        question: 'Does this use a charting library?',
+        answer:
+          'No - bar positions and sizes are computed directly from your data and rendered as plain SVG rect and text elements, with no new charting dependency added to the project.',
+      },
+    ],
+    relatedSlugs: ['blob-generator', 'csv-tsv-converter', 'percentage-calculator'],
+    Component: BarGraphMaker,
+  },
+  {
+    slug: 'aesthetic-emoji-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Aesthetic Emoji Generator',
+    shortDescription: 'Generate curated theme-based emoji combinations for bios, usernames, and captions.',
+    longDescription:
+      'Pick a theme - soft, nature, celestial, hearts, sparkles, or coquette - and generate ready-to-use combinations of a few emoji at a time, the kind of small aesthetic clusters commonly added to a social bio, username, or caption. Each theme draws from its own small, originally curated pool of symbols (not scraped from any external emoji-combo list), and combinations are produced using a seeded pseudo-random generator so results can be reproduced deterministically when needed, while defaulting to a fresh random seed for everyday use. Adjust how many symbols appear in each combination and how many combinations to generate at once, then copy everything with one click. Runs entirely client-side.',
+    metaTitle: 'Aesthetic Emoji Generator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Generate aesthetic emoji combinations online for free - soft, nature, celestial, hearts, sparkles, and coquette themes for bios and captions.',
+    keywords: ['aesthetic emoji generator', 'emoji combo generator', 'cute emoji combinations', 'emoji generator for bio'],
+    useCase: 'Quickly generating a themed emoji combo for a social media bio or caption',
+    howItWorks: [
+      {
+        title: 'Pick a theme',
+        description: 'Soft, nature, celestial, hearts, sparkles, or coquette - each with its own curated symbol pool.',
+      },
+      {
+        title: 'Set symbols per combo and count',
+        description: 'Control how many emoji appear together and how many combinations to generate.',
+      },
+      {
+        title: 'Generate and copy',
+        description: 'Regenerate for a fresh batch, or copy everything at once.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Where do the emoji combinations come from?',
+        answer:
+          'Each theme has its own small, originally curated pool of symbols selected for this tool - it\'s not pulled from an external emoji-combo database or scraped list.',
+      },
+      {
+        question: 'Will I get the same combos if I use the same settings?',
+        answer:
+          'Generating uses a fresh random seed by default, so each click produces a new batch. The underlying generator is seedable, which keeps the logic deterministic and testable, but the visible "Generate" button always rerolls to a new seed.',
+      },
+    ],
+    relatedSlugs: ['aesthetic-username-generator', 'lorem-ipsum-generator', 'password-generator'],
+    Component: AestheticEmojiGenerator,
+  },
+  {
+    slug: 'aesthetic-username-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Aesthetic Username Generator',
+    shortDescription: 'Generate aesthetic username suggestions by combining curated adjectives, nouns, and separators.',
+    longDescription:
+      'Generate username suggestions by combining a soft, atmospheric adjective (moonlit, velvet, hazy) with an evocative noun (petal, ember, willow) and an optional separator or trailing number, from an originally curated word list built for this tool. Combinations are produced with a seeded pseudo-random generator, defaulting to a fresh seed each time you generate. This tool only produces suggestion strings - it does not check, claim, or guarantee availability of any generated name on any platform, so treat the output purely as a starting point to search for yourself. Generate as many suggestions as you like and copy them all at once. Runs entirely client-side.',
+    metaTitle: 'Aesthetic Username Generator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Generate aesthetic username suggestions online for free by combining curated adjectives and nouns. Suggestions only - availability is not checked.',
+    keywords: ['aesthetic username generator', 'username generator', 'cute username ideas', 'unique username generator'],
+    useCase: 'Brainstorming a batch of aesthetic username ideas before checking availability yourself',
+    howItWorks: [
+      {
+        title: 'Toggle a trailing number',
+        description: 'Add a random 1-3 digit number to the end of each name, or leave it off.',
+      },
+      {
+        title: 'Set how many to generate',
+        description: 'Generate 1 to 50 suggestions at once.',
+      },
+      {
+        title: 'Generate and copy',
+        description: 'Regenerate for a fresh batch, or copy every suggestion at once.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this check if a username is available?',
+        answer:
+          'No - this tool only generates suggestion strings from a curated word list. It never checks, claims, or implies availability on any platform. Always search for a name yourself on the specific service before using it.',
+      },
+      {
+        question: 'Where do the words come from?',
+        answer:
+          'From an originally curated list of atmospheric adjectives and nouns built specifically for this tool, not scraped from any external username-generator list.',
+      },
+    ],
+    relatedSlugs: ['aesthetic-emoji-generator', 'password-generator', 'uuid-generator'],
+    Component: AestheticUsernameGenerator,
+  },
+  {
+    slug: 'animal-fusion-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Animal Fusion Generator',
+    shortDescription: 'Generate a fictional fusion animal name and short trait description from two real animals.',
+    longDescription:
+      'Combine two animals from a curated list into a fictional fusion concept: a blended name (built from the two source names) plus a short, invented trait description, like "can glide short distances between trees" or "has bioluminescent markings that glow faintly at dusk." This is a purely text-based creative writing and naming tool, not an image generator - it produces a name and a sentence, not a picture, and makes no claim about real biology, genetics, or breeding possibility between species. Useful for naming a fictional creature in a story, game, or worldbuilding project. Randomness is driven by a seeded pseudo-random generator for reproducible results when needed. Runs entirely client-side.',
+    metaTitle: 'Animal Fusion Generator (Fictional Concepts) - Free Tool | Formatiq',
+    metaDescription:
+      'Generate fictional animal fusion names and trait descriptions online for free - a text-based creative writing tool, not an image generator.',
+    keywords: ['animal fusion generator', 'animal mashup generator', 'fictional animal name generator', 'creature name generator'],
+    useCase: 'Naming a fictional hybrid creature for a story, game, or worldbuilding project',
+    howItWorks: [
+      {
+        title: 'Set how many fusions to generate',
+        description: 'Generate 1 to 20 fusion concepts at once.',
+      },
+      {
+        title: 'Generate',
+        description: 'Each fusion pairs two different animals from the curated list into a blended name.',
+      },
+      {
+        title: 'Read the trait description',
+        description: 'Each fusion also gets a short, invented fictional trait - not a real biological claim.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this generate an image of the fusion animal?',
+        answer:
+          'No - this is a text-based name and trait-description generator only. It does not produce or claim to produce an image, and the site has no image-generation capability built into this tool.',
+      },
+      {
+        question: 'Are the described traits biologically accurate?',
+        answer:
+          'No - the trait descriptions are invented for fictional/creative-writing purposes only. Nothing here is a claim about real animal biology, genetics, or the possibility of actual cross-species breeding.',
+      },
+    ],
+    relatedSlugs: ['character-trait-generator', 'book-title-generator', 'aesthetic-emoji-generator'],
+    Component: AnimalFusionGenerator,
+  },
+  {
+    slug: 'book-title-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Book Title Generator',
+    shortDescription: 'Generate genre-based book title ideas from curated word banks and templates.',
+    longDescription:
+      'Pick a genre - fantasy, mystery, romance, sci-fi, horror, or nonfiction - and generate title ideas built from that genre\'s own curated word bank (nouns, adjectives, and evocative place names) combined through a handful of common title templates ("The [adjective] [noun]," "[noun] of [place]," and similar patterns). Add an optional keyword to work into some of the generated titles. Generation uses a seeded pseudo-random generator, defaulting to a fresh seed each time. Generated titles are creative starting points only - with a large and constantly growing body of published work in every genre, a generated title may resemble an existing book by coincidence, so always search before using any generated title commercially, and treat this tool as a brainstorming aid rather than a source of guaranteed-unique or trademark-safe names. Runs entirely client-side.',
+    metaTitle: 'Book Title Generator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Generate genre-based book title ideas online for free - fantasy, mystery, romance, sci-fi, horror, and nonfiction. A brainstorming aid, not a uniqueness guarantee.',
+    keywords: ['book title generator', 'novel title generator', 'fantasy book title generator', 'book title ideas'],
+    useCase: 'Brainstorming a batch of title ideas for a work-in-progress novel or short story',
+    howItWorks: [
+      {
+        title: 'Pick a genre',
+        description: 'Each genre draws from its own curated nouns, adjectives, and place names.',
+      },
+      {
+        title: 'Add an optional keyword',
+        description: 'Work a specific word into some of the generated titles.',
+      },
+      {
+        title: 'Generate and copy',
+        description: 'Generate a batch of titles and copy them all at once.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Are these titles guaranteed to be unique or trademark-safe?',
+        answer:
+          'No - this tool makes no uniqueness or trademark-safety claim of any kind. Given how many books are published every year in every genre, a generated title may coincidentally match or closely resemble an existing published work. Always search before using a generated title commercially.',
+      },
+      {
+        question: 'Where do the title words come from?',
+        answer:
+          'Each genre has its own originally curated word bank (nouns, adjectives, and place names) and a small set of common title templates built specifically for this tool.',
+      },
+    ],
+    relatedSlugs: ['character-trait-generator', 'animal-fusion-generator', 'lorem-ipsum-generator'],
+    Component: BookTitleGenerator,
+  },
+  {
+    slug: 'character-trait-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Character Trait Generator',
+    shortDescription: 'Generate a set of strengths, flaws, quirks, motivations, fears, and social traits for a fictional character.',
+    longDescription:
+      'Generate a rounded set of traits for a fictional character across six categories - strength, flaw, quirk, motivation, fear, and social trait - pulling from an originally curated list built specifically for creative writing. Every term is deliberately kept in plain, everyday language suited to fiction (like "overconfident," "impulsive," or "stubborn to a fault") rather than real clinical or diagnostic terminology, since this tool is meant for character brainstorming, not any kind of psychological description of a real person. Toggle which categories to include, set how many characters to generate at once, and get a distinct trait set for each. Generation uses a seeded pseudo-random generator for reproducible results when needed. Runs entirely client-side.',
+    metaTitle: 'Character Trait Generator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Generate fictional character traits online for free - strengths, flaws, quirks, motivations, fears, and social traits for writers and game designers.',
+    keywords: ['character trait generator', 'character generator for writers', 'writing prompt generator', 'fictional character traits'],
+    useCase: 'Quickly sketching a rounded set of traits for a new fictional character',
+    howItWorks: [
+      {
+        title: 'Choose trait categories',
+        description: 'Toggle strength, flaw, quirk, motivation, fear, and social trait on or off.',
+      },
+      {
+        title: 'Set how many characters',
+        description: 'Generate trait sets for 1 to 20 characters at once.',
+      },
+      {
+        title: 'Generate and copy',
+        description: 'Generate a fresh batch, or copy every character\'s trait set at once.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Are the "flaw" or "quirk" traits based on real clinical terms?',
+        answer:
+          'No - every trait is deliberately written in plain, everyday language suited to fiction (like "impulsive" or "stubborn to a fault"), never a real clinical or diagnostic label. This tool is built purely for character brainstorming, not as any kind of psychological description.',
+      },
+      {
+        question: 'Can I generate traits for more than one character at once?',
+        answer:
+          'Yes - set the character count up to 20, and each character gets its own independently generated set of traits across whichever categories you\'ve selected.',
+      },
+    ],
+    relatedSlugs: ['book-title-generator', 'animal-fusion-generator', 'aesthetic-username-generator'],
+    Component: CharacterTraitGenerator,
   },
 ];
 
