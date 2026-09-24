@@ -168,6 +168,74 @@ function mcMorseToText(input: string) {
   check('morse-code-converter', 'edge case: unmapped character reported specifically, not silently dropped', bad.ok === false && bad.message.includes('unmapped'), JSON.stringify(bad));
 }
 
+// ---------- base58-encoder-decoder ----------
+import { bytesToBase58, base58ToBytes } from '@/lib/tools/base58-utils';
+{
+  const helloBytes = new TextEncoder().encode('Hello');
+  const encoded = bytesToBase58(helloBytes);
+  const decoded = base58ToBytes(encoded);
+  check(
+    'base58-encoder-decoder',
+    'round-trip: encode then decode returns the original bytes',
+    decoded.ok === true && Buffer.from(decoded.bytes).equals(Buffer.from(helloBytes)),
+    JSON.stringify({ encoded, decoded })
+  );
+
+  const leadingZeroBytes = new Uint8Array([0, 0, 72, 101, 108, 108, 111]);
+  const encodedLeadingZero = bytesToBase58(leadingZeroBytes);
+  check(
+    'base58-encoder-decoder',
+    'leading zero bytes map to leading "1" characters',
+    encodedLeadingZero.startsWith('11'),
+    encodedLeadingZero
+  );
+  const decodedLeadingZero = base58ToBytes(encodedLeadingZero);
+  check(
+    'base58-encoder-decoder',
+    'leading zero bytes round-trip exactly',
+    decodedLeadingZero.ok === true && Buffer.from(decodedLeadingZero.bytes).equals(Buffer.from(leadingZeroBytes)),
+    JSON.stringify(decodedLeadingZero)
+  );
+
+  const invalidChar = base58ToBytes('Hello0World'); // '0' is excluded from the Base58 alphabet
+  check('base58-encoder-decoder', 'invalid alphabet character (0) is rejected', invalidChar.ok === false, JSON.stringify(invalidChar));
+
+  const emptyInput = base58ToBytes('');
+  check('base58-encoder-decoder', 'empty input is rejected', emptyInput.ok === false, JSON.stringify(emptyInput));
+
+  check('base58-encoder-decoder', 'empty bytes encode to empty string', bytesToBase58(new Uint8Array([])) === '');
+}
+
+// ---------- byte-to-string-converter ----------
+import { byteListToText, textToByteList } from '@/lib/tools/byte-string-utils';
+{
+  const good = byteListToText('72 101 108 108 111');
+  check('byte-to-string-converter', 'decimal bytes decode to "Hello"', good.ok === true && good.text === 'Hello', JSON.stringify(good));
+
+  const tooLarge = byteListToText('72 256 108');
+  check('byte-to-string-converter', 'byte > 255 is rejected', tooLarge.ok === false, JSON.stringify(tooLarge));
+
+  const negative = byteListToText('72 -5 108');
+  check('byte-to-string-converter', 'negative byte is rejected', negative.ok === false, JSON.stringify(negative));
+
+  const malformed = byteListToText('72 10a 108');
+  check('byte-to-string-converter', 'malformed (non-numeric) token is rejected', malformed.ok === false, JSON.stringify(malformed));
+
+  // "é" (U+00E9) is encoded in UTF-8 as the two bytes 195 169 - proves multi-byte decoding is correct,
+  // not a naive one-byte-per-character conversion (which would misread it).
+  const multiByte = byteListToText('195 169');
+  check('byte-to-string-converter', 'multi-byte UTF-8 sequence decodes correctly ("é")', multiByte.ok === true && multiByte.text === 'é', JSON.stringify(multiByte));
+
+  const roundTripBytes = textToByteList('café');
+  const roundTripText = byteListToText(roundTripBytes);
+  check(
+    'byte-to-string-converter',
+    'text -> bytes -> text round-trips for a multi-byte string',
+    roundTripText.ok === true && roundTripText.text === 'café',
+    JSON.stringify({ roundTripBytes, roundTripText })
+  );
+}
+
 describe('Encoders/Decoders', async () => {
   await hashTests();
 

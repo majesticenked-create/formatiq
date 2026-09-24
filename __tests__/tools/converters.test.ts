@@ -624,6 +624,22 @@ import { parseDelimitedRows } from '@/components/tools/CsvTsvConverter';
   check('base64-to-tsv', 'invalid base64 -> stage "base64"', invalidB64Tsv.ok === false && invalidB64Tsv.stage === 'base64', JSON.stringify(invalidB64Tsv));
 }
 
+// ---------- binary-to-ip-converter ----------
+import { binaryToIp } from '@/lib/tools/ip-utils';
+{
+  const compact = binaryToIp('11000000101010000000000100000001');
+  check('binary-to-ip-converter', 'compact 32-bit binary -> 192.168.1.1', compact.ok === true && compact.ip === '192.168.1.1', JSON.stringify(compact));
+
+  const spaced = binaryToIp('11000000 10101000 00000001 00000001');
+  check('binary-to-ip-converter', 'space-separated-by-octet binary -> 192.168.1.1', spaced.ok === true && spaced.ip === '192.168.1.1', JSON.stringify(spaced));
+
+  const wrongLength = binaryToIp('1100000010101000');
+  check('binary-to-ip-converter', 'wrong bit count is rejected', wrongLength.ok === false, JSON.stringify(wrongLength));
+
+  const invalidChars = binaryToIp('1100000210101000000000010000000A');
+  check('binary-to-ip-converter', 'non-binary characters are rejected', invalidChars.ok === false, JSON.stringify(invalidChars));
+}
+
 describe('Converters', () => {
   results.forEach((r) => {
     it(`${r.tool}: ${r.test}`, () => {

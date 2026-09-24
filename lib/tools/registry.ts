@@ -124,6 +124,9 @@ import Crc32Checksum from '@/components/tools/Crc32Checksum';
 import TipCalculator from '@/components/tools/TipCalculator';
 import GpaCalculator from '@/components/tools/GpaCalculator';
 import Base32EncodeDecode from '@/components/tools/Base32EncodeDecode';
+import Base58EncoderDecoder from '@/components/tools/Base58EncoderDecoder';
+import ByteToStringConverter from '@/components/tools/ByteToStringConverter';
+import BinaryToIpConverter from '@/components/tools/BinaryToIpConverter';
 import RandomDateGenerator from '@/components/tools/RandomDateGenerator';
 import WordFrequencyCounter from '@/components/tools/WordFrequencyCounter';
 import CsvViewer from '@/components/tools/CsvViewer';
@@ -11747,6 +11750,155 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: Base64ToTsv,
+  },
+  {
+    slug: 'base58-encoder-decoder',
+    category: 'encoders-decoders',
+    isNew: true,
+    relatedSlugs: ['base32-encoder-decoder', 'base64-encoder-decoder', 'base64-decoder'],
+    title: 'Base58 Encoder/Decoder',
+    shortDescription: 'Encode text to Base58 and decode it back, using the standard Bitcoin alphabet.',
+    longDescription:
+      'Encode text into Base58 or decode a Base58 string back into text, using the standard Bitcoin Base58 alphabet ("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz") - 58 characters that deliberately exclude the digit 0, capital O, capital I, and lowercase l, since those look alike in many fonts and are easy to mistype or misread. This is plain Base58 conversion only - there is no Base58Check checksum or version byte added, so it won\'t match a Bitcoin address or similar checksummed identifier directly. The underlying math is done with arbitrary-precision integers rather than ordinary JavaScript numbers, so long inputs convert exactly instead of losing precision, and a leading zero byte in the input correctly becomes a leading "1" character in the output (and vice versa on decode). Useful for working with Base58-encoded identifiers, IPFS content hashes, or any system that specifically uses this alphabet instead of Base64. Runs entirely client-side.',
+    metaTitle: 'Base58 Encoder/Decoder - Bitcoin Alphabet | Formatiq',
+    metaDescription:
+      'Encode text to Base58 or decode Base58 to text online for free, using the standard Bitcoin alphabet. No checksum added. Runs in your browser.',
+    keywords: ['base58 encoder', 'base58 decoder online', 'base58 to text', 'bitcoin base58', 'base58 alphabet'],
+    useCase: 'Encoding or decoding a Base58 identifier without adding a Bitcoin-style checksum',
+    howItWorks: [
+      {
+        title: 'Choose a direction',
+        description: 'Encode text to Base58, or decode a Base58 string back to text.',
+      },
+      {
+        title: 'Enter your input',
+        description: 'Any text to encode, or a Base58 string to decode.',
+      },
+      {
+        title: 'See the result instantly',
+        description: 'The output updates live as you type, computed with exact big-integer arithmetic.',
+      },
+      {
+        title: 'Copy the result',
+        description: 'The encoded or decoded value is ready to copy with one click.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why are 0, O, I, and l excluded from the alphabet?',
+        answer:
+          'They\'re visually ambiguous in many fonts - a zero can look like a capital O, and a capital I can look like a lowercase l - so the standard Bitcoin Base58 alphabet leaves them out entirely to make encoded strings less error-prone to read, type, or transcribe by hand.',
+      },
+      {
+        question: 'Does this add a Base58Check checksum, like a Bitcoin address?',
+        answer:
+          'No - this is plain Base58 encoding/decoding only, with no checksum or version byte appended. A real Bitcoin address adds a 4-byte checksum on top of Base58 (Base58Check), so this tool\'s output won\'t match one directly even though both use the same 58-character alphabet.',
+      },
+      {
+        question: 'How are leading zero bytes handled?',
+        answer:
+          'Each leading zero byte (0x00) in the input maps to exactly one leading "1" character in the Base58 output, and decoding reverses this correctly - the arithmetic conversion only applies to the non-zero remainder, so leading zeros round-trip exactly instead of being dropped.',
+      },
+    ],
+    Component: Base58EncoderDecoder,
+  },
+  {
+    slug: 'byte-to-string-converter',
+    category: 'encoders-decoders',
+    isNew: true,
+    relatedSlugs: ['text-ascii-converter', 'base64-decoder', 'base64-encoder-decoder'],
+    title: 'Byte to String Converter',
+    shortDescription: 'Decode a list of decimal byte values (0-255) into UTF-8 text, or the reverse.',
+    longDescription:
+      'Convert a space- or comma-separated list of decimal byte values, each 0-255, into readable text - or go the other way, turning text into its raw UTF-8 byte values. This is distinct from a code-point converter: for any character outside the plain ASCII range, its UTF-8 byte encoding is a different (and often longer) list of numbers than its single Unicode code point - for example "é" is code point 233, but is encoded as the two separate bytes 195 and 169 in UTF-8. Decoding runs the assembled byte array through `TextDecoder("utf-8")` rather than converting each byte to a character individually, which is what makes multi-byte sequences (accented letters, symbols, emoji) come out correctly instead of turning into mojibake. Each byte value is validated to be an integer from 0 to 255 before decoding. Useful for reconstructing text from a raw byte dump, debugging a serialization format, or understanding how UTF-8 actually encodes a given character. Runs entirely client-side.',
+    metaTitle: 'Byte to String Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert decimal byte values to UTF-8 text online for free, or text to its raw byte values. Handles multi-byte characters correctly. Runs in your browser.',
+    keywords: ['byte to string converter', 'bytes to text', 'decimal bytes to string', 'utf-8 byte decoder', 'string to bytes'],
+    useCase: 'Reconstructing readable text from a raw list of decimal byte values',
+    howItWorks: [
+      {
+        title: 'Choose a direction',
+        description: 'Bytes to text, or text to its raw decimal byte values.',
+      },
+      {
+        title: 'Enter your input',
+        description: 'A space/comma-separated list of bytes (0-255 each), or plain text.',
+      },
+      {
+        title: 'Read the result instantly',
+        description: 'The conversion updates live as you type, decoded through UTF-8 rules.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the Text to ASCII Converter?',
+        answer:
+          'The Text to ASCII Converter works with Unicode code points - one number per character, however large. This tool works with raw UTF-8 bytes, which for any non-ASCII character is a different, usually longer list of numbers (each 0-255) than its single code point - so the two tools solve genuinely different problems.',
+      },
+      {
+        question: 'What happens with a multi-byte character like an emoji or accented letter?',
+        answer:
+          'It\'s decoded correctly as long as all of its UTF-8 bytes are present and in order - the tool decodes the entire byte sequence through `TextDecoder`, which understands multi-byte UTF-8 encoding, rather than converting each byte to a character on its own (which would produce mojibake for anything outside plain ASCII).',
+      },
+      {
+        question: 'What input gets rejected?',
+        answer:
+          'Any token that isn\'t a whole number from 0 to 255, and any byte sequence that isn\'t valid UTF-8 once assembled (for example, an incomplete multi-byte sequence) - both produce a clear error rather than silently substituting replacement characters.',
+      },
+    ],
+    Component: ByteToStringConverter,
+  },
+  {
+    slug: 'binary-to-ip-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['ip-address-formatter', 'ip-hex-converter', 'ip-to-octal-converter', 'ipv6-to-binary-converter'],
+    title: 'Binary to IP Converter',
+    shortDescription: 'Convert a 32-bit binary value into a dotted-decimal IPv4 address.',
+    longDescription:
+      'Enter a 32-bit binary value - either compact (32 digits with no separators) or grouped by octet with spaces, like "11000000 10101000 00000001 00000001" - and get the equivalent dotted-decimal IPv4 address. Only whitespace is treated as a separator, so the value is first stripped of spaces, then checked to be exactly 32 binary digits (0 and 1 only) before being split into four 8-bit groups; each group converts to its 0-255 decimal value and the four are joined with dots. Anything else - the wrong number of bits, or a character other than 0/1 - is rejected with a specific error rather than a partial or guessed result. This tool is scoped to IPv4 only, since IPv6 has no single fixed-width binary form the same way (use IPv6 to Binary Converter for that direction instead). Runs entirely client-side.',
+    metaTitle: 'Binary to IP Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert a 32-bit binary value to a dotted-decimal IPv4 address online for free. Accepts compact or per-octet spaced binary. Runs in your browser.',
+    keywords: ['binary to ip converter', 'binary to ipv4', 'convert binary to ip address', 'binary ip address converter'],
+    useCase: 'Converting a raw 32-bit binary value back into a readable IPv4 address',
+    howItWorks: [
+      {
+        title: 'Enter a 32-bit binary value',
+        description: 'Compact (32 digits) or space-separated by octet, e.g. 11000000 10101000 00000001 00000001.',
+      },
+      {
+        title: 'The value is validated',
+        description: 'Must be exactly 32 binary digits (0/1 only) once whitespace is stripped.',
+      },
+      {
+        title: 'Split into four octets',
+        description: 'Each 8-bit group converts to its 0-255 decimal value.',
+      },
+      {
+        title: 'Read the IPv4 address',
+        description: 'The four decimal octets are joined with dots into the final address.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can I paste the binary as one continuous string, or does it need spaces?',
+        answer:
+          'Either works - only whitespace is treated as a separator and stripped before validation, so "11000000101010000000000100000001" and "11000000 10101000 00000001 00000001" both produce the same result.',
+      },
+      {
+        question: 'What happens with the wrong number of bits?',
+        answer:
+          'It\'s rejected with an error stating exactly how many binary digits were found versus the required 32 - a value with too few or too many bits doesn\'t get silently padded, truncated, or guessed at.',
+      },
+      {
+        question: 'Does this support IPv6?',
+        answer:
+          'No - this tool is scoped to IPv4\'s fixed 32-bit address only. IPv6 addresses are 128 bits and commonly written in compressed hextet form, which is a different conversion problem handled by the IPv6 to Binary Converter (in the opposite direction).',
+      },
+    ],
+    Component: BinaryToIpConverter,
   },
 ];
 
