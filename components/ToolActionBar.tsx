@@ -15,6 +15,12 @@ import {
 
 const THEME_CHANGE_EVENT = 'formatiq-theme-change';
 
+// Google's own script reports formatiq.tools as ineligible for Preferred Sources right now
+// (its publisher.js includes an ADD_PREFERRED_SOURCE_STATUS_INELIGIBLE status, and the button
+// renders but never becomes clickable). Hiding the row until eligibility changes, rather than
+// showing a button-shaped element that does nothing. Flip back to true once confirmed working.
+const GOOGLE_PREFERRED_SOURCE_ENABLED = false;
+
 export default function ToolActionBar({
   toolTitle,
   category,
@@ -241,14 +247,16 @@ export default function ToolActionBar({
         </div>
       </div>
 
-      <div className="tool-action-preferred-source">
-        <span className="tool-action-preferred-source-label">Prefer Formatiq on Google Search</span>
-        <div
-          className="tool-action-preferred-source-btn"
-          google-add-preferred-source-btn=""
-          data-theme={preferredSrcTheme}
-        />
-      </div>
+      {GOOGLE_PREFERRED_SOURCE_ENABLED && (
+        <div className="tool-action-preferred-source">
+          <span className="tool-action-preferred-source-label">Prefer Formatiq on Google Search</span>
+          <div
+            className="tool-action-preferred-source-btn"
+            google-add-preferred-source-btn=""
+            data-theme={preferredSrcTheme}
+          />
+        </div>
+      )}
 
       {embedOpen && (
         <div className="tool-action-embed">
