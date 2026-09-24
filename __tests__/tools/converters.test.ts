@@ -696,6 +696,130 @@ import { binaryToIp } from '@/lib/tools/ip-utils';
   check('number-base-converter', 'small decimal 255 -> FF / 377 / 11111111 (regression, unaffected by fix)', small?.hex === 'FF' && small?.octal === '377' && small?.binary === '11111111', JSON.stringify(small));
 }
 
+// ---------- number-base-converter: arbitrary base 2-36 extension (batch 018) ----------
+// Logic copied verbatim from NumberBaseConverter.tsx's `convertArbitrary()`.
+{
+  const DIGIT_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  function charsetForBase(base: number): string {
+    return DIGIT_ALPHABET.slice(0, base);
+  }
+  function isValidForArbitraryBase(value: string, base: number): boolean {
+    const chars = charsetForBase(base);
+    return value.length > 0 && Array.from(value.toUpperCase()).every((c) => chars.includes(c));
+  }
+  function digitValue(ch: string): number {
+    const upper = ch.toUpperCase();
+    const code = upper.charCodeAt(0);
+    if (code >= 48 && code <= 57) return code - 48;
+    return code - 65 + 10;
+  }
+  function convertArbitrary(input: string, fromBase: number, toBase: number) {
+    const trimmed = input.trim();
+    if (!trimmed || !isValidForArbitraryBase(trimmed, fromBase)) return { ok: false as const };
+    const bigFromBase = BigInt(fromBase);
+    let decimal = 0n;
+    for (const ch of trimmed.toUpperCase()) {
+      decimal = decimal * bigFromBase + BigInt(digitValue(ch));
+    }
+    return { ok: true as const, output: decimal.toString(toBase).toUpperCase(), decimal: decimal.toString(10) };
+  }
+
+  const z = convertArbitrary('35', 10, 36);
+  check('number-base-converter', 'decimal 35 -> base 36 "Z"', z.ok === true && (z as any).output === 'Z', JSON.stringify(z));
+
+  const backToDecimal = convertArbitrary('Z', 36, 10);
+  check('number-base-converter', 'base 36 "Z" -> decimal 35 (round trip)', backToDecimal.ok === true && (backToDecimal as any).output === '35', JSON.stringify(backToDecimal));
+
+  // A value beyond Number.MAX_SAFE_INTEGER (2^53 - 1 = 9007199254740991), converted through an
+  // arbitrary base, to prove the BigInt digit-by-digit accumulator (not `parseInt`+`Number`)
+  // handles it exactly.
+  const largeBase36 = convertArbitrary('9007199254740993', 10, 36);
+  check(
+    'number-base-converter',
+    'decimal beyond MAX_SAFE_INTEGER converts correctly to base 36',
+    largeBase36.ok === true && (largeBase36 as any).decimal === '9007199254740993',
+    JSON.stringify(largeBase36)
+  );
+  const largeRoundTrip = convertArbitrary((largeBase36 as any).output, 36, 10);
+  check(
+    'number-base-converter',
+    'large base-36 value round-trips back to the exact same decimal',
+    largeRoundTrip.ok === true && (largeRoundTrip as any).output === '9007199254740993',
+    JSON.stringify(largeRoundTrip)
+  );
+
+  const invalidDigit = convertArbitrary('129', 8, 10); // '9' invalid in base 8
+  check('number-base-converter', 'custom-base: invalid digit for base -> error', invalidDigit.ok === false, JSON.stringify(invalidDigit));
+
+  // Regression: base 2/8/10/16 values still convert identically to before through the arbitrary
+  // path (base selectors 2/8/10/16 are a subset of the 2-36 range).
+  const regressionHex = convertArbitrary('FF', 16, 10);
+  check('number-base-converter', 'regression: base 16 "FF" -> decimal 255 still correct via arbitrary path', regressionHex.ok === true && (regressionHex as any).output === '255', JSON.stringify(regressionHex));
+}
+
+// ---------- octal-to-base64-converter (batch 018) ----------
+// Logic copied verbatim from OctalToBase64Converter.tsx's `parseOctalBytes()`, combined with the
+// shared `bytesToBase64` utility.
+import { bytesToBase64 as otbBytesToBase64 } from '@/lib/tools/base64-utils';
+{
+  function parseOctalBytes(input: string) {
+    const trimmed = input.trim();
+    if (!trimmed) return { ok: false as const };
+    const tokens = trimmed.split(/[\s,]+/).filter(Boolean);
+    const bytes: number[] = [];
+    for (const token of tokens) {
+      if (!/^[0-7]+$/.test(token)) return { ok: false as const };
+      const value = parseInt(token, 8);
+      if (value > 255) return { ok: false as const };
+      bytes.push(value);
+    }
+    return { ok: true as const, bytes: new Uint8Array(bytes) };
+  }
+
+  const hi = parseOctalBytes('110 151');
+  check(
+    'octal-to-base64-converter',
+    '"110 151" -> bytes [72,105] -> Base64 "SGk="',
+    hi.ok === true && otbBytesToBase64((hi as any).bytes) === 'SGk=',
+    JSON.stringify(hi.ok ? Array.from((hi as any).bytes) : hi)
+  );
+
+  const commaSeparated = parseOctalBytes('110,151');
+  check('octal-to-base64-converter', 'comma-separated tokens also parse', commaSeparated.ok === true && otbBytesToBase64((commaSeparated as any).bytes) === 'SGk=', JSON.stringify(commaSeparated));
+
+  const invalidOctet = parseOctalBytes('400'); // valid octal digits, but decodes to 256 (out of byte range)
+  check('octal-to-base64-converter', '"400" rejected - decodes to 256, out of byte range', invalidOctet.ok === false, JSON.stringify(invalidOctet));
+
+  const invalidDigit = parseOctalBytes('128'); // '8' is not a valid octal digit
+  check('octal-to-base64-converter', '"128" rejected - contains non-octal digit 8', invalidDigit.ok === false, JSON.stringify(invalidDigit));
+
+  const empty = parseOctalBytes('');
+  check('octal-to-base64-converter', 'empty input -> error', empty.ok === false);
+}
+
+// ---------- mp3-to-base64-converter (batch 018) ----------
+// Verifies the audio-specific MIME check and data-URI normalization logic (copied verbatim from
+// Mp3ToBase64Converter.tsx), distinguishing it from Base64ImageConverter's image-only check.
+{
+  function acceptsFile(mimeType: string): boolean {
+    return mimeType.startsWith('audio/');
+  }
+  check('mp3-to-base64-converter', 'audio/mpeg (MP3) is accepted', acceptsFile('audio/mpeg') === true);
+  check('mp3-to-base64-converter', 'audio/wav is accepted (audio/* generic)', acceptsFile('audio/wav') === true);
+  check('mp3-to-base64-converter', 'image/png is rejected (not audio)', acceptsFile('image/png') === false);
+
+  function normalizeToDataUri(value: string): string | null {
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+    if (trimmed.startsWith('data:audio/')) return trimmed;
+    if (/^[A-Za-z0-9+/=\s]+$/.test(trimmed)) return `data:audio/mpeg;base64,${trimmed.replace(/\s/g, '')}`;
+    return null;
+  }
+  check('mp3-to-base64-converter', 'raw base64 gets wrapped into a data:audio/mpeg URI', normalizeToDataUri('SGVsbG8=') === 'data:audio/mpeg;base64,SGVsbG8=');
+  check('mp3-to-base64-converter', 'existing data:audio/ URI passed through unchanged', normalizeToDataUri('data:audio/wav;base64,SGVsbG8=') === 'data:audio/wav;base64,SGVsbG8=');
+  check('mp3-to-base64-converter', 'invalid characters -> null (not a base64 string)', normalizeToDataUri('not base64!!') === null);
+}
+
 // ---------- cmyk-to-hex ----------
 import { cmykToRgb, hsvToRgb, rgbToHex } from '@/lib/tools/color-utils';
 {

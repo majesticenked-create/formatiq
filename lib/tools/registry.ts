@@ -211,6 +211,8 @@ import HexToCmykConverter from '@/components/tools/HexToCmykConverter';
 import HexToHsvConverter from '@/components/tools/HexToHsvConverter';
 import HexToRgbaConverter from '@/components/tools/HexToRgbaConverter';
 import HexToUtf8Converter from '@/components/tools/HexToUtf8Converter';
+import OctalToBase64Converter from '@/components/tools/OctalToBase64Converter';
+import Mp3ToBase64Converter from '@/components/tools/Mp3ToBase64Converter';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -12435,6 +12437,108 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: HexToRgbaConverter,
+  },
+  {
+    slug: 'octal-to-base64-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['base64-to-octal', 'base64-encoder-decoder', 'base64-to-hex', 'number-base-converter'],
+    title: 'Octal to Base64 Converter',
+    shortDescription: 'Convert space or comma-separated octal byte values into Base64 - the exact inverse of Base64 to Octal.',
+    longDescription:
+      'Enter one or more octal-encoded byte values - separated by spaces or commas, like "110 151" - and get the equivalent Base64 string, "SGk=". Each token is treated as a single byte written in octal, not as a digit of one giant octal integer: "110 151" is the two separate bytes 72 and 105 (spelling "Hi" in ASCII), converted directly to Base64, the exact inverse of what the Base64 to Octal Converter produces. Every token is validated twice - first that it only contains valid octal digits (0-7; an "8" or "9" anywhere is rejected immediately as not octal at all), then that its decoded value actually fits in a byte, 0-255 (octal 0-377) - a token like "400" is made entirely of valid octal digits but decodes to 256, one past the maximum, so it is rejected rather than silently truncated or wrapped. Runs entirely client-side.',
+    metaTitle: 'Octal to Base64 Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert octal byte values to Base64 online for free - paste space or comma-separated octal bytes and get the Base64 encoding instantly. No data leaves your browser.',
+    keywords: ['octal to base64', 'octal to base64 converter', 'convert octal to base64', 'base64 encode octal bytes', 'octal bytes to base64'],
+    useCase: 'Converting octal-dumped byte values (from a debugger, hex editor in octal mode, or legacy log) into Base64',
+    howItWorks: [
+      {
+        title: 'Enter octal byte values',
+        description: 'Space or comma-separated, like "110 151" - each token is one byte.',
+      },
+      {
+        title: 'Each token is validated',
+        description: 'Only digits 0-7 are allowed, and the decoded value must fit in a byte (0-255 / octal 0-377).',
+      },
+      {
+        title: 'Bytes are encoded to Base64',
+        description: 'The validated byte sequence is Base64-encoded directly, with no intermediate text step.',
+      },
+      {
+        title: 'Copy the result',
+        description: 'The Base64 output has its own copy button.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why is "110 151" not treated as one big octal number?',
+        answer:
+          'Because octal byte dumps represent a sequence of independent bytes, not a single numeric value - "110 151" is the two bytes 72 and 105 (spelling "Hi"), not the much larger integer you would get by parsing "110151" as one octal number. This tool follows the byte-sequence convention, matching the reverse Base64 to Octal Converter.',
+      },
+      {
+        question: 'Why is "400" rejected even though it only uses octal-looking digits?',
+        answer:
+          'Every character in "400" (4, 0, 0) is a valid octal digit, but the token as a whole decodes to 256 in decimal - one past 255, the highest value a single byte can hold. A byte can never represent 256, so accepting it would mean silently truncating or wrapping to an incorrect value; it is rejected instead.',
+      },
+      {
+        question: 'Why is "128" rejected?',
+        answer:
+          '"128" contains the digit 8, which is not a valid octal digit (octal only uses 0-7) - it is rejected at the character-validation stage, before the byte-range check even runs.',
+      },
+    ],
+    Component: OctalToBase64Converter,
+  },
+  {
+    slug: 'mp3-to-base64-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['base64-image-converter', 'base64-encoder-decoder', 'octal-to-base64-converter'],
+    title: 'MP3 to Base64 Converter',
+    shortDescription: 'Convert an MP3 (or other audio file) to a Base64 data URI, or decode one back into a playable audio preview.',
+    longDescription:
+      'Choose an MP3 or other audio file and get its exact bytes encoded as a Base64 data URI, ready to embed directly in HTML, CSS, or JSON - or paste a Base64 string or data URI back in and hear it played through an audio preview. This exists as a dedicated tool because the site\'s existing Base64 Image Converter checks that the selected file\'s type starts with "image/" and previews the result in an &lt;img&gt; tag - both of which explicitly exclude audio. The underlying mechanism is identical to that tool: the browser\'s native FileReader API reads the file\'s raw bytes directly into a data URI, with no re-encoding, resampling, or compression step, so the decoded audio is byte-for-byte identical to the original file. Runs entirely client-side - the audio file never leaves your browser.',
+    metaTitle: 'MP3 to Base64 Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert MP3 and other audio files to Base64 online for free, or decode a Base64 string back into a playable audio preview. Runs entirely in your browser.',
+    keywords: ['mp3 to base64', 'audio to base64 converter', 'convert mp3 to base64', 'base64 to mp3', 'audio file to base64 online'],
+    useCase: 'Embedding a short audio clip directly into HTML, CSS, or JSON as a Base64 data URI',
+    howItWorks: [
+      {
+        title: 'Choose an audio file',
+        description: 'MP3 or any other audio/* file type is accepted.',
+      },
+      {
+        title: 'FileReader reads the exact bytes',
+        description: 'The file is read as a data URI with no re-encoding, so nothing about the audio changes.',
+      },
+      {
+        title: 'Copy the Base64 data URI',
+        description: 'The full data URI is ready to paste into an <audio src> attribute, CSS, or JSON.',
+      },
+      {
+        title: 'Or decode one back',
+        description: 'Switch modes to paste Base64/a data URI back in and hear it played immediately.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why not just use the existing Base64 Image Converter?',
+        answer:
+          'That tool explicitly checks that the selected file\'s MIME type starts with "image/", so an MP3 or other audio file is rejected outright before any encoding happens - and its preview renders an &lt;img&gt; element, which cannot play sound even if the check were bypassed. This tool uses the same FileReader-based encoding mechanism but checks for "audio/" and previews with an &lt;audio&gt; control instead.',
+      },
+      {
+        question: 'Does this alter the audio in any way (compression, resampling, re-encoding)?',
+        answer:
+          'No - FileReader.readAsDataURL reads the file\'s raw bytes exactly as stored on disk and encodes those bytes as Base64. There is no decode/re-encode pass through the Web Audio API or any other pipeline that could change the audio data, so the result decodes back to a byte-for-byte identical file.',
+      },
+      {
+        question: 'Is the audio file uploaded anywhere?',
+        answer:
+          'No - the file is read entirely in your browser using the FileReader API. Nothing is sent to a server; the Base64 output never leaves your device unless you choose to copy and share it yourself.',
+      },
+    ],
+    Component: Mp3ToBase64Converter,
   },
 ];
 
