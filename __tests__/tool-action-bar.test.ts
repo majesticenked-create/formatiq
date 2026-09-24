@@ -7,6 +7,7 @@ import {
   buildCanonicalUrl,
   buildFeedbackMailto,
   buildEmbedSnippet,
+  preferredSourceTheme,
   IMPROVEMENT_REASONS,
 } from '../lib/tools/actionBar';
 
@@ -154,5 +155,25 @@ describe('ToolActionBar — embed snippet', () => {
     const snippetB = buildEmbedSnippet('https://formatiq.tools/tools/b/b', 'B');
     expect(snippetA).not.toContain('/tools/b/b');
     expect(snippetB).not.toContain('/tools/a/a');
+  });
+});
+
+describe('ToolActionBar — Google preferred-source widget theme', () => {
+  it('maps the site\'s dark theme to the widget\'s documented "dark" value', () => {
+    expect(preferredSourceTheme('dark')).toBe('dark');
+  });
+
+  it('maps the site\'s light theme to the widget\'s documented "light" value', () => {
+    expect(preferredSourceTheme('light')).toBe('light');
+  });
+
+  it('defaults to "light" (Google\'s own documented default) when no theme is known yet', () => {
+    expect(preferredSourceTheme(null)).toBe('light');
+    expect(preferredSourceTheme(undefined)).toBe('light');
+  });
+
+  it('falls back to "light" for any unrecognized value rather than passing it through', () => {
+    expect(preferredSourceTheme('sepia')).toBe('light');
+    expect(preferredSourceTheme('')).toBe('light');
   });
 });

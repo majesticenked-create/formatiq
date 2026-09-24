@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google';
 import SiteHeader from '@/components/layout/SiteHeader';
 import Footer from '@/components/Footer';
@@ -90,6 +91,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <CookieConsent />
         <GoogleAnalytics />
+        {/* Google's official "Add as preferred source" widget. Loaded once
+            globally (not per tool page) so client-side navigation between
+            tool pages doesn't re-fetch it - ToolActionBar only renders the
+            `google-add-preferred-source-btn` div Google's script targets.
+            See https://developers.google.com/search/docs/appearance/preferred-sources */}
+        <Script src="https://news.google.com/swg/js/v1/publisher.js" strategy="lazyOnload" async />
       </body>
     </html>
   );

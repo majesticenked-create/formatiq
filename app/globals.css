@@ -1830,6 +1830,33 @@ textarea.mono,
   }
 }
 
+/* Google "Add as preferred source" widget row. Sits below the main action
+   row; Google's script (loaded once in app/layout.tsx) populates the
+   `google-add-preferred-source-btn` div itself. Min-height keeps the row
+   from collapsing to an ugly zero-height sliver if the script never loads
+   or Google's own logic renders nothing into it. */
+.tool-action-preferred-source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.tool-action-preferred-source-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.tool-action-preferred-source-btn {
+  min-height: 32px;
+}
+
 /* Related tools */
 .related-tools {
   padding: 32px 0;

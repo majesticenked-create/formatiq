@@ -7,10 +7,13 @@ import {
   buildFeedbackMailto,
   getStoredVote,
   setStoredVote,
+  preferredSourceTheme,
   IMPROVEMENT_REASONS,
   type ImprovementReason,
   type ToolVote,
 } from '@/lib/tools/actionBar';
+
+const THEME_CHANGE_EVENT = 'formatiq-theme-change';
 
 export default function ToolActionBar({
   toolTitle,
@@ -30,6 +33,11 @@ export default function ToolActionBar({
   const [feedbackMessage, setFeedbackMessage] = useState('');
   const [embedOpen, setEmbedOpen] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
+  // Defaults to 'light' during prerendering/before mount, matching Google's
+  // own documented default for the widget - updated client-side once we can
+  // read Formatiq's actual theme, and kept in sync with the site's theme
+  // toggle (see ThemeToggle.tsx / THEME_CHANGE_EVENT).
+  const [preferredSrcTheme, setPreferredSrcTheme] = useState<'light' | 'dark'>('light');
 
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -40,6 +48,22 @@ export default function ToolActionBar({
   useEffect(() => {
     setVote(getStoredVote(category, slug));
   }, [category, slug]);
+
+  // Track Formatiq's own theme so the Google widget's `data-theme` attribute
+  // doesn't look mismatched. Known limitation: Google's widget is only
+  // documented to read `data-theme` at initial render, so a live toggle
+  // after the button has already rendered may not restyle the widget itself
+  // until next navigation/reload - not something Formatiq controls.
+  useEffect(() => {
+    setPreferredSrcTheme(preferredSourceTheme(document.documentElement.getAttribute('data-theme')));
+
+    function handleThemeChange(e: Event) {
+      setPreferredSrcTheme(preferredSourceTheme((e as CustomEvent<string>).detail));
+    }
+
+    window.addEventListener(THEME_CHANGE_EVENT, handleThemeChange);
+    return () => window.removeEventListener(THEME_CHANGE_EVENT, handleThemeChange);
+  }, []);
 
   function castVote(next: ToolVote) {
     setVote((current) => {
@@ -215,6 +239,15 @@ export default function ToolActionBar({
             Embed
           </button>
         </div>
+      </div>
+
+      <div className="tool-action-preferred-source">
+        <span className="tool-action-preferred-source-label">Prefer Formatiq on Google Search</span>
+        <div
+          className="tool-action-preferred-source-btn"
+          google-add-preferred-source-btn=""
+          data-theme={preferredSrcTheme}
+        />
       </div>
 
       {embedOpen && (

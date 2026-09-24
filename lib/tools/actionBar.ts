@@ -93,6 +93,18 @@ export function buildEmbedSnippet(canonicalUrl: string, toolTitle: string): stri
   return `<iframe src="${canonicalUrl}" title="${toolTitle} - Formatiq" width="100%" height="640" loading="lazy" style="border:1px solid #e3e6ea;border-radius:12px;"></iframe>`;
 }
 
+/**
+ * Maps Formatiq's own theme value to the `data-theme` attribute Google's
+ * "Add as preferred source" widget (news.google.com/swg/js/v1/publisher.js)
+ * accepts on its `google-add-preferred-source-btn` div. Google only
+ * documents 'dark' and 'light' (default light) - anything else Formatiq
+ * might ever store falls back to 'light' rather than passing through an
+ * unrecognized value.
+ */
+export function preferredSourceTheme(siteTheme: string | null | undefined): 'light' | 'dark' {
+  return siteTheme === 'dark' ? 'dark' : 'light';
+}
+
 export const IMPROVEMENT_REASONS = [
   'Incorrect result',
   'Hard to use',
