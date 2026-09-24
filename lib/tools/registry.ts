@@ -187,6 +187,9 @@ import XmlMinifier from '@/components/tools/XmlMinifier';
 import XmlParser from '@/components/tools/XmlParser';
 import XpathTester from '@/components/tools/XpathTester';
 import YamlParser from '@/components/tools/YamlParser';
+import YamlValidator from '@/components/tools/YamlValidator';
+import Base64ToBinary from '@/components/tools/Base64ToBinary';
+import Base64ToCss from '@/components/tools/Base64ToCss';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -11269,6 +11272,194 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: YamlParser,
+  },
+  {
+    slug: 'yaml-validator',
+    category: 'validators',
+    isNew: true,
+    relatedSlugs: ['yaml-formatter', 'yaml-parser', 'json-validator'],
+    title: 'YAML Validator',
+    shortDescription: 'Check whether YAML is syntactically valid, with a quick structure summary on success.',
+    longDescription:
+      'Paste YAML to get a direct valid/invalid verdict, using js-yaml’s safe load() - the same parser behind the YAML Formatter and YAML Parser - so nothing is ever executed, only parsed. This is a validation-only tool: it doesn’t reformat the source (that’s the YAML Formatter’s job) and it doesn’t render an expandable tree (that’s the YAML Parser’s job); it just answers the one question of whether the YAML is well-formed, with the parser’s exact error message when it isn’t, plus a minimal root-type and item-count summary when it is. Useful when you just need a fast pass/fail on a config file or CI-generated YAML without the extra output of a full formatter or structure viewer. Runs entirely client-side.',
+    metaTitle: 'YAML Validator - Free Online Syntax Checker | Formatiq',
+    metaDescription:
+      'Validate YAML syntax online for free with js-yaml’s safe loader. Instant valid/invalid verdict, nothing you paste is ever uploaded.',
+    keywords: ['yaml validator', 'validate yaml', 'yaml syntax checker', 'is this yaml valid'],
+    useCase: 'Getting a fast pass/fail on a config file without reformatting it',
+    howItWorks: [
+      {
+        title: 'Paste your YAML',
+        description: 'A config file, Kubernetes manifest, or any YAML document.',
+      },
+      {
+        title: 'Instant syntax check',
+        description: 'js-yaml’s safe load() validates as you type and reports a pass/fail verdict immediately.',
+      },
+      {
+        title: 'Error message on failure',
+        description: 'Invalid YAML shows the parser’s exact error message.',
+      },
+      {
+        title: 'Structure summary on success',
+        description: 'Valid YAML gets a quick root-type and top-level item count.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Validation-only, nothing else',
+        description: 'No reformatted output or tree view to work through - just a direct verdict.',
+      },
+      {
+        title: 'Safe parsing only',
+        description: 'Uses js-yaml’s load(), which never instantiates arbitrary JS types from YAML tags.',
+      },
+      {
+        title: 'Nothing leaves your browser',
+        description: 'Parsing happens entirely client-side.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the YAML Formatter and YAML Parser?',
+        answer:
+          'All three share the same safe js-yaml parser, but they’re built for different moments. The Formatter reformats YAML source into cleanly indented YAML. The Parser renders the parsed value as a real, expandable JSON-equivalent tree. This Validator skips both and just gives a fast valid/invalid verdict with the parser’s error message, for when that’s the only thing you need.',
+      },
+      {
+        question: 'Is my YAML executed in any way?',
+        answer:
+          'No - it’s only parsed, via js-yaml’s load(), the safe loader in js-yaml 4.x. It never evaluates code or instantiates arbitrary classes from custom YAML tags.',
+      },
+    ],
+    Component: YamlValidator,
+  },
+  {
+    slug: 'base64-to-binary',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['base64-decoder', 'base64-encoder-decoder', 'number-base-converter'],
+    title: 'Base64 to Binary Converter',
+    shortDescription: 'Decode a Base64 string into its raw bytes, shown as 8-bit binary groups.',
+    longDescription:
+      'Paste a Base64 string or data URI to decode it into its actual bytes, then see each byte rendered as an 8-bit, zero-padded binary group. This is a genuinely different operation from Base64-decoding to text: decoding first produces a `Uint8Array` of raw bytes, and each byte in that array becomes its own binary group - correctly handling any decoded content, including multi-byte UTF-8 sequences, rather than converting character codes one at a time (which silently breaks the instant a decoded character spans more than one byte). Useful for teaching or debugging exactly what bytes a Base64 string represents at the bit level. Runs entirely client-side; nothing you paste is ever uploaded.',
+    metaTitle: 'Base64 to Binary Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert Base64 to binary online for free - decodes to raw bytes first, then shows each byte as 8-bit binary. Runs entirely in your browser.',
+    keywords: ['base64 to binary', 'base64 to binary converter', 'base64 decode binary', 'base64 bytes to binary'],
+    useCase: 'Seeing the exact bytes a Base64 string decodes to, at the bit level',
+    howItWorks: [
+      {
+        title: 'Paste Base64 or a data URI',
+        description: 'A data URI prefix is stripped automatically if present.',
+      },
+      {
+        title: 'Decoded to raw bytes',
+        description: 'The Base64 string is decoded into a Uint8Array of actual bytes, not characters.',
+      },
+      {
+        title: 'Each byte becomes binary',
+        description: 'Every byte is rendered as an 8-bit, zero-padded binary group, space-separated.',
+      },
+      {
+        title: 'Copy the result',
+        description: 'Grab the full binary string with one click.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Byte-aware, not character-aware',
+        description: 'Decodes to real bytes first, so multi-byte UTF-8 content in the decoded data converts correctly.',
+      },
+      {
+        title: 'Data URI support',
+        description: 'Paste a full data URI and the base64 payload is extracted automatically.',
+      },
+      {
+        title: 'Clear errors on invalid input',
+        description: 'Malformed Base64 is flagged immediately instead of producing garbled output.',
+      },
+      {
+        title: 'Nothing leaves your browser',
+        description: 'Decoding happens entirely client-side.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the Base64 Decoder?',
+        answer:
+          'The Base64 Decoder outputs the decoded content as readable text. This tool outputs the decoded content’s raw bytes as binary (8 bits per byte) - useful when you need to see the actual bit-level representation rather than the text it happens to spell out.',
+      },
+      {
+        question: 'Why not just convert each character to binary directly?',
+        answer:
+          'Converting per-character code points instead of per-byte silently breaks on any decoded content containing multi-byte UTF-8 sequences, since a single character can span more than one byte. Decoding to a byte array first and converting each byte guarantees a correct result regardless of what the Base64 encodes.',
+      },
+    ],
+    Component: Base64ToBinary,
+  },
+  {
+    slug: 'base64-to-css',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['base64-image-converter', 'base64-encoder-decoder', 'css-formatter'],
+    title: 'Base64 to CSS Converter',
+    shortDescription: 'Turn a Base64 string or data URI into a ready-to-use CSS url() value.',
+    longDescription:
+      'Paste a Base64 string (with a MIME type selected) or a full data URI to get a CSS-ready `url("data:...;base64,...")` value, plus a complete `background-image` declaration you can paste directly into a stylesheet. If a full data URI is pasted, its own embedded MIME type is used automatically instead of the selector. This tool only constructs the CSS reference from the Base64 payload you provide - it doesn’t validate that the underlying bytes form a real, well-formed asset of that type, since that would require actually decoding and rendering it (the Base64 Image Converter does that for images specifically). Useful for quickly wrapping an existing Base64 payload into the exact CSS syntax needed, without hand-typing the `url()` and `data:` boilerplate. Runs entirely client-side; nothing you paste is ever uploaded.',
+    metaTitle: 'Base64 to CSS Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert Base64 to a CSS url() value online for free. Get a ready-to-use background-image declaration instantly, entirely in your browser.',
+    keywords: ['base64 to css', 'base64 css url', 'base64 background-image', 'data uri css converter'],
+    useCase: 'Wrapping an existing Base64 payload into a ready-to-paste CSS background-image rule',
+    howItWorks: [
+      {
+        title: 'Paste Base64 or a data URI',
+        description: 'Select a MIME type if pasting bare Base64 - a full data URI carries its own.',
+      },
+      {
+        title: 'CSS value constructed',
+        description: 'A `url("data:<mime>;base64,...")` value is built immediately.',
+      },
+      {
+        title: 'Full declaration included',
+        description: 'A ready-to-paste `background-image: url(...);` line is generated alongside it.',
+      },
+      {
+        title: 'Copy either one',
+        description: 'Grab just the url() value or the full declaration with one click.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'No boilerplate to hand-type',
+        description: 'Skips manually assembling the data: URI and url() wrapper syntax.',
+      },
+      {
+        title: 'Data URI MIME auto-detected',
+        description: 'Pasting a full data URI uses its own embedded MIME type automatically.',
+      },
+      {
+        title: 'Explicit about its scope',
+        description: 'Clearly does not validate the underlying asset - only constructs the CSS reference.',
+      },
+      {
+        title: 'Nothing leaves your browser',
+        description: 'Runs entirely client-side.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this check that the Base64 actually decodes to a valid image or font?',
+        answer:
+          'No - it only builds the CSS syntax around whatever Base64 payload you provide. To confirm a Base64 string actually decodes to a valid, renderable image, use the Base64 Image Converter instead, which previews the decoded result.',
+      },
+      {
+        question: 'What MIME type should I pick?',
+        answer:
+          'Match it to the actual asset the Base64 came from - image/png or image/jpeg for photos, image/svg+xml for SVG markup, font/woff2 for a web font, and so on. If you pasted a full data URI, the selector is ignored and the URI’s own embedded MIME type is used instead.',
+      },
+    ],
+    Component: Base64ToCss,
   },
 ];
 

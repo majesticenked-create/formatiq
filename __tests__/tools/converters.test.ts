@@ -377,6 +377,67 @@ function rnTryRomanToNum(input: string) {
   check('roman-numeral-converter', 'boundary: 3999 (max) converts correctly', boundary.ok === true && (boundary as any).output === 'MMMCMXCIX', JSON.stringify(boundary));
 }
 
+// ---------- base64-to-binary / base64-to-css (shared lib/tools/base64-utils.ts) ----------
+import { base64ToBytes, bytesToBase64, stripDataUriPrefix } from '@/lib/tools/base64-utils';
+
+function bytesToBinaryString(bytes: Uint8Array): string {
+  return Array.from(bytes)
+    .map((b) => b.toString(2).padStart(8, '0'))
+    .join(' ');
+}
+
+{
+  // Unicode round-trip through the byte-aware helpers
+  const text = 'Hello 🌍';
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+  const bytes = encoder.encode(text);
+  const b64 = bytesToBase64(bytes);
+  const decoded = base64ToBytes(b64);
+  check(
+    'base64-utils',
+    'Unicode round-trip (Hello 🌍) through byte-aware base64 helpers',
+    decoded.ok === true && decoder.decode(decoded.bytes) === text,
+    JSON.stringify(decoded.ok ? decoder.decode(decoded.bytes) : decoded)
+  );
+
+  // SGVsbG8= <-> Hello
+  const helloDecoded = base64ToBytes('SGVsbG8=');
+  check(
+    'base64-to-binary',
+    'SGVsbG8= decodes to bytes spelling Hello',
+    helloDecoded.ok === true && decoder.decode(helloDecoded.bytes) === 'Hello',
+    JSON.stringify(helloDecoded)
+  );
+
+  // QQ== -> 01000001
+  const aDecoded = base64ToBytes('QQ==');
+  check(
+    'base64-to-binary',
+    'QQ== -> 01000001',
+    aDecoded.ok === true && bytesToBinaryString(aDecoded.bytes) === '01000001',
+    JSON.stringify(aDecoded.ok ? bytesToBinaryString(aDecoded.bytes) : aDecoded)
+  );
+
+  // Multi-byte UTF-8 byte count sanity: '🌍' is 4 bytes in UTF-8
+  const emojiBytes = encoder.encode('🌍');
+  check('base64-to-binary', 'multi-byte UTF-8 char (🌍) is 4 bytes, not 1', emojiBytes.length === 4, String(emojiBytes.length));
+
+  // Invalid base64 -> error, not garbled output
+  const invalid = base64ToBytes('not valid base64!!!');
+  check('base64-to-binary', 'invalid base64 -> error not crash', invalid.ok === false, JSON.stringify(invalid));
+
+  const invalidPadding = base64ToBytes('SGVsbG8');
+  check('base64-to-binary', 'invalid padding length -> error', invalidPadding.ok === false, JSON.stringify(invalidPadding));
+
+  // data URI prefix stripping
+  const stripped = stripDataUriPrefix('data:image/png;base64,SGVsbG8=');
+  check('base64-to-css', 'data URI prefix is stripped to bare payload', stripped === 'SGVsbG8=', stripped);
+
+  const notDataUri = stripDataUriPrefix('SGVsbG8=');
+  check('base64-to-css', 'bare base64 passed through unchanged', notDataUri === 'SGVsbG8=', notDataUri);
+}
+
 describe('Converters', () => {
   results.forEach((r) => {
     it(`${r.tool}: ${r.test}`, () => {

@@ -344,6 +344,26 @@ function jsTesterAcceptsMessage(
   );
 }
 
+// ---------- yaml-validator ----------
+import { load as yvLoad } from 'js-yaml';
+function yvValidate(input: string) {
+  if (!input.trim()) return { ok: false as const, message: 'Paste some YAML.' };
+  try {
+    const value = yvLoad(input);
+    return { ok: true as const, value };
+  } catch (err) {
+    return { ok: false as const, message: err instanceof Error ? err.message : 'Invalid YAML' };
+  }
+}
+{
+  const good = yvValidate('id: 1\nname: Formatiq\n');
+  check('yaml-validator', 'valid YAML -> ok', good.ok === true, JSON.stringify(good));
+  const bad = yvValidate('id: 1\n  name: bad indent\nfoo\n');
+  check('yaml-validator', 'invalid YAML -> error not crash', bad.ok === false, JSON.stringify(bad));
+  const empty = yvValidate('   ');
+  check('yaml-validator', 'blank input -> error, not treated as valid', empty.ok === false, JSON.stringify(empty));
+}
+
 describe('Validators', () => {
   results.forEach((r) => {
     it(`${r.tool}: ${r.test}`, () => {
