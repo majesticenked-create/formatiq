@@ -7,12 +7,12 @@ type Theme = 'dark' | 'light';
 const THEME_CHANGE_EVENT = 'formatiq-theme-change';
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>('dark');
+  const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
     const saved = localStorage.getItem('theme') as Theme | null;
     const current = document.documentElement.getAttribute('data-theme') as Theme | null;
-    setTheme(saved ?? current ?? 'dark');
+    setTheme(saved ?? current ?? 'light');
 
     function handleThemeChange(e: Event) {
       setTheme((e as CustomEvent<Theme>).detail);

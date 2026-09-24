@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useMemo, useRef, useState } from 'react';
 import { categories, tools } from '@/lib/tools/registry';
 import { filterTools } from '@/lib/tools/search';
+import { SearchIcon } from '@/components/icons/UiIcons';
 
 const MAX_RESULTS = 8;
 
@@ -15,9 +16,13 @@ interface ToolSearchProps {
   idPrefix?: string;
   /** 'compact' is used for the persistent header search: smaller footprint,
    *  shorter placeholder. 'default' is the larger, primary hero search. */
-  variant?: 'default' | 'compact';
+  variant?: 'default' | 'compact' | 'large';
   label?: string;
   placeholder?: string;
+  /** Focus the input on mount (used by the header search overlay). */
+  autoFocus?: boolean;
+  /** Called after the user picks a result (lets an overlay close itself). */
+  onNavigate?: () => void;
 }
 
 export default function ToolSearch({
@@ -25,6 +30,8 @@ export default function ToolSearch({
   variant = 'default',
   label = 'Search tools by name or keyword',
   placeholder,
+  autoFocus = false,
+  onNavigate,
 }: ToolSearchProps = {}) {
   const router = useRouter();
   const [query, setQuery] = useState('');
@@ -40,6 +47,7 @@ export default function ToolSearch({
     if (!tool) return;
     setIsFocused(false);
     router.push(`/tools/${tool.category}/${tool.slug}`);
+    onNavigate?.();
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -52,10 +60,9 @@ export default function ToolSearch({
       e.preventDefault();
       setActiveIndex((i) => (i <= 0 ? results.length - 1 : i - 1));
     } else if (e.key === 'Enter') {
-      if (activeIndex >= 0) {
-        e.preventDefault();
-        goToResult(activeIndex);
-      }
+      // Enter with no highlighted row opens the best (first) match.
+      e.preventDefault();
+      goToResult(activeIndex >= 0 ? activeIndex : 0);
     } else if (e.key === 'Escape') {
       setIsFocused(false);
       inputRef.current?.blur();
@@ -65,17 +72,28 @@ export default function ToolSearch({
   const inputId = `${idPrefix}-tool-search`;
   const listboxId = `${idPrefix}-tool-search-listbox`;
 
+  const isLarge = variant === 'large';
+
   return (
-    <div className={`tool-search${variant === 'compact' ? ' tool-search-compact' : ''}`} role="search">
+    <div
+      className={`tool-search${variant === 'compact' ? ' tool-search-compact' : ''}${isLarge ? ' tool-search-large' : ''}`}
+      role="search"
+    >
       <label htmlFor={inputId} className="sr-only">
         {label}
       </label>
+      {isLarge && (
+        <span className="tool-search-icon" aria-hidden="true">
+          <SearchIcon size={20} />
+        </span>
+      )}
       <input
         id={inputId}
+        autoFocus={autoFocus}
         ref={inputRef}
         type="text"
         className="tool-search-input mono"
-        placeholder={placeholder ?? (variant === 'compact' ? 'Search tools…' : 'Search 200+ tools by name or keyword…')}
+        placeholder={placeholder ?? (variant === 'compact' ? 'Search tools…' : `Search ${tools.length} tools by name or keyword…`)}
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);
@@ -90,6 +108,18 @@ export default function ToolSearch({
         aria-autocomplete="list"
         autoComplete="off"
       />
+      {isLarge && (
+        <button
+          type="button"
+          className="btn btn-primary tool-search-submit"
+          onClick={() => {
+            if (results.length > 0) goToResult(activeIndex >= 0 ? activeIndex : 0);
+            else inputRef.current?.focus();
+          }}
+        >
+          Search
+        </button>
+      )}
 
       {showDropdown && (
         <div className="tool-search-dropdown" id={listboxId} role="listbox">

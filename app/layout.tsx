@@ -30,7 +30,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 const TITLE = 'Formatiq - Free Browser-Based Developer Tools';
 const DESCRIPTION =
-  'Free formatters, converters, validators, and generators for developers. Everything runs in your browser - nothing you paste is ever uploaded.';
+  'Free formatters, converters, validators, and generators for developers. Most tools run in your browser, with no sign-up.';
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -66,6 +66,8 @@ const THEME_INIT_SCRIPT = `
 (function () {
   try {
     var theme = localStorage.getItem('theme');
+    // Light (warm ivory) is the default via :root; only an explicit saved
+    // choice sets the attribute, so first paint never flashes the wrong theme.
     if (theme === 'light' || theme === 'dark') {
       document.documentElement.setAttribute('data-theme', theme);
     }

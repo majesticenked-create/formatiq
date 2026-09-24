@@ -1,68 +1,43 @@
 import Link from 'next/link';
 import { categories, tools } from '@/lib/tools/registry';
-import ThemeToggle from './ThemeToggle';
 
 export default function Footer() {
   const year = new Date().getFullYear();
-  // Sourced from the registry's isPopular flag rather than a hardcoded list,
-  // so this column can never drift out of sync with real tool data.
-  const popularTools = tools.filter((t) => t.isPopular).slice(0, 6);
 
   return (
     <footer className="site-footer">
       <div className="container">
         <div className="footer-grid">
-          <div className="footer-column">
-            <div className="brand">
-              <span className="brand-mark">{'{'}</span>
+          <div className="footer-brand">
+            <Link href="/" className="brand" aria-label="Formatiq home">
+              <span className="brand-mark" aria-hidden="true">{'{'}</span>
               Formatiq
-              <span className="brand-mark">{'}'}</span>
-            </div>
-            <p>Formatiq - free browser-based tools for developers. Nothing you paste is ever uploaded.</p>
-            <ThemeToggle />
+              <span className="brand-mark" aria-hidden="true">{'}'}</span>
+            </Link>
+            <p>Free developer tools that run in your browser - formatters, converters, validators, and generators.</p>
           </div>
 
-          <div className="footer-column">
-            <h2>Categories</h2>
+          <nav className="footer-column" aria-label="Tools">
+            <h2>Tools</h2>
             <ul>
               {categories.map((category) => {
                 const count = tools.filter((t) => t.category === category.slug).length;
                 return (
                   <li key={category.slug}>
                     <Link href={`/tools/${category.slug}`}>
-                      {category.title} <span style={{ color: 'var(--text-tertiary)' }}>({count})</span>
+                      {category.title} <span className="footer-count">({count})</span>
                     </Link>
                   </li>
                 );
               })}
             </ul>
-          </div>
+          </nav>
 
-          <div className="footer-column">
-            <h2>Popular tools</h2>
-            <ul>
-              {popularTools.map((tool) => (
-                <li key={tool.slug}>
-                  <Link href={`/tools/${tool.category}/${tool.slug}`}>{tool.title}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="footer-column">
-            <h2>About</h2>
+          <nav className="footer-column" aria-label="Company">
+            <h2>Company</h2>
             <ul>
               <li>
                 <Link href="/about">About</Link>
-              </li>
-              <li>
-                <Link href="/privacy">Privacy Policy</Link>
-              </li>
-              <li>
-                <Link href="/terms">Terms of Service</Link>
-              </li>
-              <li>
-                <Link href="/cookies">Cookie Policy</Link>
               </li>
               <li>
                 <Link href="/contact">Contact</Link>
@@ -74,12 +49,27 @@ export default function Footer() {
                 <Link href="/sitemap-page">Sitemap</Link>
               </li>
             </ul>
-          </div>
+          </nav>
+
+          <nav className="footer-column" aria-label="Legal">
+            <h2>Legal</h2>
+            <ul>
+              <li>
+                <Link href="/privacy">Privacy Policy</Link>
+              </li>
+              <li>
+                <Link href="/terms">Terms of Service</Link>
+              </li>
+              <li>
+                <Link href="/cookies">Cookie Policy</Link>
+              </li>
+            </ul>
+          </nav>
         </div>
 
         <div className="footer-bottom">
           <span>© {year} Formatiq. All rights reserved.</span>
-          <span>All tools run client-side - nothing you paste is ever uploaded.</span>
+          <span>Most tools run in your browser; a few (like currency conversion) fetch live data.</span>
         </div>
       </div>
     </footer>

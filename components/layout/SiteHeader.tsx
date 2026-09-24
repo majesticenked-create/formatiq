@@ -1,29 +1,37 @@
 import Link from 'next/link';
-import ToolSearch from '@/components/ToolSearch';
 import ThemeToggle from '@/components/ThemeToggle';
-import CategoryNav from '@/components/layout/CategoryNav';
+import HeaderNav from '@/components/layout/HeaderNav';
+import SearchOverlay from '@/components/layout/SearchOverlay';
+import BookmarkHelper from '@/components/layout/BookmarkHelper';
+import MobileMenu from '@/components/layout/MobileMenu';
+import { ALL_TOOLS_HREF } from '@/lib/tools/navigation';
 
 /**
- * Site-wide, two-row header rendered once from the root layout so every
- * route inherits it automatically. Row 1 is the brand plus a compact,
- * persistent global search (no account/login controls - none exist on this
- * site). Row 2 is the horizontally-scrollable category nav (CategoryNav),
- * a client component since it needs the current pathname for active-state.
+ * Site-wide single-row header rendered once from the root layout. Brand on the
+ * left, nav (desktop) in the middle, and on the right: search (opens an
+ * overlay reusing ToolSearch), theme toggle, the Bookmark helper, and the gold "Browse all tools"
+ * CTA. Below the desktop breakpoint the nav and CTA move into MobileMenu.
+ * Only the interactive pieces are client components; this shell is server-rendered.
  */
 export default function SiteHeader() {
   return (
     <header className="site-header">
-      <div className="container site-header-row1">
-        <Link href="/" className="brand">
-          <span className="brand-mark">{'{'}</span>
+      <div className="container site-header-inner">
+        <Link href="/" className="brand" aria-label="Formatiq home">
+          <span className="brand-mark" aria-hidden="true">{'{'}</span>
           Formatiq
-          <span className="brand-mark">{'}'}</span>
+          <span className="brand-mark" aria-hidden="true">{'}'}</span>
         </Link>
-        <ToolSearch idPrefix="header" variant="compact" label="Search all tools" />
-        <ThemeToggle />
-      </div>
-      <div className="site-header-row2">
-        <CategoryNav />
+        <HeaderNav />
+        <div className="site-header-actions">
+          <SearchOverlay />
+          <ThemeToggle />
+          <BookmarkHelper />
+          <Link href={ALL_TOOLS_HREF} className="btn btn-primary site-header-cta">
+            Browse all tools
+          </Link>
+          <MobileMenu />
+        </div>
       </div>
     </header>
   );
