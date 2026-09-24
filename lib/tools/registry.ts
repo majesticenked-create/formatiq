@@ -200,6 +200,9 @@ import YamlParser from '@/components/tools/YamlParser';
 import YamlValidator from '@/components/tools/YamlValidator';
 import Base64ToBinary from '@/components/tools/Base64ToBinary';
 import Base64ToCss from '@/components/tools/Base64ToCss';
+import CmykToHexConverter from '@/components/tools/CmykToHexConverter';
+import HsvToHexConverter from '@/components/tools/HsvToHexConverter';
+import HexToUtf8Converter from '@/components/tools/HexToUtf8Converter';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -11899,6 +11902,151 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: BinaryToIpConverter,
+  },
+  {
+    slug: 'cmyk-to-hex',
+    category: 'converters',
+    relatedSlugs: ['rgb-cmyk-converter', 'hex-rgb-converter', 'hsv-to-hex'],
+    isNew: true,
+    title: 'CMYK to HEX Converter',
+    shortDescription: 'Convert a CMYK color value directly to its HEX code, with a live swatch preview.',
+    longDescription:
+      'Convert a CMYK color value straight into a 6-digit HEX code in one step, using the standard device-independent CMYK-to-RGB-to-HEX formula. CMYK is a distinct, subtractive color model built around how ink mixes on paper (cyan, magenta, yellow, and black), rather than the additive red/green/blue mixing HEX and RGB describe - so getting from one to the other isn\'t a reinterpretation of the same numbers, it\'s a real conversion between different color models. This is a mathematical approximation, the same one most online color tools use - it doesn\'t account for a specific printer\'s ICC color profile or actual ink behavior, so treat the result as a close approximation for screen-to-print planning, not a color-accurate proof of what a printer will produce. A live swatch shows the result so you can sanity-check it visually. Runs entirely client-side.',
+    metaTitle: 'CMYK to HEX Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert CMYK to HEX online for free in one step, with a live color swatch. Mathematical approximation, not ICC-profile-accurate. Runs entirely in your browser.',
+    keywords: ['cmyk to hex', 'cmyk to hex converter', 'cmyk to hex code', 'convert cmyk to hex online', 'cmyk color converter'],
+    useCase: 'Getting the HEX code for a CMYK color spec without a separate RGB round trip',
+    howItWorks: [
+      {
+        title: 'Enter your CMYK value',
+        description: 'e.g. cmyk(0%, 100%, 100%, 0%), each channel from 0-100%.',
+      },
+      {
+        title: 'Converted via RGB',
+        description: 'C, M, Y, K are converted to RGB using the standard formula, then RGB to a 6-digit HEX code.',
+      },
+      {
+        title: 'See the result and swatch',
+        description: 'The HEX code updates live, with a color preview to confirm it looks right.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why is cmyk(0%, 100%, 100%, 0%) exactly #FF0000?',
+        answer:
+          'With K at 0%, the formula reduces to R=255x(1-C), G=255x(1-M), B=255x(1-Y). Zero cyan means full red (255), while full magenta and full yellow zero out green and blue, giving 255,0,0 - pure red, #FF0000.',
+      },
+      {
+        question: 'Will this exactly match what a printer produces?',
+        answer:
+          'No - this uses the standard device-independent CMYK formula, not a specific printer\'s ICC color profile. Real print output depends on the printer, ink, and paper, so treat this as a close approximation for planning, not a color-accurate proof.',
+      },
+      {
+        question: 'How is this different from the RGB to CMYK Converter?',
+        answer:
+          'The RGB to CMYK Converter goes both directions between RGB and CMYK. This tool skips straight from CMYK to HEX in one step, which is convenient when HEX (not RGB) is what you actually need next, like pasting a color into CSS.',
+      },
+    ],
+    Component: CmykToHexConverter,
+  },
+  {
+    slug: 'hsv-to-hex',
+    category: 'converters',
+    relatedSlugs: ['hex-rgb-converter', 'cmyk-to-hex', 'rgb-cmyk-converter'],
+    isNew: true,
+    title: 'HSV to HEX Converter',
+    shortDescription: 'Convert an HSV (hue, saturation, value) color to its HEX code, with a live swatch preview.',
+    longDescription:
+      'Convert an HSV color value - hue in degrees, saturation and value as percentages - directly into a 6-digit HEX code, using the standard sector-based HSV-to-RGB algorithm followed by RGB-to-HEX formatting. HSV is often confused with HSL since both describe color as hue/saturation plus a third axis, but they aren\'t the same model: HSV\'s third axis (value) is how much white and black are mixed with a pure hue, while HSL\'s (lightness) is centered on gray, so the same three numbers produce different colors in each model - this tool is specifically for HSV, not a relabeled HSL converter. A live swatch shows the result so you can sanity-check it visually. Runs entirely client-side.',
+    metaTitle: 'HSV to HEX Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert HSV to HEX online for free, using the standard sector-based HSV-to-RGB algorithm. Includes a live color swatch. Runs entirely in your browser.',
+    keywords: ['hsv to hex', 'hsv to hex converter', 'hsv color converter', 'convert hsv to hex online', 'hsv to rgb to hex'],
+    useCase: 'Getting the HEX code for a color picked or specified in HSV',
+    howItWorks: [
+      {
+        title: 'Enter your HSV value',
+        description: 'e.g. hsv(0, 100%, 100%) - hue from 0-360 degrees, saturation and value as 0-100% each.',
+      },
+      {
+        title: 'Converted via RGB',
+        description: 'The standard sector-based HSV-to-RGB algorithm computes chroma and picks the RGB sector by hue, then converts to HEX.',
+      },
+      {
+        title: 'See the result and swatch',
+        description: 'The HEX code updates live, with a color preview to confirm it looks right.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is HSV the same as HSL?',
+        answer:
+          'No - they\'re both hue-based models but describe the third axis differently. HSV\'s "value" is how much a pure hue is mixed with black (0% value is always black, regardless of hue or saturation), while HSL\'s "lightness" is centered on gray, with 100% lightness always being white. The same numbers plugged into each model produce different colors, so a converter for one isn\'t a substitute for the other.',
+      },
+      {
+        question: 'Why does hsv(0, 0%, 100%) convert to white (#FFFFFF)?',
+        answer:
+          'At 0% saturation there\'s no color mixed in at all, so hue is irrelevant - the result is a shade of gray determined purely by value. At 100% value with 0% saturation, that shade of gray is white.',
+      },
+      {
+        question: 'What happens if I enter hue 360?',
+        answer:
+          'Hue is circular - 0 and 360 both point to the same color (red), so 360 is normalized to 0 before conversion rather than being rejected or producing an out-of-range result.',
+      },
+    ],
+    Component: HsvToHexConverter,
+  },
+  {
+    slug: 'hex-to-utf8',
+    category: 'converters',
+    relatedSlugs: ['utf8-encoder-decoder', 'base64-to-hex', 'text-ascii-converter'],
+    isNew: true,
+    title: 'Hex to UTF-8 Converter',
+    shortDescription: 'Decode a hex string into UTF-8 text, or encode text into hex - handles multi-byte characters correctly.',
+    longDescription:
+      'Decode a hex string into readable UTF-8 text, or run the reverse and encode text into hex. This is not a number-base conversion - a hex string here represents a sequence of raw bytes (each pair of hex digits is one byte), not one large hex integer, so decoding reads it two digits at a time into a byte array and then runs that array through the browser\'s native `TextDecoder` in strict UTF-8 mode. That matters because UTF-8 is variable-width: a character like the euro sign "€" takes three bytes ("E282AC"), and many emoji take four, so converting hex digit-pairs one at a time as if each were its own character would silently produce garbage the moment a multi-byte character shows up. Invalid hex (non-hex characters, odd digit count) and valid-hex-but-invalid-UTF-8 byte sequences are reported as two distinct, specific errors rather than one vague failure. Accepts a contiguous hex string ("48656C6C6F"), one with spaces, or a "0x"-prefixed value - all equivalent. Runs entirely client-side.',
+    metaTitle: 'Hex to UTF-8 Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert hex to UTF-8 text online for free, or text to hex - correctly handles multi-byte characters like emoji and accented letters. Runs entirely in your browser.',
+    keywords: ['hex to utf-8', 'hex to text converter', 'hex to string', 'convert hex to utf8 online', 'hex decoder'],
+    useCase: 'Decoding a hex-encoded payload (from a hash, log, or hex dump) back into readable text',
+    howItWorks: [
+      {
+        title: 'Choose a direction',
+        description: 'Hex to UTF-8 text, or text to hex.',
+      },
+      {
+        title: 'Paste your hex or text',
+        description: 'Hex can be contiguous, spaced, or 0x-prefixed - all are normalized automatically.',
+      },
+      {
+        title: 'Read two digits as one byte',
+        description: 'Each hex pair becomes a raw byte; the full byte sequence is then decoded as UTF-8.',
+      },
+      {
+        title: 'See the result and byte count',
+        description: 'Decoded text (or hex output) appears immediately, along with the number of bytes involved.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why is this different from treating hex as one big number?',
+        answer:
+          'A hex-encoded string represents a sequence of independent bytes, not a single numeric value - "48656C6C6F" is the five bytes 48, 65, 6C, 6C, 6F (spelling "Hello" in ASCII), not the huge integer you\'d get parsing the whole string as one hex number. Number-base converters intentionally do the latter; this tool does the former, since that\'s what hex means when it\'s standing in for text or binary data.',
+      },
+      {
+        question: 'What happens with a multi-byte character like an emoji?',
+        answer:
+          'It\'s handled correctly: "E282AC" (three bytes) decodes to the single euro sign character "€", and a 4-byte emoji sequence decodes to one emoji - because decoding runs the full byte array through `TextDecoder`, which understands UTF-8\'s variable-width encoding, rather than converting each byte to a character on its own.',
+      },
+      {
+        question: 'What happens with an odd number of hex digits?',
+        answer:
+          'It\'s rejected immediately with a specific error, since a byte is always two hex digits - an odd count means the input is truncated or malformed, and guessing how to pad it would risk decoding the wrong bytes.',
+      },
+    ],
+    Component: HexToUtf8Converter,
   },
 ];
 

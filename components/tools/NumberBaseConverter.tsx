@@ -36,9 +36,17 @@ function convert(input: string, fromBase: Base) {
     };
   }
 
-  const decimal = parseInt(trimmed, fromBase);
-  if (!Number.isFinite(decimal)) {
-    return { ok: false as const, message: 'Number is too large to convert accurately.' };
+  // Parsed as a BigInt, one digit at a time, rather than `parseInt` into a plain `Number` -
+  // `Number` only has 53 bits of safe integer precision, so a large-but-valid input (e.g. a
+  // 64-bit hex value) would silently lose precision past Number.MAX_SAFE_INTEGER. Each
+  // character is parsed with radix 16 rather than `fromBase`, which is safe because
+  // `isValidForBase` already confirmed every character belongs to the (smaller-or-equal) hex
+  // digit set - a single hex-digit parse always yields the same 0-15 value regardless of which
+  // base it's actually a digit of.
+  const bigBase = BigInt(fromBase);
+  let decimal = 0n;
+  for (const ch of trimmed) {
+    decimal = decimal * bigBase + BigInt(parseInt(ch, 16));
   }
 
   return {

@@ -640,6 +640,110 @@ import { binaryToIp } from '@/lib/tools/ip-utils';
   check('binary-to-ip-converter', 'non-binary characters are rejected', invalidChars.ok === false, JSON.stringify(invalidChars));
 }
 
+// ---------- number-base-converter ----------
+// Logic copied verbatim from NumberBaseConverter.tsx's `convert()` after the BigInt precision
+// fix (batch 015), to prove large values beyond Number.MAX_SAFE_INTEGER now convert correctly.
+{
+  const BASE_CHARSETS: Record<number, string> = {
+    2: '01',
+    8: '01234567',
+    10: '0123456789',
+    16: '0123456789abcdefABCDEF',
+  };
+  function isValidForBase(value: string, base: number): boolean {
+    const chars = BASE_CHARSETS[base];
+    return value.length > 0 && Array.from(value).every((c) => chars.includes(c));
+  }
+  function nbcConvert(input: string, fromBase: number) {
+    const trimmed = input.trim();
+    if (!trimmed || !isValidForBase(trimmed, fromBase)) return null;
+    const bigBase = BigInt(fromBase);
+    let decimal = 0n;
+    for (const ch of trimmed) {
+      decimal = decimal * bigBase + BigInt(parseInt(ch, 16));
+    }
+    return {
+      binary: decimal.toString(2),
+      octal: decimal.toString(8),
+      decimal: decimal.toString(10),
+      hex: decimal.toString(16).toUpperCase(),
+    };
+  }
+
+  // 2^53 = 9007199254740992, one past Number.MAX_SAFE_INTEGER (2^53 - 1). Using plain
+  // `parseInt`+`Number` for a value this large silently rounds to an even number and loses
+  // precision; BigInt parsing must round-trip it exactly.
+  const large = nbcConvert('9007199254740993', 10);
+  check('number-base-converter', 'decimal beyond MAX_SAFE_INTEGER round-trips exactly', large?.decimal === '9007199254740993', JSON.stringify(large));
+  check(
+    'number-base-converter',
+    'that value converts to the correct hex (0x20000000000001)',
+    large?.hex === '20000000000001',
+    JSON.stringify(large)
+  );
+
+  // A 64-bit-scale hex value, well beyond Number.MAX_SAFE_INTEGER, round-tripped through decimal.
+  const hex64 = nbcConvert('FFFFFFFFFFFFFFFF', 16);
+  check(
+    'number-base-converter',
+    '64-bit hex FFFFFFFFFFFFFFFF -> correct decimal (18446744073709551615)',
+    hex64?.decimal === '18446744073709551615',
+    JSON.stringify(hex64)
+  );
+
+  // Existing small-value behavior must be unaffected by the fix.
+  const small = nbcConvert('255', 10);
+  check('number-base-converter', 'small decimal 255 -> FF / 377 / 11111111 (regression, unaffected by fix)', small?.hex === 'FF' && small?.octal === '377' && small?.binary === '11111111', JSON.stringify(small));
+}
+
+// ---------- cmyk-to-hex ----------
+import { cmykToRgb, hsvToRgb, rgbToHex } from '@/lib/tools/color-utils';
+{
+  check('cmyk-to-hex', '0,100,100,0 -> #FF0000', rgbToHex(cmykToRgb(0, 100, 100, 0)) === '#FF0000');
+  check('cmyk-to-hex', '0,0,0,0 -> #FFFFFF', rgbToHex(cmykToRgb(0, 0, 0, 0)) === '#FFFFFF');
+  check('cmyk-to-hex', '0,0,0,100 -> #000000', rgbToHex(cmykToRgb(0, 0, 0, 100)) === '#000000');
+}
+
+// ---------- hsv-to-hex ----------
+{
+  check('hsv-to-hex', '0,100,100 -> #FF0000', rgbToHex(hsvToRgb(0, 100, 100)) === '#FF0000');
+  check('hsv-to-hex', '120,100,100 -> #00FF00', rgbToHex(hsvToRgb(120, 100, 100)) === '#00FF00');
+  check('hsv-to-hex', '240,100,100 -> #0000FF', rgbToHex(hsvToRgb(240, 100, 100)) === '#0000FF');
+  check('hsv-to-hex', '0,0,100 -> #FFFFFF', rgbToHex(hsvToRgb(0, 0, 100)) === '#FFFFFF');
+  check('hsv-to-hex', 'hue 360 normalizes same as hue 0', rgbToHex(hsvToRgb(360, 100, 100)) === rgbToHex(hsvToRgb(0, 100, 100)));
+}
+
+// ---------- hex-to-utf8 ----------
+import { hexToUtf8, hexToBytes, textToHex } from '@/lib/tools/hex-utf8-utils';
+{
+  const hello = hexToUtf8('48656C6C6F');
+  check('hex-to-utf8', '48656C6C6F -> Hello', hello.ok === true && hello.text === 'Hello', JSON.stringify(hello));
+
+  const euro = hexToUtf8('E282AC');
+  check('hex-to-utf8', 'E282AC -> € (3-byte multi-byte UTF-8)', euro.ok === true && euro.text === '€', JSON.stringify(euro));
+
+  const emoji = hexToUtf8('F09F9880');
+  check('hex-to-utf8', 'F09F9880 -> 😀 (4-byte emoji)', emoji.ok === true && emoji.text === '😀', JSON.stringify(emoji));
+
+  const spaced = hexToUtf8('48 65 6c 6c 6f');
+  check('hex-to-utf8', 'spaced hex also works', spaced.ok === true && spaced.text === 'Hello', JSON.stringify(spaced));
+
+  const prefixed = hexToUtf8('0x48656C6C6F');
+  check('hex-to-utf8', '0x-prefixed hex also works', prefixed.ok === true && prefixed.text === 'Hello', JSON.stringify(prefixed));
+
+  const oddLength = hexToUtf8('48656C6C6');
+  check('hex-to-utf8', 'odd-length hex is rejected', oddLength.ok === false && oddLength.stage === 'hex', JSON.stringify(oddLength));
+
+  const invalidChars = hexToBytes('ZZ');
+  check('hex-to-utf8', 'non-hex characters are rejected', invalidChars.ok === false, JSON.stringify(invalidChars));
+
+  const invalidUtf8 = hexToUtf8('FF');
+  check('hex-to-utf8', 'valid hex but invalid UTF-8 -> stage "utf8"', invalidUtf8.ok === false && invalidUtf8.stage === 'utf8', JSON.stringify(invalidUtf8));
+
+  const roundTrip = hexToUtf8(textToHex('Café ☕'));
+  check('hex-to-utf8', 'round trip: text -> hex -> text', roundTrip.ok === true && roundTrip.text === 'Café ☕', JSON.stringify(roundTrip));
+}
+
 describe('Converters', () => {
   results.forEach((r) => {
     it(`${r.tool}: ${r.test}`, () => {
