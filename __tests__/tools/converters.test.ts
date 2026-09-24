@@ -815,6 +815,73 @@ import { binaryStringToBytes } from '@/lib/tools/binary-utils';
   check('string-to-hex-converter', '€ -> e282ac (uppercase-insensitive check)', euro.toUpperCase() === 'E282AC', euro);
 }
 
+// ---------- hex-to-base64 (batch 017) ----------
+{
+  const a = hexToBytes('41');
+  check('hex-to-base64', '41 -> QQ==', a.ok === true && bytesToBase64(a.bytes) === 'QQ==', JSON.stringify(a));
+
+  const hi = hexToBytes('4869');
+  check('hex-to-base64', '4869 -> SGk=', hi.ok === true && bytesToBase64(hi.bytes) === 'SGk=', JSON.stringify(hi));
+
+  const oddLen = hexToBytes('486');
+  check('hex-to-base64', 'odd-length hex rejected', oddLen.ok === false, JSON.stringify(oddLen));
+
+  const invalid = hexToBytes('ZZ');
+  check('hex-to-base64', 'invalid hex characters rejected', invalid.ok === false, JSON.stringify(invalid));
+}
+
+// ---------- hex-to-cmyk (batch 017) ----------
+import { parseHexColor, rgbToCmyk, rgbToHsv, hexToRgb } from '@/lib/tools/color-utils';
+{
+  const red = parseHexColor('#FF0000');
+  const redCmyk = red && rgbToCmyk(red);
+  check('hex-to-cmyk', '#FF0000 -> 0,100,100,0', !!redCmyk && redCmyk.c === 0 && redCmyk.m === 100 && redCmyk.y === 100 && redCmyk.k === 0, JSON.stringify(redCmyk));
+
+  const black = parseHexColor('#000000');
+  const blackCmyk = black && rgbToCmyk(black);
+  check('hex-to-cmyk', '#000000 -> 0,0,0,100', !!blackCmyk && blackCmyk.c === 0 && blackCmyk.m === 0 && blackCmyk.y === 0 && blackCmyk.k === 100, JSON.stringify(blackCmyk));
+
+  const white = parseHexColor('#FFFFFF');
+  const whiteCmyk = white && rgbToCmyk(white);
+  check('hex-to-cmyk', '#FFFFFF -> 0,0,0,0', !!whiteCmyk && whiteCmyk.c === 0 && whiteCmyk.m === 0 && whiteCmyk.y === 0 && whiteCmyk.k === 0, JSON.stringify(whiteCmyk));
+}
+
+// ---------- hex-to-hsv (batch 017) ----------
+{
+  const red = hexToRgb('#FF0000');
+  const redHsv = red && rgbToHsv(red);
+  check('hex-to-hsv', '#FF0000 -> 0,100,100', !!redHsv && redHsv.h === 0 && redHsv.s === 100 && redHsv.v === 100, JSON.stringify(redHsv));
+
+  const green = hexToRgb('#00FF00');
+  const greenHsv = green && rgbToHsv(green);
+  check('hex-to-hsv', '#00FF00 -> 120,100,100', !!greenHsv && greenHsv.h === 120 && greenHsv.s === 100 && greenHsv.v === 100, JSON.stringify(greenHsv));
+
+  const blue = hexToRgb('#0000FF');
+  const blueHsv = blue && rgbToHsv(blue);
+  check('hex-to-hsv', '#0000FF -> 240,100,100', !!blueHsv && blueHsv.h === 240 && blueHsv.s === 100 && blueHsv.v === 100, JSON.stringify(blueHsv));
+}
+
+// ---------- hex-to-rgba (batch 017) ----------
+{
+  const sixDigit = parseHexColor('#FF0000');
+  check('hex-to-rgba', '#FF0000 has no embedded alpha (uses separate field)', !!sixDigit && sixDigit.a === undefined, JSON.stringify(sixDigit));
+
+  const eightDigit = parseHexColor('#FF000080');
+  const expectedAlpha = 128 / 255;
+  check(
+    'hex-to-rgba',
+    '#FF000080 -> alpha ~0.502 (128/255)',
+    !!eightDigit && eightDigit.a !== undefined && Math.abs(eightDigit.a - expectedAlpha) < 0.001,
+    JSON.stringify(eightDigit)
+  );
+
+  const threeDigit = parseHexColor('#F00');
+  check('hex-to-rgba', '#F00 shorthand expands to 255,0,0', !!threeDigit && threeDigit.r === 255 && threeDigit.g === 0 && threeDigit.b === 0, JSON.stringify(threeDigit));
+
+  const invalid = parseHexColor('#GGG');
+  check('hex-to-rgba', 'invalid hex rejected', invalid === null, JSON.stringify(invalid));
+}
+
 describe('Converters', () => {
   results.forEach((r) => {
     it(`${r.tool}: ${r.test}`, () => {

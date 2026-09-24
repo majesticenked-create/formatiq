@@ -206,6 +206,10 @@ import Base64ToBinary from '@/components/tools/Base64ToBinary';
 import Base64ToCss from '@/components/tools/Base64ToCss';
 import CmykToHexConverter from '@/components/tools/CmykToHexConverter';
 import HsvToHexConverter from '@/components/tools/HsvToHexConverter';
+import HexToBase64Converter from '@/components/tools/HexToBase64Converter';
+import HexToCmykConverter from '@/components/tools/HexToCmykConverter';
+import HexToHsvConverter from '@/components/tools/HexToHsvConverter';
+import HexToRgbaConverter from '@/components/tools/HexToRgbaConverter';
 import HexToUtf8Converter from '@/components/tools/HexToUtf8Converter';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
@@ -12243,6 +12247,194 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: StringToHexConverter,
+  },
+  {
+    slug: 'hex-to-base64',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['hex-to-utf8', 'base64-encoder-decoder', 'string-to-hex-converter', 'base64-to-hex'],
+    title: 'Hex to Base64 Converter',
+    shortDescription: 'Convert a hex string into Base64 by treating each pair of hex digits as one raw byte.',
+    longDescription:
+      'Convert a hex string into Base64 by interpreting it as raw bytes - each pair of hex digits (e.g. "48") is one byte, and those bytes are Base64-encoded directly, the same way a hex dump, hash digest, or hex-encoded binary payload would be. This is deliberately different from just Base64-encoding the hex string\'s own characters as text: "41" as two ASCII characters "4" and "1" would Base64-encode to something else entirely, while "41" as the single byte 0x41 (the letter "A") encodes to "QQ==". Parsing goes through the same `hexToBytes` byte parser used by Hex to UTF-8 Converter, so invalid hex (odd length, non-hex characters) is rejected with the same specific error rather than silently misinterpreted. Runs entirely client-side.',
+    metaTitle: 'Hex to Base64 Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert hex to Base64 online for free, treating each hex-digit pair as a raw byte before encoding - not the hex text itself. Runs entirely in your browser.',
+    keywords: ['hex to base64', 'hex to base64 converter', 'convert hex to base64 online', 'hex bytes to base64', 'hex encode base64'],
+    useCase: 'Turning a hex-encoded byte sequence (a hash, a binary blob, a hex dump) into Base64 for embedding in text-based formats',
+    howItWorks: [
+      {
+        title: 'Paste your hex string',
+        description: 'A contiguous hex string, e.g. 48656c6c6f - optional spaces or a 0x prefix are stripped.',
+      },
+      {
+        title: 'Hex is parsed into raw bytes',
+        description: 'Each pair of hex digits becomes exactly one byte (0-255).',
+      },
+      {
+        title: 'Bytes are Base64-encoded',
+        description: 'The byte array (not the hex text) is what gets Base64-encoded.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why does "41" produce "QQ==" and not something based on the characters "4" and "1"?',
+        answer:
+          '"41" is parsed as hex, meaning it represents one byte: 0x41, which is 65 in decimal - the ASCII/UTF-8 byte for the letter "A". Base64-encoding that single byte produces "QQ==". If the two characters "4" and "1" were instead Base64-encoded as plain text, the result would be different and wrong for this tool\'s purpose.',
+      },
+      {
+        question: 'What input gets rejected?',
+        answer:
+          'Anything containing non-hex characters, and any hex string with an odd number of digits (since two hex digits are required to form one complete byte) - each produces a specific error message rather than a partial or guessed result.',
+      },
+      {
+        question: 'How is this different from Base64 Encoder/Decoder?',
+        answer:
+          'Base64 Encoder/Decoder takes plain text and Base64-encodes its UTF-8 bytes. This tool takes a hex string representing arbitrary bytes (which may not be valid UTF-8 text at all, like a hash digest) and Base64-encodes those bytes directly.',
+      },
+    ],
+    Component: HexToBase64Converter,
+  },
+  {
+    slug: 'hex-to-cmyk',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['cmyk-to-hex', 'hex-to-hsv', 'hex-rgb-converter', 'rgb-cmyk-converter'],
+    title: 'HEX to CMYK Converter',
+    shortDescription: 'Convert a HEX color directly to CMYK, with a live swatch preview.',
+    longDescription:
+      'Convert a HEX color code straight into a CMYK value in one step, using the standard device-independent HEX-to-RGB-to-CMYK formula: K is derived from the darkest channel, then C, M, and Y are each derived from how far their channel falls short of that darkest point. This is the reverse direction of this site\'s existing CMYK to HEX Converter. Like that tool, this is a mathematical approximation, not an ICC color-profile conversion - it doesn\'t account for a specific printer\'s ink behavior, so treat the result as a close approximation for screen-to-print planning, not a color-accurate proof of what a printer will produce. A live swatch shows the source color so you can sanity-check it visually. Runs entirely client-side.',
+    metaTitle: 'HEX to CMYK Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert HEX to CMYK online for free in one step, with a live color swatch. Mathematical approximation, not ICC-profile-accurate. Runs entirely in your browser.',
+    keywords: ['hex to cmyk', 'hex to cmyk converter', 'convert hex to cmyk online', 'hex color to cmyk', 'hex to cmyk code'],
+    useCase: 'Getting the CMYK value for a HEX color spec without a separate RGB round trip',
+    howItWorks: [
+      {
+        title: 'Enter your HEX color',
+        description: 'e.g. #FF0000 or #F00.',
+      },
+      {
+        title: 'Converted via RGB',
+        description: 'HEX is parsed to RGB, then RGB to CMYK using the standard K-from-darkest-channel formula.',
+      },
+      {
+        title: 'See the result and swatch',
+        description: 'The CMYK value updates live, with a color preview to confirm it looks right.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why does #FF0000 convert to cmyk(0%, 100%, 100%, 0%)?',
+        answer:
+          'Red (255,0,0) has its brightest channel (R) at full 255, so K = 1 - 255/255 = 0. With K at 0, C = 1 - R/255 = 0, while M = 1 - G/255 = 1 (100%) and Y = 1 - B/255 = 1 (100%) - giving 0% cyan, 100% magenta, 100% yellow, 0% black.',
+      },
+      {
+        question: 'Why does #000000 convert to 0%, 0%, 0%, 100% and not 100%, 100%, 100%, 100%?',
+        answer:
+          'When every RGB channel is 0, K = 1 - 0/255 = 1 (100% black), and the formula treats C/M/Y as 0% in that case to avoid a divide-by-zero - pure black is represented purely by the K channel, not by maxing out C, M, and Y as well.',
+      },
+      {
+        question: 'Will this exactly match what a printer produces?',
+        answer:
+          'No - this uses the standard device-independent CMYK formula, not a specific printer\'s ICC color profile. Real print output depends on the printer, ink, and paper, so treat this as a close approximation for planning, not a color-accurate proof.',
+      },
+    ],
+    Component: HexToCmykConverter,
+  },
+  {
+    slug: 'hex-to-hsv',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['hsv-to-hex', 'hex-to-cmyk', 'hex-rgb-converter', 'rgb-cmyk-converter'],
+    title: 'HEX to HSV Converter',
+    shortDescription: 'Convert a HEX color directly to HSV (hue, saturation, value), with a live swatch preview.',
+    longDescription:
+      'Convert a HEX color code straight into an HSV value (hue in degrees, saturation and value as percentages) in one step, using the standard HEX-to-RGB-to-HSV max/min/delta algorithm. This is the reverse direction of this site\'s existing HSV to HEX Converter. HSV is often confused with HSL since both describe color as hue/saturation plus a third axis, but they aren\'t the same model: HSV\'s third axis (value) is how much white and black are mixed with a pure hue, while HSL\'s (lightness) is centered on gray - this tool is specifically for HSV, not a relabeled HSL converter. A live swatch shows the source color so you can sanity-check it visually. Runs entirely client-side.',
+    metaTitle: 'HEX to HSV Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert HEX to HSV online for free, using the standard max/min/delta HSV algorithm. Includes a live color swatch. Runs entirely in your browser.',
+    keywords: ['hex to hsv', 'hex to hsv converter', 'convert hex to hsv online', 'hex color to hsv', 'hex to hsv value'],
+    useCase: 'Getting the HSV value for a color picked or specified in HEX',
+    howItWorks: [
+      {
+        title: 'Enter your HEX color',
+        description: 'e.g. #FF0000 or #F00.',
+      },
+      {
+        title: 'Converted via RGB',
+        description: 'HEX is parsed to RGB, then RGB to HSV using the standard max/min/delta algorithm.',
+      },
+      {
+        title: 'See the result and swatch',
+        description: 'The HSV value updates live, with a color preview to confirm it looks right.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why does #FF0000 convert to hsv(0, 100%, 100%)?',
+        answer:
+          'Red\'s max channel (255) is R itself, so hue lands at 0 degrees. The delta between max and min channels equals the max channel, giving 100% saturation, and value is simply the max channel scaled to 100%.',
+      },
+      {
+        question: 'What happens for gray colors, where R, G, and B are equal?',
+        answer:
+          'When there is no difference between the max and min channel (delta = 0), the color is achromatic (a shade of gray), so hue is defined as 0 and saturation as 0% - only value differs between shades of gray.',
+      },
+      {
+        question: 'How is this different from a HEX to HSL converter?',
+        answer:
+          'HSV and HSL are different color models that happen to share the same hue calculation but diverge on saturation and the third axis - this tool\'s saturation and value/lightness numbers are HSV-specific and won\'t match an HSL conversion of the same color.',
+      },
+    ],
+    Component: HexToHsvConverter,
+  },
+  {
+    slug: 'hex-to-rgba',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['hex-rgb-converter', 'hex-to-cmyk', 'hex-to-hsv'],
+    title: 'HEX to RGBA Converter',
+    shortDescription: 'Convert a HEX color to an rgba() value, supporting both a separate alpha input and 8-digit #RRGGBBAA hex.',
+    longDescription:
+      'Convert a HEX color into an rgba() CSS value, supporting two ways of specifying transparency: a plain 6-digit HEX (or 3-digit shorthand) paired with a separate alpha value you enter directly (0-1, or a percentage from 0%-100%), or an 8-digit #RRGGBBAA HEX where the last two hex digits are the alpha channel itself. The 8-digit format follows the CSS Color 4 convention (alpha as the trailing byte) - not the ARGB byte order some other ecosystems (like Android or some image-editing tools) use, which would put the alpha byte first. When an 8-digit hex is entered, its embedded alpha takes priority over the separate alpha field. Runs entirely client-side.',
+    metaTitle: 'HEX to RGBA Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert HEX to RGBA online for free - supports a separate alpha input or 8-digit #RRGGBBAA hex (CSS Color 4 order, not ARGB). Runs entirely in your browser.',
+    keywords: ['hex to rgba', 'hex to rgba converter', 'convert hex to rgba online', 'hex with alpha to rgba', '8-digit hex to rgba'],
+    useCase: 'Getting an rgba() CSS value from a HEX color, with an explicit or embedded alpha channel',
+    howItWorks: [
+      {
+        title: 'Enter your HEX color',
+        description: 'A 6-digit HEX like #FF0000, or an 8-digit HEX like #FF000080 that already includes alpha.',
+      },
+      {
+        title: 'Set alpha (if not using 8-digit hex)',
+        description: 'Enter alpha as 0-1 (e.g. 0.5) or as a percentage (e.g. 50%).',
+      },
+      {
+        title: 'Get the rgba() value',
+        description: 'The RGB channels and resolved alpha are combined into a ready-to-copy rgba() string.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does #FF000080 mean 50% alpha?',
+        answer:
+          'Close - the last hex byte pair, 0x80 (128 in decimal), divided by 255 gives an alpha of approximately 0.502, not exactly 0.5. Exactly 50% alpha as an 8-digit hex byte is 0x80 by convention (128/255 ≈ 0.502), since 255 isn\'t evenly divisible by 2.',
+      },
+      {
+        question: 'Is the alpha byte in 8-digit hex first (ARGB) or last (RGBA)?',
+        answer:
+          'This tool follows the CSS Color 4 convention: alpha is the last byte pair (#RRGGBBAA). Some other ecosystems, like Android\'s color integers, use ARGB order (alpha first) instead - if you\'re pasting a hex value from one of those, move the alpha byte pair to the end first, or it will be misread as part of the blue channel.',
+      },
+      {
+        question: 'What happens if I type both an 8-digit hex and an alpha value?',
+        answer:
+          'The 8-digit hex\'s own embedded alpha takes priority, and the separate alpha field is disabled - since the hex string already fully specifies the color including transparency, there is no ambiguity to resolve from the field.',
+      },
+    ],
+    Component: HexToRgbaConverter,
   },
 ];
 
