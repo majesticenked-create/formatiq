@@ -1,101 +1,39 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { format as formatSql } from 'sql-formatter';
 
 const SAMPLE =
   'select u.id, u.name, o.total from users u join orders o on o.user_id = u.id where o.total > 100 and u.active = true order by o.total desc';
 
-const MAJOR_CLAUSES = [
-  'SELECT',
-  'FROM',
-  'WHERE',
-  'GROUP BY',
-  'ORDER BY',
-  'HAVING',
-  'LIMIT',
-  'INSERT INTO',
-  'VALUES',
-  'UPDATE',
-  'SET',
-  'DELETE FROM',
-  'UNION ALL',
-  'UNION',
-];
+const DIALECTS = [
+  { value: 'sql', label: 'Standard SQL' },
+  { value: 'mysql', label: 'MySQL' },
+  { value: 'postgresql', label: 'PostgreSQL' },
+  { value: 'transactsql', label: 'T-SQL (SQL Server)' },
+  { value: 'sqlite', label: 'SQLite' },
+  { value: 'plsql', label: 'PL/SQL (Oracle)' },
+] as const;
 
-const JOIN_CLAUSES = ['LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'FULL JOIN', 'JOIN'];
+type Dialect = (typeof DIALECTS)[number]['value'];
 
-const KEYWORDS = [
-  ...MAJOR_CLAUSES,
-  ...JOIN_CLAUSES,
-  'ON',
-  'AND',
-  'OR',
-  'NOT',
-  'IN',
-  'IS',
-  'NULL',
-  'AS',
-  'DISTINCT',
-  'BETWEEN',
-  'LIKE',
-  'DESC',
-  'ASC',
-  'COUNT',
-  'SUM',
-  'AVG',
-  'MIN',
-  'MAX',
-];
-
-function capitalizeKeywords(sql: string): string {
-  let result = sql;
-  const sortedKeywords = [...KEYWORDS].sort((a, b) => b.length - a.length);
-  for (const kw of sortedKeywords) {
-    const pattern = new RegExp(`\\b${kw.replace(/ /g, '\\s+')}\\b`, 'gi');
-    result = result.replace(pattern, kw);
-  }
-  return result;
-}
-
-function addLineBreaks(sql: string): string {
-  let result = sql;
-
-  for (const clause of MAJOR_CLAUSES) {
-    const pattern = new RegExp(`\\s*\\b${clause.replace(/ /g, '\\s+')}\\b`, 'g');
-    result = result.replace(pattern, `\n${clause}`);
-  }
-  for (const clause of JOIN_CLAUSES) {
-    const pattern = new RegExp(`\\s*\\b${clause.replace(/ /g, '\\s+')}\\b`, 'g');
-    result = result.replace(pattern, `\n  ${clause}`);
-  }
-
-  result = result.replace(/\s+\bAND\b/g, '\n  AND');
-  result = result.replace(/\s+\bOR\b/g, '\n  OR');
-  result = result.replace(/,\s*/g, ',\n  ');
-
-  return result
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .join('\n');
-}
-
-function formatSql(input: string): string {
-  const capitalized = capitalizeKeywords(input.trim().replace(/\s+/g, ' '));
-  return addLineBreaks(capitalized);
-}
-
-function tryFormat(input: string) {
+function tryFormat(input: string, dialect: Dialect) {
   if (!input.trim()) {
     return { ok: false as const, message: 'Paste a SQL statement to format.' };
   }
-  return { ok: true as const, output: formatSql(input) };
+  try {
+    const output = formatSql(input, { language: dialect, keywordCase: 'upper' });
+    return { ok: true as const, output };
+  } catch (err) {
+    return { ok: false as const, message: err instanceof Error ? err.message : 'Could not format this SQL.' };
+  }
 }
 
 export default function SqlFormatter() {
   const [input, setInput] = useState(SAMPLE);
+  const [dialect, setDialect] = useState<Dialect>('sql');
 
-  const result = useMemo(() => tryFormat(input), [input]);
+  const result = useMemo(() => tryFormat(input, dialect), [input, dialect]);
 
   function copyOutput() {
     if (result.ok) navigator.clipboard.writeText(result.output);
@@ -104,6 +42,21 @@ export default function SqlFormatter() {
   return (
     <div>
       <div className="control-row">
+        <label className="mono" style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+          Dialect:
+        </label>
+        <select
+          className="icon-btn"
+          value={dialect}
+          onChange={(e) => setDialect(e.target.value as Dialect)}
+          style={{ paddingRight: 8 }}
+        >
+          {DIALECTS.map((d) => (
+            <option key={d.value} value={d.value}>
+              {d.label}
+            </option>
+          ))}
+        </select>
         <button className="icon-btn" onClick={() => setInput(SAMPLE)}>
           Load sample
         </button>
@@ -140,11 +93,17 @@ export default function SqlFormatter() {
               </button>
             </div>
           </div>
-          <div className="output mono">{result.ok ? result.output : '// Fix the errors on the left to see formatted output'}</div>
+          <div className="output mono">{result.ok ? result.output : '-- Fix the errors on the left to see formatted output'}</div>
           <div className="status-line status-neutral">
             {result.ok ? `${result.output.split('\n').length} lines` : ' '}
           </div>
         </div>
+      </div>
+
+      <div className="status-line status-neutral" style={{ marginTop: 12 }}>
+        Formats SQL using the <code>sql-formatter</code> package - a purpose-built parser that understands SQL
+        clause structure across several real dialects, rather than regex keyword-matching. Pick a dialect above to
+        match the SQL flavor you&apos;re working with. Runs entirely client-side; nothing you paste is uploaded.
       </div>
     </div>
   );

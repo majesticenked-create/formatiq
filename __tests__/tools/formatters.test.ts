@@ -200,46 +200,51 @@ function jsMinTryMinify(input: string) {
 }
 
 // ---------- sql-formatter ----------
-const MAJOR_CLAUSES = ['SELECT','FROM','WHERE','GROUP BY','ORDER BY','HAVING','LIMIT','INSERT INTO','VALUES','UPDATE','SET','DELETE FROM','UNION ALL','UNION'];
-const JOIN_CLAUSES = ['LEFT JOIN','RIGHT JOIN','INNER JOIN','FULL JOIN','JOIN'];
-const KEYWORDS = [...MAJOR_CLAUSES, ...JOIN_CLAUSES, 'ON','AND','OR','NOT','IN','IS','NULL','AS','DISTINCT','BETWEEN','LIKE','DESC','ASC','COUNT','SUM','AVG','MIN','MAX'];
-function capitalizeKeywords(sql: string): string {
-  let result = sql;
-  const sortedKeywords = [...KEYWORDS].sort((a, b) => b.length - a.length);
-  for (const kw of sortedKeywords) {
-    const pattern = new RegExp(`\\b${kw.replace(/ /g, '\\s+')}\\b`, 'gi');
-    result = result.replace(pattern, kw);
-  }
-  return result;
-}
-function addLineBreaks(sql: string): string {
-  let result = sql;
-  for (const clause of MAJOR_CLAUSES) {
-    const pattern = new RegExp(`\\s*\\b${clause.replace(/ /g, '\\s+')}\\b`, 'g');
-    result = result.replace(pattern, `\n${clause}`);
-  }
-  for (const clause of JOIN_CLAUSES) {
-    const pattern = new RegExp(`\\s*\\b${clause.replace(/ /g, '\\s+')}\\b`, 'g');
-    result = result.replace(pattern, `\n  ${clause}`);
-  }
-  result = result.replace(/\s+\bAND\b/g, '\n  AND');
-  result = result.replace(/\s+\bOR\b/g, '\n  OR');
-  result = result.replace(/,\s*/g, ',\n  ');
-  return result.split('\n').map((line) => line.trim()).filter(Boolean).join('\n');
-}
-function formatSql(input: string): string {
-  const capitalized = capitalizeKeywords(input.trim().replace(/\s+/g, ' '));
-  return addLineBreaks(capitalized);
-}
-function sqlTryFormat(input: string) {
+// Exercises the real `sql-formatter` package (same as the component), a purpose-built
+// SQL parser/pretty-printer rather than pattern-matched logic.
+import { format as sqlFormatLib } from 'sql-formatter';
+function sqlTryFormat(input: string, dialect: 'sql' | 'mysql' | 'postgresql' | 'transactsql' | 'sqlite' | 'plsql' = 'sql') {
   if (!input.trim()) return { ok: false as const, message: 'Paste a SQL statement to format.' };
-  return { ok: true as const, output: formatSql(input) };
+  try {
+    return { ok: true as const, output: sqlFormatLib(input, { language: dialect, keywordCase: 'upper' }) };
+  } catch (err) {
+    return { ok: false as const, message: err instanceof Error ? err.message : 'Could not format this SQL.' };
+  }
 }
 {
   const good = sqlTryFormat('select a from t where b=1');
   check('sql-formatter', 'valid input capitalizes+breaks lines', good.ok === true && good.output.includes('SELECT') && good.output.includes('\nFROM'), JSON.stringify(good));
+
   const empty = sqlTryFormat('   ');
   check('sql-formatter', 'empty input -> error', empty.ok === false);
+
+  const joinQuery = sqlTryFormat('select u.id, o.total from users u join orders o on o.user_id = u.id where o.total > 100 and u.active = true');
+  check(
+    'sql-formatter',
+    'JOIN with compound WHERE is formatted',
+    joinQuery.ok === true && joinQuery.output.includes('JOIN') && joinQuery.output.includes('WHERE') && joinQuery.output.includes('AND'),
+    JSON.stringify(joinQuery)
+  );
+
+  const nested = sqlTryFormat('select id from (select id from t where active = true) sub where id > 1');
+  check(
+    'sql-formatter',
+    'nested subquery does not crash and preserves structure',
+    nested.ok === true && nested.output.includes('SELECT') && nested.output.includes('('),
+    JSON.stringify(nested)
+  );
+
+  const withComment = sqlTryFormat('select a from t -- trailing comment\nwhere b = 1');
+  check(
+    'sql-formatter',
+    'inline comment is preserved',
+    withComment.ok === true && withComment.output.includes('-- trailing comment'),
+    JSON.stringify(withComment)
+  );
+
+  const dialectSpecific = sqlTryFormat('SELECT TOP 10 * FROM t', 'transactsql');
+  check('sql-formatter', 'T-SQL dialect handles TOP clause', dialectSpecific.ok === true, JSON.stringify(dialectSpecific));
+
   const gibberish = sqlTryFormat('asdkfj alskdjf');
   check('sql-formatter', 'edge case: non-SQL text does not crash', gibberish.ok === true, JSON.stringify(gibberish));
 }
@@ -678,6 +683,119 @@ import { JSDOM } from 'jsdom';
     codeFence.includes('&lt;script&gt;') && !codeFence.includes('<script>bad'),
     codeFence
   );
+}
+
+// ---------- scss-formatter ----------
+{
+  const output = css_beautify('$c:red;.a{color:$c;.b{margin:10px;}}', { indent_size: 2 });
+  check(
+    'scss-formatter',
+    'preserves $variables and nesting while reindenting',
+    output.includes('$c: red;') && output.includes('.a {') && output.includes('.b {') && output.includes('color: $c;'),
+    output
+  );
+}
+
+// ---------- sass-compiler / scss-compiler (shared compileSass helper) ----------
+import { compileSass } from '@/lib/tools/sass-utils';
+
+{
+  const scssResult = compileSass('$c: red;\n.a { color: $c; .b { margin: 10px; } }', 'scss');
+  check(
+    'scss-compiler',
+    'compiles SCSS variables and nesting into flattened CSS',
+    scssResult.ok && scssResult.css.includes('color: red') && scssResult.css.includes('.a .b'),
+    scssResult.ok ? scssResult.css : scssResult.message
+  );
+
+  const indentedResult = compileSass('$c: red\n.a\n  color: $c\n  .b\n    margin: 10px\n', 'indented');
+  check(
+    'sass-compiler',
+    'compiles indented-syntax Sass into flattened CSS',
+    indentedResult.ok && indentedResult.css.includes('color: red') && indentedResult.css.includes('.a .b'),
+    indentedResult.ok ? indentedResult.css : indentedResult.message
+  );
+
+  const badImportScss = compileSass('@import "does-not-exist";', 'scss');
+  check(
+    'scss-compiler',
+    'unresolvable @import fails gracefully with a clear error, not a crash',
+    badImportScss.ok === false && badImportScss.message.length > 0,
+    badImportScss.ok ? 'unexpectedly succeeded' : badImportScss.message
+  );
+
+  const badImportSass = compileSass('@use "does-not-exist"\n', 'indented');
+  check(
+    'sass-compiler',
+    'unresolvable @use fails gracefully with a clear error, not a crash',
+    badImportSass.ok === false && badImportSass.message.length > 0,
+    badImportSass.ok ? 'unexpectedly succeeded' : badImportSass.message
+  );
+
+  const emptyInput = compileSass('', 'scss');
+  check('scss-compiler', 'empty input reports a message instead of compiling', emptyInput.ok === false, '');
+}
+
+// ---------- rss-viewer ----------
+{
+  const dom = new JSDOM('<!DOCTYPE html>');
+  const purify = DOMPurify(dom.window as unknown as Window & typeof globalThis);
+
+  function textOf(el: Element | null, tag: string): string {
+    if (!el) return '';
+    const child = Array.from(el.children).find((c) => c.tagName.toLowerCase() === tag);
+    return child?.textContent?.trim() ?? '';
+  }
+
+  function parseFeed(xml: string) {
+    const parser = new dom.window.DOMParser();
+    const doc = parser.parseFromString(xml, 'application/xml');
+    const errorNode = doc.querySelector('parsererror');
+    if (errorNode) return { ok: false as const, message: 'Invalid XML' };
+    const channel = doc.querySelector('rss > channel') ?? doc.querySelector('channel');
+    if (!channel) return { ok: false as const, message: 'No channel found' };
+    const items = Array.from(channel.children)
+      .filter((c) => c.tagName.toLowerCase() === 'item')
+      .map((item) => ({
+        title: textOf(item, 'title'),
+        link: textOf(item, 'link'),
+        description: textOf(item, 'description'),
+        pubDate: textOf(item, 'pubdate') || textOf(item, 'pubDate'),
+      }));
+    return {
+      ok: true as const,
+      feed: { title: textOf(channel, 'title'), link: textOf(channel, 'link'), description: textOf(channel, 'description'), items },
+    };
+  }
+
+  const feedXml = `<?xml version="1.0"?><rss version="2.0"><channel><title>Test Feed</title><link>https://example.com</link><description>Desc</description><item><title>Item One</title><link>https://example.com/1</link><description>Hello &lt;script&gt;alert(1)&lt;/script&gt; &lt;b&gt;world&lt;/b&gt;</description><pubDate>Wed, 24 Sep 2026 12:00:00 GMT</pubDate></item></channel></rss>`;
+
+  const parsed = parseFeed(feedXml);
+  check(
+    'rss-viewer',
+    'parses real <rss><channel><item> structure via DOMParser, not regex',
+    parsed.ok && parsed.feed.title === 'Test Feed' && parsed.feed.items.length === 1 && parsed.feed.items[0].title === 'Item One',
+    JSON.stringify(parsed)
+  );
+
+  if (parsed.ok) {
+    const sanitized = purify.sanitize(parsed.feed.items[0].description, {
+      FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form'],
+      FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'style'],
+    });
+    check(
+      'rss-viewer',
+      'embedded <script> in item description is stripped by DOMPurify before rendering',
+      !sanitized.includes('<script') && !sanitized.includes('alert(1)') && sanitized.includes('<b>world</b>'),
+      sanitized
+    );
+  }
+
+  const notRss = parseFeed('<foo><bar/></foo>');
+  check('rss-viewer', 'non-RSS XML without <rss><channel> is reported, not misparsed', notRss.ok === false, '');
+
+  const malformed = parseFeed('<rss><channel><title>Broken</channel>');
+  check('rss-viewer', 'malformed XML reports a parser error rather than throwing', malformed.ok === false, '');
 }
 
 // Print results

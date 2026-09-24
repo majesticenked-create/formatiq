@@ -3,6 +3,10 @@ import Json5Validator from '@/components/tools/Json5Validator';
 import LessCompiler from '@/components/tools/LessCompiler';
 import LessFormatter from '@/components/tools/LessFormatter';
 import MarkdownEditor from '@/components/tools/MarkdownEditor';
+import RssViewer from '@/components/tools/RssViewer';
+import SassCompiler from '@/components/tools/SassCompiler';
+import ScssCompiler from '@/components/tools/ScssCompiler';
+import ScssFormatter from '@/components/tools/ScssFormatter';
 import GraphqlFormatter from '@/components/tools/GraphqlFormatter';
 import JavascriptTester from '@/components/tools/JavascriptTester';
 import JsonValidator from '@/components/tools/JsonValidator';
@@ -2634,13 +2638,13 @@ export const tools: ToolDefinition[] = [
     slug: 'sql-formatter',
     category: 'formatters',
     title: 'SQL Formatter',
-    shortDescription: 'Format SQL with capitalized keywords and each major clause on its own line.',
+    shortDescription: 'Format SQL with a real parser - keyword casing, clause breaks, and dialect support.',
     longDescription:
-      'Paste a SQL statement to get consistent keyword capitalization (SELECT, FROM, WHERE, JOIN, and friends are normalized to uppercase regardless of how you typed them) and each major clause - SELECT, FROM, WHERE, JOIN, GROUP BY, ORDER BY, and more - broken onto its own line, with AND/OR conditions and comma-separated columns indented underneath for readability. The formatter works by pattern-matching common SQL keywords and clause boundaries rather than building a full parse tree of the query, so it handles typical SELECT, INSERT, UPDATE, and DELETE statements well without needing to understand every SQL dialect’s full grammar. That trade-off means unusual constructs - deeply nested subqueries, vendor-specific syntax, or SQL embedded inside strings - may not format exactly as a full SQL-aware formatter would, but for everyday queries it turns a dense one-liner into something reviewable at a glance. Runs entirely client-side.',
+      'Paste a SQL statement and get it reformatted by the sql-formatter package - a purpose-built SQL parser and pretty-printer, not a regex keyword-matcher - so keywords are capitalized (SELECT, FROM, WHERE, JOIN, and friends normalized to uppercase) and each major clause breaks onto its own line with AND/OR conditions and comma-separated columns indented underneath. Because it parses SQL structure rather than pattern-matching on keywords, it handles nested subqueries, comments, and nuanced clause boundaries far more reliably than a hand-rolled formatter would. Pick a dialect - Standard SQL, MySQL, PostgreSQL, T-SQL, SQLite, or PL/SQL - to match dialect-specific syntax quirks. Runs entirely client-side; nothing you paste is uploaded.',
     metaTitle: 'SQL Formatter - Free Online Tool | Formatiq',
     metaDescription:
-      'Format SQL online for free with keyword capitalization and each clause on its own line. Handles SELECT, INSERT, UPDATE, and DELETE.',
-    keywords: ['sql formatter', 'sql beautifier', 'format sql online', 'sql pretty print'],
+      'Format SQL online for free with real dialect-aware parsing - keyword capitalization, clause breaks, and support for MySQL, PostgreSQL, T-SQL, and more.',
+    keywords: ['sql formatter', 'sql beautifier', 'format sql online', 'sql pretty print', 'mysql formatter', 'postgresql formatter'],
     useCase: 'Making a dense one-line query reviewable in a PR',
     howItWorks: [
       {
@@ -2648,12 +2652,12 @@ export const tools: ToolDefinition[] = [
         description: 'A SELECT, INSERT, UPDATE, or DELETE statement, however it’s currently formatted.',
       },
       {
-        title: 'Keywords are capitalized',
-        description: 'SELECT, FROM, WHERE, JOIN, and other keywords are normalized to uppercase automatically.',
+        title: 'Pick a dialect',
+        description: 'Standard SQL, MySQL, PostgreSQL, T-SQL, SQLite, or PL/SQL - each has its own parser rules.',
       },
       {
-        title: 'Clauses break onto their own lines',
-        description: 'Each major clause gets its own line with consistent indentation for AND/OR conditions.',
+        title: 'Parsed and reformatted',
+        description: 'sql-formatter parses the query’s real structure and reprints it with consistent casing and indentation.',
       },
       {
         title: 'Copy the readable result',
@@ -2662,32 +2666,37 @@ export const tools: ToolDefinition[] = [
     ],
     benefits: [
       {
+        title: 'Real SQL parsing, not regex',
+        description: 'Built on the sql-formatter package, which parses clause structure instead of guessing from keyword patterns.',
+      },
+      {
         title: 'Consistent keyword casing',
         description: 'Every SELECT, FROM, and WHERE is capitalized the same way, regardless of how it was typed.',
       },
       {
-        title: 'One clause per line',
-        description: 'Turns a dense one-liner into a structure you can actually review in a diff.',
+        title: 'Handles nested queries and comments',
+        description: 'Subqueries, joins, and inline comments are preserved and indented correctly, not just top-level clauses.',
       },
       {
-        title: 'JOIN and WHERE aware',
-        description: 'Handles multi-table queries with JOIN conditions and compound WHERE clauses, not just simple SELECTs.',
-      },
-      {
-        title: 'No dialect lock-in required',
-        description: 'Works on standard SQL patterns without needing a specific database engine installed.',
+        title: 'Multiple dialects supported',
+        description: 'Switch between Standard SQL, MySQL, PostgreSQL, T-SQL, SQLite, and PL/SQL to match your database.',
       },
     ],
     faqs: [
       {
         question: 'Does this formatter understand every SQL dialect (MySQL, PostgreSQL, T-SQL, etc.)?',
         answer:
-          'Not fully - it recognizes the keywords and clause structure common across standard SQL and the most popular dialects, but it doesn’t parse dialect-specific syntax extensions the way a database engine’s own parser would. Vendor-specific functions and constructs will usually pass through unformatted rather than breaking, but they won’t get special-cased treatment either.',
+          'It supports the dialects listed in the picker (Standard SQL, MySQL, PostgreSQL, T-SQL, SQLite, PL/SQL), each with its own parser rules from the underlying sql-formatter package. Other dialects the package supports (BigQuery, Snowflake, Redshift, and more) aren’t exposed in this picker, and highly vendor-specific extensions beyond what a given dialect’s parser recognizes may not format as expected.',
       },
       {
-        question: 'Why isn’t this a full SQL parser with an abstract syntax tree?',
+        question: 'Why use a real parser instead of pattern-matching keywords?',
         answer:
-          'A true parser would need to fully understand every SQL dialect’s grammar to avoid mangling valid queries, which is a much larger undertaking than a free formatting tool needs. Pattern-matching on keywords and clause boundaries covers the vast majority of everyday SELECT/INSERT/UPDATE/DELETE statements well, while staying simple enough to be predictable and fast.',
+          'A regex-based formatter can misfire on SQL embedded inside string literals, nested subqueries, or unusual clause ordering, because it has no real understanding of the query’s structure. A parser-based formatter builds an actual representation of the query first, so it reprints it correctly even for cases that would trip up simple keyword replacement.',
+      },
+      {
+        question: 'Does this tool run or connect to a database?',
+        answer:
+          'No - this only formats SQL text. It never executes a query, never opens a database connection, and never sends anything you paste to a server; formatting happens entirely in your browser.',
       },
     ],
     Component: SqlFormatter,
@@ -10742,6 +10751,192 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: MarkdownEditor,
+  },
+  {
+    slug: 'rss-viewer',
+    category: 'formatters',
+    relatedSlugs: ['xml-formatter', 'json-formatter', 'markdown-editor'],
+    isNew: true,
+    title: 'RSS Viewer',
+    shortDescription: 'Parse a pasted RSS 2.0 feed into a readable channel/item view or a JSON representation.',
+    longDescription:
+      'Paste an RSS 2.0 feed and see its actual structure - channel title, link, and description, followed by each item’s title, link, publish date, and description - parsed with the browser’s built-in DOMParser rather than regex tag-matching, so it reads the real <rss><channel> hierarchy instead of guessing from string patterns. Switch to the JSON view to get the same parsed structure as plain JSON, useful for eyeballing what a feed actually contains before wiring it into code. Item descriptions often carry embedded HTML in real-world feeds, so any HTML found there is run through DOMPurify - the same sanitizer used by the Markdown Editor - before it’s ever rendered. This tool never fetches a remote feed URL for you; input is pasted XML only, and DOMParser itself never resolves external entities or DTDs. Everything runs client-side.',
+    metaTitle: 'RSS Viewer - Parse RSS 2.0 Feeds Online | Formatiq',
+    metaDescription:
+      'Paste an RSS 2.0 feed and view its parsed channel and items, or get a JSON representation. Runs client-side with sanitized HTML rendering.',
+    keywords: ['rss viewer', 'rss parser', 'rss to json', 'parse rss feed', 'rss 2.0 reader'],
+    useCase: 'Inspecting what a pasted RSS feed actually contains before wiring it into code',
+    howItWorks: [
+      {
+        title: 'Paste RSS 2.0 XML',
+        description: 'A sample feed is loaded by default - swap in your own <rss><channel> XML.',
+      },
+      {
+        title: 'Parsed automatically',
+        description: 'The browser’s DOMParser reads the real channel/item structure, not regex matching.',
+      },
+      {
+        title: 'View parsed or as JSON',
+        description: 'Switch between a readable channel/item view and a JSON.stringify of the same structure.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this tool fetch my feed URL for me?',
+        answer:
+          'No - it only parses XML you paste in directly. It never makes a network request to fetch a feed, so there’s no way for a pasted URL to trigger an outbound request from this tool.',
+      },
+      {
+        question: 'Is embedded HTML in item descriptions safe to view?',
+        answer:
+          'Yes - RSS item descriptions frequently contain HTML markup, and any HTML found there is sanitized with DOMPurify (stripping <script>, inline event handlers, and javascript: URLs) before it’s rendered, the same approach used by the Markdown Editor.',
+      },
+      {
+        question: 'Does DOMParser resolve external entities or DTDs?',
+        answer:
+          'No - this is a browser platform guarantee. The browser’s built-in XML parser does not fetch or resolve external DTDs/entities referenced in the XML, so a maliciously crafted feed can’t cause the parser itself to reach out to a network address.',
+      },
+      {
+        question: 'What if my XML isn’t RSS 2.0?',
+        answer:
+          'If no <rss><channel> element is found, the tool reports that plainly rather than guessing at a different feed format like Atom - support here is specifically for RSS 2.0’s structure.',
+      },
+    ],
+    Component: RssViewer,
+  },
+  {
+    slug: 'sass-compiler',
+    category: 'formatters',
+    relatedSlugs: ['scss-compiler', 'scss-formatter', 'css-formatter'],
+    isNew: true,
+    title: 'SASS Compiler',
+    shortDescription: 'Compile indented-syntax Sass (no braces or semicolons) into plain CSS in your browser.',
+    longDescription:
+      'Paste Sass written in the original indentation-based syntax - no braces, no semicolons, nesting shown purely through indentation - and get back plain CSS. This uses the official sass package (Dart Sass compiled to JavaScript), the same purpose-built compiler most real Sass tooling is built on, running entirely client-side via its compileString API. No filename is given to the compiler, so @use/@import can never resolve against a filesystem or network address - an unresolvable import fails with a clear compile error rather than attempting to fetch anything. Nothing you paste is ever uploaded.',
+    metaTitle: 'SASS Compiler - Indented Sass to CSS, Free & Client-Side | Formatiq',
+    metaDescription:
+      'Compile indented-syntax Sass to CSS online for free using Dart Sass. Runs entirely in your browser - nothing is uploaded.',
+    keywords: ['sass compiler', 'sass to css', 'indented sass syntax', 'compile sass online', 'dart sass'],
+    useCase: 'Checking what an indented-syntax Sass snippet compiles to without a build step',
+    howItWorks: [
+      {
+        title: 'Paste indented Sass',
+        description: 'Variables and nesting are expressed with indentation only - no braces or semicolons.',
+      },
+      {
+        title: 'Compiled instantly',
+        description: 'The official sass (Dart Sass) package compiles your source to plain CSS in your browser.',
+      },
+      {
+        title: 'Copy the CSS',
+        description: 'Copy the compiled output directly, or fix any reported error and recompile.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What’s the difference between this and the SCSS Compiler?',
+        answer:
+          'Both use the same underlying sass (Dart Sass) compiler - the only difference is which syntax it’s told to parse. This tool expects the original indented Sass syntax (no braces/semicolons); the SCSS Compiler expects SCSS’s CSS-like brace syntax.',
+      },
+      {
+        question: 'What happens with an unresolvable @use or @import?',
+        answer:
+          'Since no filename is provided to the compiler, an @use/@import can’t resolve against any local file or remote URL. Compilation fails with a clear error rather than silently succeeding or attempting a network request.',
+      },
+      {
+        question: 'Does this tool send my Sass anywhere?',
+        answer: 'No. Compilation runs entirely in your browser using the sass package’s JavaScript build - nothing you paste is uploaded to a server.',
+      },
+    ],
+    Component: SassCompiler,
+  },
+  {
+    slug: 'scss-compiler',
+    category: 'formatters',
+    relatedSlugs: ['sass-compiler', 'scss-formatter', 'css-formatter'],
+    isNew: true,
+    title: 'SCSS Compiler',
+    shortDescription: 'Compile SCSS (variables, nesting) into plain CSS instantly in your browser.',
+    longDescription:
+      'Paste SCSS source - variables, nested rules - and get back plain, browser-ready CSS. This uses the official sass package (Dart Sass compiled to JavaScript) running entirely client-side, the same compiler and shared helper used by the SASS Compiler, just told to parse SCSS’s brace-and-semicolon syntax instead of the indented form. No filename is given to the compiler, so @use/@import can never resolve against a filesystem or network address - an unresolvable import fails with a clear compile error rather than attempting to fetch anything. Useful for quickly checking what an SCSS snippet actually compiles to without wiring up a build step.',
+    metaTitle: 'SCSS Compiler - SCSS to CSS, Free & Client-Side | Formatiq',
+    metaDescription:
+      'Compile SCSS to CSS online for free. Variables and nesting supported. Runs entirely in your browser - nothing is uploaded.',
+    keywords: ['scss compiler', 'scss to css', 'compile scss online', 'scss css converter', 'dart sass'],
+    useCase: 'Checking what an SCSS snippet compiles to without a build step',
+    howItWorks: [
+      {
+        title: 'Paste SCSS',
+        description: 'Variables and nested selectors are supported.',
+      },
+      {
+        title: 'Compiled instantly',
+        description: 'The official sass (Dart Sass) package compiles your source to plain CSS in your browser.',
+      },
+      {
+        title: 'Copy the CSS',
+        description: 'Copy the compiled output directly, or fix any reported error and recompile.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the SCSS Formatter?',
+        answer:
+          'This tool compiles SCSS down to plain CSS - variables get resolved, nesting gets flattened. The SCSS Formatter instead re-indents SCSS source while keeping it as SCSS, for when you want to clean up formatting without changing the language.',
+      },
+      {
+        question: 'What happens with an unresolvable @use or @import?',
+        answer:
+          'Since no filename is provided to the compiler, an @use/@import can’t resolve against any local file or remote URL. Compilation fails with a clear error rather than silently succeeding or attempting a network request.',
+      },
+      {
+        question: 'Does this tool send my SCSS anywhere?',
+        answer: 'No. Compilation runs entirely in your browser using the sass package’s JavaScript build - nothing you paste is uploaded to a server.',
+      },
+    ],
+    Component: ScssCompiler,
+  },
+  {
+    slug: 'scss-formatter',
+    category: 'formatters',
+    relatedSlugs: ['css-formatter', 'scss-compiler', 'sass-compiler'],
+    isNew: true,
+    title: 'SCSS Formatter',
+    shortDescription: 'Beautify SCSS source (indentation, brace placement) while keeping it as SCSS.',
+    longDescription:
+      'Paste SCSS and get it beautified with consistent indentation and brace placement - powered by js-beautify’s css_beautify, the same beautification engine used by the CSS Formatter and LESS Formatter. SCSS’s $variables and nested rules are structurally similar enough to plain CSS that css_beautify reformats whitespace cleanly without corrupting or attempting to interpret them - it never resolves variables or flattens nesting, it only adjusts layout. To actually compile SCSS down to plain CSS instead, use the SCSS Compiler. Runs entirely client-side.',
+    metaTitle: 'SCSS Formatter & Beautifier - Free Online Tool | Formatiq',
+    metaDescription:
+      'Format and beautify SCSS online for free. Reindent SCSS source while keeping variables and nesting intact.',
+    keywords: ['scss formatter', 'scss beautifier', 'format scss online', 'scss pretty print'],
+    useCase: 'Cleaning up minified or inconsistently indented SCSS source for review',
+    howItWorks: [
+      {
+        title: 'Paste SCSS',
+        description: '$variables and nested rules pass through untouched as literal text.',
+      },
+      {
+        title: 'Beautified instantly',
+        description: 'css_beautify reformats whitespace and brace placement, adjustable indentation.',
+      },
+      {
+        title: 'Copy the result',
+        description: 'Copy the reformatted SCSS, still valid SCSS - not compiled CSS.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this tool compile my SCSS?',
+        answer:
+          'No - it only reformats whitespace and brace placement. $variables, nesting, and mixins pass through exactly as written. To get compiled plain CSS instead, use the SCSS Compiler.',
+      },
+      {
+        question: 'Will css_beautify corrupt SCSS-specific syntax?',
+        answer:
+          'No - SCSS’s brace-and-semicolon structure is close enough to plain CSS that css_beautify handles $variables and nested selectors as ordinary tokens, the same way it already does for LESS’s @variables in the LESS Formatter.',
+      },
+    ],
+    Component: ScssFormatter,
   },
 ];
 
