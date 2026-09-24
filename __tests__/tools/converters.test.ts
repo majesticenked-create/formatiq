@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { JSDOM } from 'jsdom';
 
 // Logic copied verbatim from the corresponding component file(s) in components/tools/
 // to test in isolation without modifying the real components (many tools embed their
@@ -436,6 +437,191 @@ function bytesToBinaryString(bytes: Uint8Array): string {
 
   const notDataUri = stripDataUriPrefix('SGVsbG8=');
   check('base64-to-css', 'bare base64 passed through unchanged', notDataUri === 'SGVsbG8=', notDataUri);
+}
+
+// ---------- base64-to-hex / base64-to-octal (shared lib/tools/base64-utils.ts) ----------
+import { bytesToHex, bytesToOctal, decodeBase64Utf8 } from '@/lib/tools/base64-utils';
+
+{
+  // QQ== -> 41 (byte 65 in hex)
+  const a = base64ToBytes('QQ==');
+  check('base64-to-hex', 'QQ== -> 41', a.ok === true && bytesToHex(a.bytes) === '41', JSON.stringify(a.ok ? bytesToHex(a.bytes) : a));
+
+  // SGk= -> Hi -> 48 69
+  const hi = base64ToBytes('SGk=');
+  check(
+    'base64-to-hex',
+    'SGk= -> 48 69',
+    hi.ok === true && bytesToHex(hi.bytes) === '48 69',
+    JSON.stringify(hi.ok ? bytesToHex(hi.bytes) : hi)
+  );
+
+  const hiCompact = hi.ok ? bytesToHex(hi.bytes, { grouped: false }) : '';
+  check('base64-to-hex', 'compact mode has no spaces', hiCompact === '4869', hiCompact);
+
+  const invalidHex = base64ToBytes('not valid base64!!!');
+  check('base64-to-hex', 'invalid base64 -> error not crash', invalidHex.ok === false, JSON.stringify(invalidHex));
+
+  // QQ== -> 101 (byte 65 in octal)
+  check('base64-to-octal', 'QQ== -> 101', a.ok === true && bytesToOctal(a.bytes) === '101', JSON.stringify(a.ok ? bytesToOctal(a.bytes) : a));
+
+  // SGk= -> Hi -> 110 151 (72 and 105 in octal)
+  check(
+    'base64-to-octal',
+    'SGk= -> 110 151',
+    hi.ok === true && bytesToOctal(hi.bytes) === '110 151',
+    JSON.stringify(hi.ok ? bytesToOctal(hi.bytes) : hi)
+  );
+
+  const invalidOctal = base64ToBytes('not valid base64!!!');
+  check('base64-to-octal', 'invalid base64 -> error not crash', invalidOctal.ok === false, JSON.stringify(invalidOctal));
+}
+
+// ---------- decodeBase64Utf8 3-stage helper (shared by json/xml/yaml/csv/tsv converters) ----------
+{
+  const valid = decodeBase64Utf8('SGVsbG8=');
+  check('base64-utils', 'decodeBase64Utf8: valid base64+utf8 -> text', valid.ok === true && valid.text === 'Hello', JSON.stringify(valid));
+
+  const badBase64 = decodeBase64Utf8('not valid base64!!!');
+  check(
+    'base64-utils',
+    'decodeBase64Utf8: invalid base64 -> stage "base64"',
+    badBase64.ok === false && badBase64.stage === 'base64',
+    JSON.stringify(badBase64)
+  );
+
+  // 0xFF is not a valid standalone UTF-8 byte sequence
+  const invalidUtf8Bytes = new Uint8Array([0xff, 0xff]);
+  const invalidUtf8Base64 = bytesToBase64(invalidUtf8Bytes);
+  const badUtf8 = decodeBase64Utf8(invalidUtf8Base64);
+  check(
+    'base64-utils',
+    'decodeBase64Utf8: valid base64, invalid UTF-8 -> stage "utf8"',
+    badUtf8.ok === false && badUtf8.stage === 'utf8',
+    JSON.stringify(badUtf8)
+  );
+}
+
+// ---------- base64-to-json ----------
+{
+  function convertJson(input: string) {
+    const decoded = decodeBase64Utf8(input);
+    if (!decoded.ok) return { ok: false as const, stage: decoded.stage, message: decoded.message };
+    try {
+      return { ok: true as const, output: JSON.stringify(JSON.parse(decoded.text), null, 2) };
+    } catch (err) {
+      return { ok: false as const, stage: 'json' as const, message: String(err) };
+    }
+  }
+
+  const validJson = convertJson(bytesToBase64(new TextEncoder().encode('{"a":1}')));
+  check('base64-to-json', 'valid base64 -> valid JSON parses+formats', validJson.ok === true && validJson.output === '{\n  "a": 1\n}', JSON.stringify(validJson));
+
+  const invalidJson = convertJson(bytesToBase64(new TextEncoder().encode('{not json')));
+  check(
+    'base64-to-json',
+    'valid base64 -> invalid JSON gives stage-3 error, not a false base64 error',
+    invalidJson.ok === false && invalidJson.stage === 'json',
+    JSON.stringify(invalidJson)
+  );
+
+  const invalidB64Json = convertJson('not valid base64!!!');
+  check('base64-to-json', 'invalid base64 -> stage "base64"', invalidB64Json.ok === false && invalidB64Json.stage === 'base64', JSON.stringify(invalidB64Json));
+}
+
+// ---------- base64-to-xml (reuses lib/tools/xml-utils.ts parseXml) ----------
+import { parseXml, formatXmlElement } from '@/lib/tools/xml-utils';
+{
+  // base64-to-xml reuses xml-utils.ts's parseXml, which requires the real browser DOMParser -
+  // not a global under vitest's `node` environment, so jsdom supplies it here (same pattern as
+  // the xml-minifier/xml-parser/xpath-tester block in formatters.test.ts).
+  const xmlDom = new JSDOM('<!DOCTYPE html>');
+  (globalThis as unknown as { DOMParser: unknown }).DOMParser = xmlDom.window.DOMParser;
+  (globalThis as unknown as { XMLSerializer: unknown }).XMLSerializer = xmlDom.window.XMLSerializer;
+  (globalThis as unknown as { Node: unknown }).Node = xmlDom.window.Node;
+
+  function convertXml(input: string) {
+    const decoded = decodeBase64Utf8(input);
+    if (!decoded.ok) return { ok: false as const, stage: decoded.stage };
+    const parsed = parseXml(decoded.text);
+    if (!parsed.ok) return { ok: false as const, stage: 'xml' as const, message: parsed.message };
+    return { ok: true as const, output: formatXmlElement(parsed.doc.documentElement, 0) };
+  }
+
+  const validXml = convertXml(bytesToBase64(new TextEncoder().encode('<a><b>1</b></a>')));
+  check('base64-to-xml', 'valid base64 -> valid XML parses+formats', validXml.ok === true && validXml.output.includes('<b>1</b>'), JSON.stringify(validXml));
+
+  const invalidXml = convertXml(bytesToBase64(new TextEncoder().encode('<a><b>unclosed')));
+  check('base64-to-xml', 'valid base64 -> invalid XML gives stage-3 error, not a false base64 error', invalidXml.ok === false && invalidXml.stage === 'xml', JSON.stringify(invalidXml));
+
+  const invalidB64Xml = convertXml('not valid base64!!!');
+  check('base64-to-xml', 'invalid base64 -> stage "base64"', invalidB64Xml.ok === false && invalidB64Xml.stage === 'base64', JSON.stringify(invalidB64Xml));
+}
+
+// ---------- base64-to-yaml (reuses lib/tools/yaml-utils.ts parseYaml) ----------
+import { parseYaml } from '@/lib/tools/yaml-utils';
+{
+  function convertYaml(input: string) {
+    const decoded = decodeBase64Utf8(input);
+    if (!decoded.ok) return { ok: false as const, stage: decoded.stage };
+    const parsed = parseYaml(decoded.text);
+    if (!parsed.ok) return { ok: false as const, stage: 'yaml' as const, message: parsed.message };
+    return { ok: true as const, output: JSON.stringify(parsed.value, null, 2) };
+  }
+
+  const validYaml = convertYaml(bytesToBase64(new TextEncoder().encode('a: 1\nb: two')));
+  check('base64-to-yaml', 'valid base64 -> valid YAML parses', validYaml.ok === true && validYaml.output === '{\n  "a": 1,\n  "b": "two"\n}', JSON.stringify(validYaml));
+
+  const invalidYaml = convertYaml(bytesToBase64(new TextEncoder().encode('a: [1, 2')));
+  check('base64-to-yaml', 'valid base64 -> invalid YAML gives stage-3 error, not a false base64 error', invalidYaml.ok === false && invalidYaml.stage === 'yaml', JSON.stringify(invalidYaml));
+
+  const invalidB64Yaml = convertYaml('not valid base64!!!');
+  check('base64-to-yaml', 'invalid base64 -> stage "base64"', invalidB64Yaml.ok === false && invalidB64Yaml.stage === 'base64', JSON.stringify(invalidB64Yaml));
+}
+
+// ---------- base64-to-csv / base64-to-tsv (reuses components/tools/CsvTsvConverter.tsx parseDelimitedRows) ----------
+import { parseDelimitedRows } from '@/components/tools/CsvTsvConverter';
+{
+  const csvSource = 'id,name,notes\n1,Formatiq,"Free, browser-based tools"';
+  const csvRows = parseDelimitedRows(csvSource, ',');
+  check(
+    'base64-to-csv',
+    'quoted comma inside a field stays in one column',
+    csvRows.length === 2 && csvRows[1][2] === 'Free, browser-based tools',
+    JSON.stringify(csvRows)
+  );
+
+  const multilineCsv = 'a,b\n1,"line one\nline two"';
+  const multilineRows = parseDelimitedRows(multilineCsv, ',');
+  check(
+    'base64-to-csv',
+    'multi-row: embedded newline inside quotes does not create an extra row',
+    multilineRows.length === 2 && multilineRows[1][1] === 'line one\nline two',
+    JSON.stringify(multilineRows)
+  );
+
+  const decodedCsv = decodeBase64Utf8(bytesToBase64(new TextEncoder().encode(csvSource)));
+  check(
+    'base64-to-csv',
+    'end-to-end: base64 decode -> CSV parse',
+    decodedCsv.ok === true && parseDelimitedRows(decodedCsv.text, ',')[1][1] === 'Formatiq',
+    JSON.stringify(decodedCsv)
+  );
+
+  const invalidB64Csv = decodeBase64Utf8('not valid base64!!!');
+  check('base64-to-csv', 'invalid base64 -> stage "base64"', invalidB64Csv.ok === false && invalidB64Csv.stage === 'base64', JSON.stringify(invalidB64Csv));
+
+  const tsvSource = 'a\tb\tc\n1\t\t"tab, kept"';
+  const tsvRows = parseDelimitedRows(tsvSource, '\t');
+  check(
+    'base64-to-tsv',
+    'tab/empty-cell preservation: middle empty cell stays empty',
+    tsvRows.length === 2 && tsvRows[1][1] === '' && tsvRows[1][2] === 'tab, kept',
+    JSON.stringify(tsvRows)
+  );
+
+  const invalidB64Tsv = decodeBase64Utf8('not valid base64!!!');
+  check('base64-to-tsv', 'invalid base64 -> stage "base64"', invalidB64Tsv.ok === false && invalidB64Tsv.stage === 'base64', JSON.stringify(invalidB64Tsv));
 }
 
 describe('Converters', () => {

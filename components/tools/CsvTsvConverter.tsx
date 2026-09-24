@@ -9,7 +9,9 @@ const SAMPLE_TSV = 'id\tname\tnotes\n1\tFormatiq\t"Tab-separated, no comma escap
 
 // Same quoted-field CSV/TSV parsing approach used by csv-json-converter.tsx,
 // generalized to accept either delimiter so the logic isn't duplicated per format.
-function parseDelimitedLine(line: string, delimiter: string): string[] {
+// Exported so base64-to-csv/base64-to-tsv can reuse this exact RFC-4180-ish parser
+// (quoted fields, embedded commas/newlines, doubled-quote escaping) instead of a naive split(',').
+export function parseDelimitedLine(line: string, delimiter: string): string[] {
   const fields: string[] = [];
   let field = '';
   let inQuotes = false;
@@ -42,7 +44,7 @@ function parseDelimitedLine(line: string, delimiter: string): string[] {
   return fields;
 }
 
-function parseDelimitedRows(input: string, delimiter: string): string[][] {
+export function parseDelimitedRows(input: string, delimiter: string): string[][] {
   const rows: string[] = [];
   let row = '';
   let inQuotes = false;

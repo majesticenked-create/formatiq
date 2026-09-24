@@ -66,3 +66,34 @@ export function stripIndentationWhitespace(node: Node): void {
 export function serializeXml(node: Node): string {
   return new XMLSerializer().serializeToString(node);
 }
+
+/**
+ * Pretty-prints a parsed element with indentation (2 spaces per depth), the same approach used by
+ * xml-formatter, generalized here so other tools (e.g. base64-to-xml) can reuse it instead of
+ * duplicating the recursive-serialization logic.
+ */
+export function formatXmlElement(node: Element, depth = 0): string {
+  const indent = ' '.repeat(2 * depth);
+
+  const attrs = Array.from(node.attributes)
+    .map((attr) => ` ${attr.name}="${attr.value}"`)
+    .join('');
+
+  const elementChildren = Array.from(node.childNodes).filter(
+    (n) => n.nodeType === Node.ELEMENT_NODE
+  ) as Element[];
+  const textContent = Array.from(node.childNodes)
+    .filter((n) => n.nodeType === Node.TEXT_NODE)
+    .map((n) => n.textContent?.trim() ?? '')
+    .join('');
+
+  if (elementChildren.length === 0) {
+    if (textContent) {
+      return `${indent}<${node.tagName}${attrs}>${textContent}</${node.tagName}>`;
+    }
+    return `${indent}<${node.tagName}${attrs}/>`;
+  }
+
+  const children = elementChildren.map((child) => formatXmlElement(child, depth + 1)).join('\n');
+  return `${indent}<${node.tagName}${attrs}>\n${children}\n${indent}</${node.tagName}>`;
+}

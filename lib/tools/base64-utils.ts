@@ -53,3 +53,47 @@ export function bytesToBase64(bytes: Uint8Array): string {
   }
   return btoa(binary);
 }
+
+/**
+ * Renders raw bytes as hexadecimal, operating on the byte values directly - never on
+ * `charCodeAt` of a UTF-8-decoded string, which would mangle any byte sequence that isn't valid
+ * UTF-8 (arbitrary/binary Base64 payloads are not guaranteed to be text at all).
+ */
+export function bytesToHex(bytes: Uint8Array, options: { grouped?: boolean } = {}): string {
+  const { grouped = true } = options;
+  const hexBytes = Array.from(bytes, (b) => b.toString(16).padStart(2, '0'));
+  return grouped ? hexBytes.join(' ') : hexBytes.join('');
+}
+
+/**
+ * Renders raw bytes as space-separated 3-digit zero-padded octal (e.g. byte 65 -> "101"), again
+ * operating on byte values directly rather than on decoded characters.
+ */
+export function bytesToOctal(bytes: Uint8Array): string {
+  return Array.from(bytes, (b) => b.toString(8).padStart(3, '0')).join(' ');
+}
+
+export type DecodeBase64Utf8Result =
+  | { ok: true; text: string }
+  | { ok: false; stage: 'base64' | 'utf8'; message: string };
+
+/**
+ * Shared first two stages of the "Base64 -> structured format" tools (JSON/XML/YAML/CSV/TSV):
+ * decode Base64 to raw bytes, then decode those bytes as UTF-8 text with `fatal: true` so
+ * invalid UTF-8 byte sequences throw explicitly instead of silently turning into U+FFFD
+ * replacement characters. Callers add their own third stage (JSON.parse / parseXml / parseYaml /
+ * delimited-row parsing) on top of the returned text.
+ */
+export function decodeBase64Utf8(input: string): DecodeBase64Utf8Result {
+  const bytesResult = base64ToBytes(input);
+  if (!bytesResult.ok) {
+    return { ok: false, stage: 'base64', message: bytesResult.message };
+  }
+
+  try {
+    const text = new TextDecoder('utf-8', { fatal: true }).decode(bytesResult.bytes);
+    return { ok: true, text };
+  } catch {
+    return { ok: false, stage: 'utf8', message: 'Valid Base64, but the decoded bytes are not valid UTF-8 text.' };
+  }
+}

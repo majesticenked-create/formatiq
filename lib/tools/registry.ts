@@ -66,6 +66,13 @@ import WhitespaceRemover from '@/components/tools/WhitespaceRemover';
 import HtmlEntityConverter from '@/components/tools/HtmlEntityConverter';
 import RegexTester from '@/components/tools/RegexTester';
 import Base64ImageConverter from '@/components/tools/Base64ImageConverter';
+import Base64ToHex from '@/components/tools/Base64ToHex';
+import Base64ToOctal from '@/components/tools/Base64ToOctal';
+import Base64ToJson from '@/components/tools/Base64ToJson';
+import Base64ToXml from '@/components/tools/Base64ToXml';
+import Base64ToYaml from '@/components/tools/Base64ToYaml';
+import Base64ToCsv from '@/components/tools/Base64ToCsv';
+import Base64ToTsv from '@/components/tools/Base64ToTsv';
 import AgeCalculator from '@/components/tools/AgeCalculator';
 import IpSubnetCalculator from '@/components/tools/IpSubnetCalculator';
 import JsFormatter from '@/components/tools/JsFormatter';
@@ -11460,6 +11467,286 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: Base64ToCss,
+  },
+  {
+    slug: 'base64-to-hex',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['base64-to-binary', 'base64-to-octal', 'base64-decoder', 'number-base-converter'],
+    title: 'Base64 to Hex Converter',
+    shortDescription: 'Decode a Base64 string into its raw bytes, shown as hexadecimal.',
+    longDescription:
+      'Paste a Base64 string or data URI to decode it into its actual bytes, then see each byte rendered as two hex digits, either space-separated in groups or as one compact run. Like the Base64 to Binary Converter, this operates on the decoded `Uint8Array` directly - each byte becomes its own hex pair - rather than converting the code points of a UTF-8-decoded string, which would silently corrupt any decoded content that spans more than one byte per character or isn\'t valid text at all. Useful for inspecting binary payloads, debugging encoded assets, or feeding a hex value into another tool. Runs entirely client-side; nothing you paste is ever uploaded.',
+    metaTitle: 'Base64 to Hex Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert Base64 to hexadecimal online for free - decodes to raw bytes first, then shows each byte as hex. Runs entirely in your browser.',
+    keywords: ['base64 to hex', 'base64 to hex converter', 'base64 decode hex', 'base64 hexadecimal'],
+    useCase: 'Inspecting the exact bytes a Base64 string decodes to, in hexadecimal',
+    howItWorks: [
+      { title: 'Paste Base64 or a data URI', description: 'A data URI prefix is stripped automatically if present.' },
+      { title: 'Decoded to raw bytes', description: 'The Base64 string is decoded into a Uint8Array of actual bytes.' },
+      { title: 'Each byte becomes hex', description: 'Every byte is rendered as two hex digits, grouped or compact.' },
+      { title: 'Copy the result', description: 'Grab the full hex string with one click.' },
+    ],
+    benefits: [
+      { title: 'Byte-aware, not character-aware', description: 'Decodes to real bytes first, so the hex is correct for any decoded content, including non-text binary data.' },
+      { title: 'Two display modes', description: 'Space-separated groups for readability, or a compact run for pasting elsewhere.' },
+      { title: 'Data URI support', description: 'Paste a full data URI and the base64 payload is extracted automatically.' },
+      { title: 'Nothing leaves your browser', description: 'Decoding happens entirely client-side.' },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the Base64 Decoder?',
+        answer:
+          'The Base64 Decoder outputs the decoded content as readable text. This tool outputs the decoded content\'s raw bytes as hexadecimal - useful for binary data that may not be valid text at all.',
+      },
+      {
+        question: 'Why not just convert each character to hex directly?',
+        answer:
+          'Converting per-character code points instead of per-byte silently breaks on decoded content containing multi-byte UTF-8 sequences or non-text binary data. Decoding to a byte array first and converting each byte guarantees a correct result regardless of what the Base64 encodes.',
+      },
+    ],
+    Component: Base64ToHex,
+  },
+  {
+    slug: 'base64-to-octal',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['base64-to-hex', 'base64-to-binary', 'base64-decoder', 'number-base-converter'],
+    title: 'Base64 to Octal Converter',
+    shortDescription: 'Decode a Base64 string into its raw bytes, shown as octal.',
+    longDescription:
+      'Paste a Base64 string or data URI to decode it into its actual bytes, then see each byte rendered as 3-digit, zero-padded octal (for example, byte 65 becomes "101"), space-separated. Like the Base64 to Binary and Base64 to Hex converters, this operates on the decoded `Uint8Array` directly, never on the character codes of a UTF-8-decoded string, so the result is correct even when the decoded bytes aren\'t valid text. Useful for teaching, low-level debugging, or working with systems that expect octal byte representations. Runs entirely client-side; nothing you paste is ever uploaded.',
+    metaTitle: 'Base64 to Octal Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert Base64 to octal online for free - decodes to raw bytes first, then shows each byte as 3-digit octal. Runs entirely in your browser.',
+    keywords: ['base64 to octal', 'base64 to octal converter', 'base64 decode octal', 'base64 octal bytes'],
+    useCase: 'Seeing the exact bytes a Base64 string decodes to, in octal',
+    howItWorks: [
+      { title: 'Paste Base64 or a data URI', description: 'A data URI prefix is stripped automatically if present.' },
+      { title: 'Decoded to raw bytes', description: 'The Base64 string is decoded into a Uint8Array of actual bytes.' },
+      { title: 'Each byte becomes octal', description: 'Every byte is rendered as 3-digit, zero-padded octal, space-separated.' },
+      { title: 'Copy the result', description: 'Grab the full octal string with one click.' },
+    ],
+    benefits: [
+      { title: 'Byte-aware, not character-aware', description: 'Decodes to real bytes first, so multi-byte UTF-8 or non-text binary content converts correctly.' },
+      { title: 'Data URI support', description: 'Paste a full data URI and the base64 payload is extracted automatically.' },
+      { title: 'Clear errors on invalid input', description: 'Malformed Base64 is flagged immediately instead of producing garbled output.' },
+      { title: 'Nothing leaves your browser', description: 'Decoding happens entirely client-side.' },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the Base64 to Binary or Hex converters?',
+        answer:
+          'All three decode to the same raw bytes first; they differ only in the base used to display each byte - binary (base 2), octal (base 8), or hex (base 16).',
+      },
+      {
+        question: 'Why 3 digits per byte?',
+        answer:
+          'A byte ranges from 0-255, and 255 in octal is "377" - three digits, zero-padded, is exactly enough to represent any byte value consistently.',
+      },
+    ],
+    Component: Base64ToOctal,
+  },
+  {
+    slug: 'base64-to-json',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['base64-decoder', 'json-formatter', 'json-tree-viewer', 'json-validator'],
+    title: 'Base64 to JSON Converter',
+    shortDescription: 'Decode a Base64 string and parse the result as formatted JSON.',
+    longDescription:
+      'Paste a Base64 string or data URI to decode it as UTF-8 text and parse that text as JSON, with the result shown as clean, indented JSON. Errors are surfaced in three distinct stages so it\'s always clear which layer failed: invalid Base64 (bad alphabet or padding), valid Base64 whose bytes aren\'t valid UTF-8 text, or valid UTF-8 text that isn\'t valid JSON. This is genuinely different from decoding to plain text, since it validates and re-formats the JSON structure rather than just returning raw decoded characters. For an interactive collapsible tree view of the same data, paste the decoded text into the JSON Tree Viewer. Runs entirely client-side; nothing you paste is ever uploaded.',
+    metaTitle: 'Base64 to JSON Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert Base64 to formatted JSON online for free, with clear errors for invalid Base64, invalid UTF-8, or invalid JSON. Runs entirely in your browser.',
+    keywords: ['base64 to json', 'base64 to json converter', 'base64 decode json', 'decode base64 json'],
+    useCase: 'Decoding a Base64-encoded JSON payload (e.g. a JWT claim or API response) into readable, validated JSON',
+    howItWorks: [
+      { title: 'Paste Base64 or a data URI', description: 'A data URI prefix is stripped automatically if present.' },
+      { title: 'Decoded to UTF-8 text', description: 'The Base64 string is decoded to bytes, then those bytes are decoded as UTF-8.' },
+      { title: 'Parsed as JSON', description: 'The decoded text is parsed with JSON.parse and re-formatted with 2-space indentation.' },
+      { title: 'Copy the result', description: 'Grab the formatted JSON with one click.' },
+    ],
+    benefits: [
+      { title: 'Three-stage error model', description: 'Invalid Base64, invalid UTF-8, and invalid JSON are each reported with their own specific message.' },
+      { title: 'Actually validates structure', description: 'Unlike plain text decoding, this confirms the result is well-formed JSON, not just readable text.' },
+      { title: 'Data URI support', description: 'Paste a full data URI and the base64 payload is extracted automatically.' },
+      { title: 'Nothing leaves your browser', description: 'Decoding and parsing happen entirely client-side.' },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the Base64 Decoder?',
+        answer:
+          'The Base64 Decoder just returns decoded text, whatever it is. This tool additionally parses that text as JSON and re-formats it, with a specific error if the decoded text isn\'t valid JSON.',
+      },
+      {
+        question: 'What if the decoded bytes aren\'t valid UTF-8?',
+        answer:
+          'That\'s reported as its own distinct error - "valid Base64, but not valid UTF-8 text" - separate from a Base64 error or a JSON error, so it\'s always clear which stage failed.',
+      },
+    ],
+    Component: Base64ToJson,
+  },
+  {
+    slug: 'base64-to-xml',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['base64-decoder', 'xml-formatter', 'xml-parser', 'xml-minifier'],
+    title: 'Base64 to XML Converter',
+    shortDescription: 'Decode a Base64 string and parse the result as formatted XML.',
+    longDescription:
+      'Paste a Base64 string or data URI to decode it as UTF-8 text and parse that text as XML, with the result shown re-indented and well-formedness-checked. Errors are surfaced in three distinct stages: invalid Base64, valid Base64 whose bytes aren\'t valid UTF-8 text, or valid UTF-8 text that isn\'t well-formed XML. Parsing uses the browser\'s native DOMParser - the same engine as the XML Formatter - which never resolves external entities or DTDs against the network or filesystem. Runs entirely client-side; nothing you paste is ever uploaded.',
+    metaTitle: 'Base64 to XML Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert Base64 to formatted XML online for free, with clear errors for invalid Base64, invalid UTF-8, or malformed XML. Runs entirely in your browser.',
+    keywords: ['base64 to xml', 'base64 to xml converter', 'base64 decode xml', 'decode base64 xml'],
+    useCase: 'Decoding a Base64-encoded XML payload into readable, well-formedness-checked XML',
+    howItWorks: [
+      { title: 'Paste Base64 or a data URI', description: 'A data URI prefix is stripped automatically if present.' },
+      { title: 'Decoded to UTF-8 text', description: 'The Base64 string is decoded to bytes, then those bytes are decoded as UTF-8.' },
+      { title: 'Parsed as XML', description: 'The decoded text is parsed with the native DOMParser and re-indented.' },
+      { title: 'Copy the result', description: 'Grab the formatted XML with one click.' },
+    ],
+    benefits: [
+      { title: 'Three-stage error model', description: 'Invalid Base64, invalid UTF-8, and malformed XML are each reported with their own specific message.' },
+      { title: 'No XXE risk', description: 'The native DOMParser never resolves external entities or DTDs - a standard browser platform guarantee.' },
+      { title: 'Data URI support', description: 'Paste a full data URI and the base64 payload is extracted automatically.' },
+      { title: 'Nothing leaves your browser', description: 'Decoding and parsing happen entirely client-side.' },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the Base64 Decoder?',
+        answer:
+          'The Base64 Decoder just returns decoded text. This tool additionally parses that text as XML and re-indents it, with a specific error if the decoded text isn\'t well-formed XML.',
+      },
+      {
+        question: 'Is the decoded XML rendered anywhere unsafely?',
+        answer:
+          'No - the output is shown as re-indented source text only, generated via the native XMLSerializer/DOMParser, never via dangerouslySetInnerHTML.',
+      },
+    ],
+    Component: Base64ToXml,
+  },
+  {
+    slug: 'base64-to-yaml',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['base64-decoder', 'yaml-formatter', 'yaml-validator', 'yaml-parser'],
+    title: 'Base64 to YAML Converter',
+    shortDescription: 'Decode a Base64 string and parse the result as YAML.',
+    longDescription:
+      'Paste a Base64 string or data URI to decode it as UTF-8 text and parse that text as YAML, with the parsed structure shown as JSON for a stable, unambiguous view of exactly what was parsed. Errors are surfaced in three distinct stages: invalid Base64, valid Base64 whose bytes aren\'t valid UTF-8 text, or valid UTF-8 text that isn\'t valid YAML. Parsing uses js-yaml\'s safe load() - the same parser as the YAML Validator - which only ever builds a plain in-memory value and never executes anything or instantiates arbitrary classes from custom YAML tags. Runs entirely client-side; nothing you paste is ever uploaded.',
+    metaTitle: 'Base64 to YAML Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert Base64 to parsed YAML online for free, with clear errors for invalid Base64, invalid UTF-8, or invalid YAML. Runs entirely in your browser.',
+    keywords: ['base64 to yaml', 'base64 to yaml converter', 'base64 decode yaml', 'decode base64 yaml'],
+    useCase: 'Decoding a Base64-encoded YAML payload (e.g. a config secret) into a validated, readable structure',
+    howItWorks: [
+      { title: 'Paste Base64 or a data URI', description: 'A data URI prefix is stripped automatically if present.' },
+      { title: 'Decoded to UTF-8 text', description: 'The Base64 string is decoded to bytes, then those bytes are decoded as UTF-8.' },
+      { title: 'Parsed as YAML', description: 'The decoded text is parsed with js-yaml\'s safe load() function.' },
+      { title: 'Shown as JSON', description: 'The parsed value is rendered as indented JSON for an unambiguous view of its structure.' },
+    ],
+    benefits: [
+      { title: 'Three-stage error model', description: 'Invalid Base64, invalid UTF-8, and invalid YAML are each reported with their own specific message.' },
+      { title: 'Safe parsing only', description: 'js-yaml\'s modern load() never executes code or instantiates arbitrary classes from YAML tags.' },
+      { title: 'Data URI support', description: 'Paste a full data URI and the base64 payload is extracted automatically.' },
+      { title: 'Nothing leaves your browser', description: 'Decoding and parsing happen entirely client-side.' },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the Base64 Decoder?',
+        answer:
+          'The Base64 Decoder just returns decoded text. This tool additionally parses that text as YAML, with a specific error if the decoded text isn\'t valid YAML.',
+      },
+      {
+        question: 'Why is the result shown as JSON instead of re-serialized YAML?',
+        answer:
+          'JSON gives an unambiguous, one-way-to-write-it view of exactly what was parsed - useful for confirming the actual structure without YAML\'s own formatting choices (anchors, flow vs. block style, quoting) affecting how it reads.',
+      },
+    ],
+    Component: Base64ToYaml,
+  },
+  {
+    slug: 'base64-to-csv',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['base64-decoder', 'csv-tsv-converter', 'csv-json-converter', 'base64-to-tsv'],
+    title: 'Base64 to CSV Converter',
+    shortDescription: 'Decode a Base64 string and preview the result as a CSV table.',
+    longDescription:
+      'Paste a Base64 string or data URI to decode it as UTF-8 text and parse that text as CSV, shown as an actual table rather than raw comma-separated text. Parsing uses the same quote/escape-aware, RFC-4180-ish parser as the CSV ⇄ TSV Converter - fields containing commas or newlines inside double quotes (with `""` as an escaped quote) are preserved correctly, unlike a naive split on every comma. Errors are surfaced in three distinct stages: invalid Base64, valid Base64 whose bytes aren\'t valid UTF-8 text, or decoded text with no parseable rows. Runs entirely client-side; nothing you paste is ever uploaded.',
+    metaTitle: 'Base64 to CSV Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert Base64 to a CSV table online for free, with quote-aware parsing for commas and newlines inside fields. Runs entirely in your browser.',
+    keywords: ['base64 to csv', 'base64 to csv converter', 'base64 decode csv', 'decode base64 csv'],
+    useCase: 'Decoding a Base64-encoded CSV export into a readable table',
+    howItWorks: [
+      { title: 'Paste Base64 or a data URI', description: 'A data URI prefix is stripped automatically if present.' },
+      { title: 'Decoded to UTF-8 text', description: 'The Base64 string is decoded to bytes, then those bytes are decoded as UTF-8.' },
+      { title: 'Parsed as CSV', description: 'The decoded text is split into rows and fields with a quote-aware parser.' },
+      { title: 'Shown as a table', description: 'Rows and columns render as an actual HTML table, not raw text.' },
+    ],
+    benefits: [
+      { title: 'Quote-aware parsing', description: 'Commas and newlines embedded in quoted fields are preserved instead of breaking the row/column split.' },
+      { title: 'Real table preview', description: 'See rows and columns laid out, not just comma-separated text.' },
+      { title: 'Three-stage error model', description: 'Invalid Base64, invalid UTF-8, and unparseable CSV are each reported with their own specific message.' },
+      { title: 'Nothing leaves your browser', description: 'Decoding and parsing happen entirely client-side.' },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the Base64 Decoder?',
+        answer:
+          'The Base64 Decoder just returns decoded text as-is. This tool additionally parses that text as CSV and renders it as a table, correctly handling quoted fields with embedded commas or newlines.',
+      },
+      {
+        question: 'What if a field contains a comma?',
+        answer:
+          'As long as it\'s wrapped in double quotes in the source CSV, the comma stays inside that one field instead of splitting it into two columns - the same quote-aware parsing used by the CSV ⇄ TSV Converter.',
+      },
+    ],
+    Component: Base64ToCsv,
+  },
+  {
+    slug: 'base64-to-tsv',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['base64-decoder', 'csv-tsv-converter', 'base64-to-csv', 'csv-json-converter'],
+    title: 'Base64 to TSV Converter',
+    shortDescription: 'Decode a Base64 string and preview the result as a TSV table.',
+    longDescription:
+      'Paste a Base64 string or data URI to decode it as UTF-8 text and parse that text as tab-separated values, shown as an actual table. Parsing uses the same quote/escape-aware parser as the CSV ⇄ TSV Converter, generalized to the tab delimiter - quoted fields (including ones containing literal commas or newlines) and empty cells are preserved correctly. Errors are surfaced in three distinct stages: invalid Base64, valid Base64 whose bytes aren\'t valid UTF-8 text, or decoded text with no parseable rows. Runs entirely client-side; nothing you paste is ever uploaded.',
+    metaTitle: 'Base64 to TSV Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert Base64 to a TSV table online for free, with quote-aware parsing that preserves empty cells and quoted fields. Runs entirely in your browser.',
+    keywords: ['base64 to tsv', 'base64 to tsv converter', 'base64 decode tsv', 'decode base64 tsv'],
+    useCase: 'Decoding a Base64-encoded TSV export into a readable table',
+    howItWorks: [
+      { title: 'Paste Base64 or a data URI', description: 'A data URI prefix is stripped automatically if present.' },
+      { title: 'Decoded to UTF-8 text', description: 'The Base64 string is decoded to bytes, then those bytes are decoded as UTF-8.' },
+      { title: 'Parsed as TSV', description: 'The decoded text is split into rows and fields on tabs, with quote-aware parsing.' },
+      { title: 'Shown as a table', description: 'Rows and columns render as an actual HTML table, not raw text.' },
+    ],
+    benefits: [
+      { title: 'Quote-aware parsing', description: 'Quoted fields and embedded delimiters/newlines are preserved rather than naively split.' },
+      { title: 'Real table preview', description: 'See rows and columns laid out, not just tab-separated text.' },
+      { title: 'Three-stage error model', description: 'Invalid Base64, invalid UTF-8, and unparseable TSV are each reported with their own specific message.' },
+      { title: 'Nothing leaves your browser', description: 'Decoding and parsing happen entirely client-side.' },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the Base64 Decoder?',
+        answer:
+          'The Base64 Decoder just returns decoded text as-is. This tool additionally parses that text as TSV and renders it as a table.',
+      },
+      {
+        question: 'Does it handle empty cells correctly?',
+        answer:
+          'Yes - consecutive tabs produce empty fields rather than being collapsed, so column alignment across rows stays correct.',
+      },
+    ],
+    Component: Base64ToTsv,
   },
 ];
 
