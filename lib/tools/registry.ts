@@ -182,6 +182,11 @@ import TimeSheetCalculator from '@/components/tools/TimeSheetCalculator';
 import BbcodeEditor from '@/components/tools/BbcodeEditor';
 import JavaFormatter from '@/components/tools/JavaFormatter';
 import JsValidator from '@/components/tools/JsValidator';
+import CssValidator from '@/components/tools/CssValidator';
+import XmlMinifier from '@/components/tools/XmlMinifier';
+import XmlParser from '@/components/tools/XmlParser';
+import XpathTester from '@/components/tools/XpathTester';
+import YamlParser from '@/components/tools/YamlParser';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -10937,6 +10942,333 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: ScssFormatter,
+  },
+  {
+    slug: 'css-validator',
+    category: 'formatters',
+    relatedSlugs: ['css-formatter', 'css-minifier', 'sass-compiler', 'scss-compiler'],
+    title: 'CSS Validator',
+    shortDescription: 'Check CSS for structural issues like unclosed rules, using the browser’s own CSS parser.',
+    longDescription:
+      'Paste CSS and this tool inserts it into a hidden stylesheet and inspects the browser’s own parsed result (the CSSOM) for signs the parser had to silently drop something - a rule that never registered, or a mismatched brace count that points to an unclosed selector block. Browsers are deliberately forgiving with CSS: an invalid declaration is usually just skipped rather than rejected outright, which is why this tool is upfront about checking rule structure rather than claiming full W3C-spec conformance checking. It’s a distinct job from formatting - a beautifier will happily re-indent CSS with an unclosed brace without ever telling you something is wrong. Runs entirely client-side.',
+    metaTitle: 'CSS Validator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Check CSS for structural issues like unclosed rules or mismatched braces, using the browser’s own CSS parser. Free, runs entirely in your browser.',
+    keywords: ['css validator', 'validate css online', 'check css syntax', 'css syntax checker'],
+    useCase: 'Catching an unclosed rule that a beautifier would silently reformat around',
+    howItWorks: [
+      {
+        title: 'Paste your CSS',
+        description: 'Any stylesheet, snippet, or component style block.',
+      },
+      {
+        title: 'It’s inserted into a real stylesheet',
+        description: 'The browser’s own CSS parser processes it via a hidden <style> element.',
+      },
+      {
+        title: 'The parsed result (CSSOM) is inspected',
+        description: 'Rule count and brace balance are checked for signs of a structural break.',
+      },
+      {
+        title: 'See a clear pass/fail',
+        description: 'A specific issue is reported when something looks malformed, not a silent pass.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Real browser parsing',
+        description: 'Uses the same CSSOM every browser builds from your stylesheet, not a reimplemented parser.',
+      },
+      {
+        title: 'Honest about its scope',
+        description: 'Flags structural breaks like unclosed rules - it doesn’t claim full W3C conformance checking.',
+      },
+      {
+        title: 'Distinct from formatting',
+        description: 'A beautifier reformats around a broken rule silently; this tool is built to flag it instead.',
+      },
+      {
+        title: 'Client-side only',
+        description: 'Nothing you paste is uploaded anywhere.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this catch every invalid CSS property or value?',
+        answer:
+          'No - browsers are intentionally lenient and simply ignore a declaration they don’t recognize rather than treating the whole stylesheet as broken, so a typo’d property name alone usually won’t be flagged. This tool is aimed at structural breaks - like an unclosed rule or a brace mismatch - that cause the parser to drop content, not a full CSS specification conformance check.',
+      },
+      {
+        question: 'How is this different from the CSS Formatter?',
+        answer:
+          'The CSS Formatter re-indents and beautifies CSS but, like most beautifiers, does so on a best-effort basis and won’t reliably flag a broken rule - it’ll often just reformat around it. This tool is purpose-built to answer a different question: is this CSS structurally sound, not just how should it be indented.',
+      },
+    ],
+    Component: CssValidator,
+  },
+  {
+    slug: 'xml-minifier',
+    category: 'formatters',
+    relatedSlugs: ['xml-formatter', 'xml-parser', 'xpath-tester', 'json-formatter'],
+    title: 'XML Minifier',
+    shortDescription: 'Strip indentation whitespace from XML while preserving mixed-content text exactly.',
+    longDescription:
+      'Paste XML and get it compacted by removing whitespace-only text nodes that exist purely for indentation between element siblings - the kind of whitespace that only exists because a formatter put it there. Real text content is never touched: mixed content like <code>&lt;p&gt;Hello &lt;b&gt;world&lt;/b&gt;!&lt;/p&gt;</code> keeps its exact spacing, because that whitespace is part of the document’s actual meaning, not indentation. The input is parsed with the browser’s native DOMParser and re-serialized with XMLSerializer, so malformed XML is rejected with a clear error rather than mangled by a regex pass. Runs entirely client-side.',
+    metaTitle: 'XML Minifier - Free, Browser-Based | Formatiq',
+    metaDescription:
+      'Minify XML online free by stripping indentation whitespace while preserving mixed-content text exactly. Uses the real DOMParser, not regex.',
+    keywords: ['xml minifier', 'minify xml online', 'compact xml', 'xml compress'],
+    useCase: 'Shrinking a config or payload for transmission without corrupting mixed-content text',
+    extendedContent: [
+      {
+        heading: 'Does this strip all whitespace, even inside text content?',
+        body:
+          '<p>No - only whitespace-only text nodes that sit purely between element siblings for indentation are removed. A text node that’s adjacent to elements but not entirely whitespace, like the space in <code>&lt;p&gt;Hello &lt;b&gt;world&lt;/b&gt;!&lt;/p&gt;</code>, is left completely untouched, because that spacing is meaningful content, not formatting. Getting this wrong is the most common way a naive XML minifier corrupts a document, so the distinction is deliberate here.</p>',
+      },
+    ],
+    howItWorks: [
+      {
+        title: 'Paste your XML',
+        description: 'Any well-formed document, including ones with mixed text/element content.',
+      },
+      {
+        title: 'DOMParser builds a real tree',
+        description: 'The same parser xml-formatter uses checks well-formedness first.',
+      },
+      {
+        title: 'Indentation-only whitespace is removed',
+        description: 'Whitespace-only text nodes between element siblings are dropped; real text is untouched.',
+      },
+      {
+        title: 'XMLSerializer re-serializes it',
+        description: 'The compacted tree is turned back into an XML string.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Mixed content stays intact',
+        description: 'Text alongside elements keeps its exact spacing - only pure indentation is removed.',
+      },
+      {
+        title: 'Real parser, not regex',
+        description: 'Malformed XML is rejected with a clear error instead of being blindly whitespace-stripped.',
+      },
+      {
+        title: 'Before/after size',
+        description: 'See the byte size reduction alongside the compacted output.',
+      },
+      {
+        title: 'Client-side only',
+        description: 'Nothing you paste is uploaded anywhere.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Will this break XML with mixed text and elements?',
+        answer:
+          'No - that’s the specific case this tool is careful about. A whitespace-only text node is only removed when it sits between element siblings with no other content nearby; any text node that isn’t pure whitespace is left exactly as written, spacing included.',
+      },
+      {
+        question: 'How is this different from the XML Formatter?',
+        answer:
+          'The XML Formatter goes the opposite direction - it adds indentation to make XML readable. This tool removes indentation-only whitespace to make it smaller. Both share the same well-formedness parsing underneath.',
+      },
+    ],
+    Component: XmlMinifier,
+  },
+  {
+    slug: 'xml-parser',
+    category: 'formatters',
+    relatedSlugs: ['xml-formatter', 'xpath-tester', 'xml-minifier', 'json-tree-viewer'],
+    title: 'XML Parser',
+    shortDescription: 'Browse XML as a real, expandable element/attribute/text hierarchy.',
+    longDescription:
+      'Paste XML and see it rendered as an actual element hierarchy - tag names, attributes (including namespaced ones), text content, and repeated sibling elements - built by walking the tree the browser’s native DOMParser produces. This is for exploring structure rather than reformatting source text: instead of a reindented string, you get a real tree you can visually scan the way you would in a code editor’s outline view. Every piece of text is rendered as a React element, never as raw injected HTML. Runs entirely client-side.',
+    metaTitle: 'XML Parser - Free, Browser-Based Tree Viewer | Formatiq',
+    metaDescription:
+      'Parse XML online free and browse it as a real element/attribute/text hierarchy, built with the native DOMParser. Nothing is uploaded.',
+    keywords: ['xml parser', 'xml tree viewer', 'parse xml online', 'xml hierarchy viewer'],
+    useCase: 'Scanning the structure of an unfamiliar XML payload before writing code against it',
+    howItWorks: [
+      {
+        title: 'Paste your XML',
+        description: 'Any well-formed document - a SOAP payload, config file, or data export.',
+      },
+      {
+        title: 'DOMParser builds the tree',
+        description: 'The browser’s native XML parser checks well-formedness and produces a real DOM.',
+      },
+      {
+        title: 'The tree is walked and rendered',
+        description: 'Elements, attributes, and text nodes are rendered recursively as React elements.',
+      },
+      {
+        title: 'Scan the structure',
+        description: 'Read tag names, attribute values, and nesting directly, without mentally parsing indentation.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Real hierarchy, not reformatted text',
+        description: 'Renders the actual parsed element/attribute/text tree, not just re-indented markup.',
+      },
+      {
+        title: 'Namespaced attributes shown as-is',
+        description: 'Attribute names are shown exactly as parsed, including namespace prefixes.',
+      },
+      {
+        title: 'Safe rendering',
+        description: 'Text and attribute values are rendered as React text, never via dangerouslySetInnerHTML.',
+      },
+      {
+        title: 'Client-side only',
+        description: 'Nothing you paste is uploaded anywhere.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the XML Formatter?',
+        answer:
+          'The XML Formatter’s output is still XML text - just re-indented. This tool instead renders the parsed hierarchy directly as a browsable tree of elements, attributes, and text, closer to an outline view than reformatted source.',
+      },
+      {
+        question: 'Can I query this tree instead of just browsing it?',
+        answer:
+          'Yes - for running an XPath expression against the same kind of document and seeing the matched nodes, use the XPath Tester, which shares the same DOMParser-based parsing this tool uses.',
+      },
+    ],
+    Component: XmlParser,
+  },
+  {
+    slug: 'xpath-tester',
+    category: 'formatters',
+    relatedSlugs: ['xml-parser', 'xml-formatter', 'xml-minifier'],
+    title: 'XPath Tester',
+    shortDescription: 'Run an XPath expression against XML and see matched nodes, using the browser’s native evaluator.',
+    longDescription:
+      'Paste XML, write an XPath expression, and see exactly which nodes match - powered by document.evaluate(), the standard XPath 1.0 engine every browser already ships, not a reimplementation. Element matches are serialized back to readable XML text; attribute or text-node matches show their value directly. Invalid XPath syntax is caught and reported as a clear error rather than crashing the page, and a query with no matches is reported honestly instead of silently showing nothing. Runs entirely client-side, including the underlying DOMParser step, which never resolves external entities or DTDs.',
+    metaTitle: 'XPath Tester - Free, Browser-Based | Formatiq',
+    metaDescription:
+      'Test XPath expressions against XML online free, using the browser’s native document.evaluate(). See matched nodes instantly, nothing uploaded.',
+    keywords: ['xpath tester', 'xpath evaluator', 'test xpath online', 'xpath query tool'],
+    useCase: 'Working out the right XPath expression before hardcoding it into a scraper or XSLT',
+    howItWorks: [
+      {
+        title: 'Paste your XML',
+        description: 'Any well-formed document you want to query against.',
+      },
+      {
+        title: 'Write an XPath expression',
+        description: 'Element selection, attribute predicates like @id, text(), and more.',
+      },
+      {
+        title: 'document.evaluate() runs it',
+        description: 'The browser’s built-in XPath 1.0 engine evaluates the expression against the parsed document.',
+      },
+      {
+        title: 'See matched nodes as text',
+        description: 'Matches are serialized back to XML (or shown as text) - never rendered as raw HTML.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Native engine, no reimplementation',
+        description: 'Uses document.evaluate() - the same XPath engine your browser already uses for anything else that needs one.',
+      },
+      {
+        title: 'Clear error handling',
+        description: 'Invalid XPath syntax is caught and shown as a message instead of crashing.',
+      },
+      {
+        title: 'Safe node rendering',
+        description: 'Matched nodes are serialized to text via XMLSerializer, never injected as HTML.',
+      },
+      {
+        title: 'No external entity resolution',
+        description: 'The underlying DOMParser is a browser platform guarantee against XXE - it never fetches external entities or DTDs.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What XPath version does this support?',
+        answer:
+          'Whatever document.evaluate() supports in your browser, which is XPath 1.0 - the standard supported natively across browsers. It covers the common cases: element/attribute selection, predicates like [@id=\'2\'], text(), and axis navigation.',
+      },
+      {
+        question: 'What happens if my XPath expression is invalid?',
+        answer:
+          'document.evaluate() throws a DOMException for invalid syntax, and this tool catches that exception and shows its message directly rather than letting it crash the page or silently returning nothing.',
+      },
+      {
+        question: 'Is this the same as the XML Parser tool?',
+        answer:
+          'No - the XML Parser renders the whole document as a browsable tree. This tool answers a narrower question: which specific nodes match a given XPath expression, which is a different (and often faster) way to explore or debug a large document.',
+      },
+    ],
+    Component: XpathTester,
+  },
+  {
+    slug: 'yaml-parser',
+    category: 'formatters',
+    relatedSlugs: ['yaml-formatter', 'json-tree-viewer', 'json-formatter', 'yaml-xml-converter'],
+    title: 'YAML Parser',
+    shortDescription: 'Parse YAML into a real, browsable structure - the JSON-equivalent shape of your data.',
+    longDescription:
+      'Paste YAML and see it parsed into a real, expandable structure showing exactly what data it represents - the same JSON-equivalent tree view the JSON Tree Viewer gives JSON, built here from js-yaml’s safe load() so YAML tags can never instantiate arbitrary JS types. This is a different job from formatting: the YAML Formatter turns messy YAML source into clean YAML source, while this tool turns YAML into a structure you can inspect, with a one-click JSON export of that exact shape. Runs entirely client-side.',
+    metaTitle: 'YAML Parser - Free Online Tree Viewer | Formatiq',
+    metaDescription:
+      'Parse YAML online free into a real, browsable JSON-equivalent structure using js-yaml’s safe loader. Nothing you paste is uploaded.',
+    keywords: ['yaml parser', 'yaml tree viewer', 'yaml to json structure', 'parse yaml online'],
+    useCase: 'Checking exactly what data shape a YAML config actually parses into',
+    howItWorks: [
+      {
+        title: 'Paste your YAML',
+        description: 'A config file, Kubernetes manifest, or any YAML document.',
+      },
+      {
+        title: 'js-yaml’s safe load() parses it',
+        description: 'The content becomes a real in-memory value; invalid YAML is reported with a specific error.',
+      },
+      {
+        title: 'The value is rendered as a tree',
+        description: 'Objects, arrays, and primitives are shown in an expandable, JSON-shaped structure.',
+      },
+      {
+        title: 'Copy the JSON-equivalent output',
+        description: 'Grab the exact parsed shape as JSON with one click.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Real parsed structure',
+        description: 'Shows the actual in-memory value YAML parses into, not just reformatted YAML text.',
+      },
+      {
+        title: 'Safe parsing only',
+        description: 'Uses js-yaml’s load(), which never instantiates arbitrary JS types from YAML tags.',
+      },
+      {
+        title: 'One-click JSON export',
+        description: 'Copy the parsed structure directly as JSON.',
+      },
+      {
+        title: 'Distinct from the Formatter',
+        description: 'The YAML Formatter reformats YAML source; this tool inspects the parsed data shape instead.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from the YAML Formatter?',
+        answer:
+          'The YAML Formatter’s output is still YAML - just cleanly re-indented. This tool instead shows the parsed data structure itself (the JSON-equivalent shape), and lets you export that structure directly as JSON, which the Formatter doesn’t do.',
+      },
+      {
+        question: 'Is my YAML executed in any way?',
+        answer:
+          'No - it’s only parsed, via js-yaml’s load(), which is the safe loader in js-yaml 4.x. It builds a plain JavaScript value from your YAML; it never evaluates code or instantiates arbitrary classes from custom YAML tags.',
+      },
+    ],
+    Component: YamlParser,
   },
 ];
 

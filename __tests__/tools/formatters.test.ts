@@ -698,6 +698,8 @@ import { JSDOM } from 'jsdom';
 
 // ---------- sass-compiler / scss-compiler (shared compileSass helper) ----------
 import { compileSass } from '@/lib/tools/sass-utils';
+import { parseXml, serializeXml, stripIndentationWhitespace } from '@/lib/tools/xml-utils';
+import { parseYaml } from '@/lib/tools/yaml-utils';
 
 {
   const scssResult = compileSass('$c: red;\n.a { color: $c; .b { margin: 10px; } }', 'scss');
@@ -796,6 +798,175 @@ import { compileSass } from '@/lib/tools/sass-utils';
 
   const malformed = parseFeed('<rss><channel><title>Broken</channel>');
   check('rss-viewer', 'malformed XML reports a parser error rather than throwing', malformed.ok === false, '');
+}
+
+// ---------- xml-minifier / xml-parser / xpath-tester (shared lib/tools/xml-utils.ts) ----------
+// These tools use the real browser DOMParser/XMLSerializer, which don't exist as globals under
+// vitest's `node` test environment - so, same as the rss-viewer test above, jsdom is used to
+// supply real implementations, wired onto the globals the shared xml-utils module reads.
+{
+  const xmlDom = new JSDOM('<!DOCTYPE html>');
+  (globalThis as unknown as { DOMParser: unknown }).DOMParser = xmlDom.window.DOMParser;
+  (globalThis as unknown as { XMLSerializer: unknown }).XMLSerializer = xmlDom.window.XMLSerializer;
+  (globalThis as unknown as { Node: unknown }).Node = xmlDom.window.Node;
+
+  const wellFormed = parseXml('<a><b>1</b><b>2</b></a>');
+  check('xml-minifier/xml-parser/xpath-tester', 'well-formed XML parses via real DOMParser', wellFormed.ok === true, JSON.stringify(wellFormed.ok));
+
+  const malformedXml = parseXml('<a><b>oops</a>');
+  check('xml-minifier/xml-parser/xpath-tester', 'malformed XML is reported, not silently accepted', malformedXml.ok === false, '');
+
+  const emptyXml = parseXml('   ');
+  check('xml-minifier/xml-parser/xpath-tester', 'empty input reports a message instead of crashing', emptyXml.ok === false, '');
+
+  // xml-minifier: indentation-only whitespace removed, mixed content untouched
+  const indented = parseXml('<root>\n  <a>1</a>\n  <b>2</b>\n</root>');
+  if (indented.ok) {
+    stripIndentationWhitespace(indented.doc);
+    const minified = serializeXml(indented.doc.documentElement);
+    check(
+      'xml-minifier',
+      'indentation-only whitespace between element siblings is removed',
+      minified === '<root><a>1</a><b>2</b></root>',
+      minified
+    );
+  }
+
+  const mixedContent = parseXml('<p>Hello <b>world</b>!</p>');
+  if (mixedContent.ok) {
+    stripIndentationWhitespace(mixedContent.doc);
+    const preserved = serializeXml(mixedContent.doc.documentElement);
+    check(
+      'xml-minifier',
+      'mixed-content text (e.g. "Hello " and "!") is preserved exactly, never stripped',
+      preserved === '<p>Hello <b>world</b>!</p>',
+      preserved
+    );
+  }
+
+  // xml-parser: tree structure is real (attributes, nesting) - spot-check via the parsed DOM directly
+  const withAttrs = parseXml('<book id="1"><title>Refactoring</title></book>');
+  check(
+    'xml-parser',
+    'attributes and nested element text are present on the real parsed tree',
+    withAttrs.ok &&
+      withAttrs.doc.documentElement.getAttribute('id') === '1' &&
+      withAttrs.doc.documentElement.querySelector('title')?.textContent === 'Refactoring',
+    ''
+  );
+
+  // xpath-tester: document.evaluate against the parsed doc
+  const xpathDoc = parseXml('<library><book id="1"><title>Refactoring</title></book><book id="2"><title>Clean Code</title></book></library>');
+  if (xpathDoc.ok) {
+    const idMatch = xpathDoc.doc.evaluate('//book[@id="2"]/title', xpathDoc.doc, null, 7 /* ORDERED_NODE_SNAPSHOT_TYPE */, null);
+    const node = idMatch.snapshotItem(0);
+    check(
+      'xpath-tester',
+      '@id-style attribute predicate selects the correct node',
+      idMatch.snapshotLength === 1 && node?.textContent === 'Clean Code',
+      String(node?.textContent)
+    );
+
+    const textFn = xpathDoc.doc.evaluate('//title/text()', xpathDoc.doc, null, 7, null);
+    check('xpath-tester', 'text() selects text nodes', textFn.snapshotLength === 2, String(textFn.snapshotLength));
+
+    const noMatches = xpathDoc.doc.evaluate('//nonexistent', xpathDoc.doc, null, 7, null);
+    check('xpath-tester', 'no-matches case returns zero results, not an error', noMatches.snapshotLength === 0, '');
+
+    let threw = false;
+    try {
+      xpathDoc.doc.evaluate('///[[[invalid', xpathDoc.doc, null, 7, null);
+    } catch {
+      threw = true;
+    }
+    check('xpath-tester', 'invalid XPath syntax throws (caught by the component), not silently ignored', threw, '');
+  }
+
+  // External entity non-resolution: DOMParser must not fetch/expand a DOCTYPE-declared external entity
+  const xxePayload =
+    '<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><root>&xxe;</root>';
+  const xxeResult = parseXml(xxePayload);
+  const xxeText = xxeResult.ok ? xxeResult.doc.documentElement.textContent ?? '' : '';
+  check(
+    'xml-minifier/xml-parser/xpath-tester',
+    'external entity reference is never resolved to file contents (no XXE)',
+    !xxeText.includes('root:') && !/passwd/.test(xxeText),
+    xxeText
+  );
+}
+
+// ---------- yaml-parser (lib/tools/yaml-utils.ts) ----------
+{
+  const parsed = parseYaml('id: 1\nname: Formatiq\ntags:\n  - a\n  - b\n');
+  check(
+    'yaml-parser',
+    'valid YAML parses into a real structured value via js-yaml safe load()',
+    parsed.ok &&
+      typeof parsed.value === 'object' &&
+      parsed.value !== null &&
+      (parsed.value as Record<string, unknown>).id === 1 &&
+      (parsed.value as Record<string, unknown>).name === 'Formatiq',
+    JSON.stringify(parsed)
+  );
+
+  const invalid = parseYaml('key: [unclosed');
+  check('yaml-parser', 'invalid YAML reports a parse error, not a crash', invalid.ok === false, '');
+
+  const empty = parseYaml('');
+  check('yaml-parser', 'empty input reports a message instead of parsing', empty.ok === false, '');
+
+  // Custom-tag safety: js-yaml's load() (not a legacy unsafeLoad) must not instantiate a JS type
+  // from an unrecognized tag - it should fail to parse rather than construct anything.
+  const unsafeTag = parseYaml('exploit: !!js/function "function(){ return 1; }"');
+  check(
+    'yaml-parser',
+    'unrecognized/unsafe YAML tags fail to parse rather than instantiating arbitrary types',
+    unsafeTag.ok === false,
+    JSON.stringify(unsafeTag)
+  );
+}
+
+// ---------- css-validator ----------
+{
+  const cssDom = new JSDOM('<!DOCTYPE html><html><head></head><body></body></html>');
+  const doc = cssDom.window.document;
+
+  function validate(input: string) {
+    const style = doc.createElement('style');
+    style.textContent = input;
+    doc.head.appendChild(style);
+    try {
+      const sheet = style.sheet as CSSStyleSheet | null;
+      if (!sheet) return { ok: false as const };
+      let ruleCount = 0;
+      try {
+        ruleCount = sheet.cssRules.length;
+      } catch {
+        return { ok: false as const };
+      }
+      const openBraces = (input.match(/{/g) ?? []).length;
+      const closeBraces = (input.match(/}/g) ?? []).length;
+      if (openBraces !== closeBraces) return { ok: false as const };
+      if (input.trim() && openBraces > 0 && ruleCount === 0) return { ok: false as const };
+      return { ok: true as const, ruleCount };
+    } finally {
+      doc.head.removeChild(style);
+    }
+  }
+
+  const validCss = validate('.card { padding: 16px; color: red; }');
+  check('css-validator', 'well-formed CSS parses cleanly with rules registered', validCss.ok === true, JSON.stringify(validCss));
+
+  const unclosedRule = validate('.card { color: red;');
+  check('css-validator', 'unclosed rule (mismatched braces) is flagged, not silently accepted', unclosedRule.ok === false, '');
+
+  const stringLiteralWithBraces = validate('.card::before { content: "{ not a real rule }"; }');
+  check(
+    'css-validator',
+    'braces inside a string literal value do not falsely trigger a brace-mismatch report',
+    stringLiteralWithBraces.ok === true,
+    JSON.stringify(stringLiteralWithBraces)
+  );
 }
 
 // Print results
