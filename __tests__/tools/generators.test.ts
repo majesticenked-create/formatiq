@@ -193,6 +193,53 @@ function cpgGeneratePalette(base: Hsl, mode: string): Hsl[] {
   check('color-palette-generator', 'edge case: negative hue normalizes correctly', negativeHue === 330, String(negativeHue));
 }
 
+// ---------- 301-redirect-generator ----------
+function rcgEscapePhp(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$');
+}
+function rcgBuildApache(source: string, dest: string): string {
+  return `Redirect 301 ${source} ${dest}`;
+}
+function rcgBuildNginx(source: string, dest: string): string {
+  return `location = ${source} {\n    return 301 ${dest};\n}`;
+}
+function rcgBuildPhp(source: string, dest: string): string {
+  return `<?php\n// Redirect for ${source}\nheader("Location: ${rcgEscapePhp(dest)}", true, 301);\nexit;`;
+}
+{
+  const source = '/old-page';
+  const dest = 'https://example.com/new-page';
+
+  const apache = rcgBuildApache(source, dest);
+  check('301-redirect-generator', 'Apache snippet uses simple Redirect directive with correct path/URL', apache === 'Redirect 301 /old-page https://example.com/new-page', apache);
+
+  const nginx = rcgBuildNginx(source, dest);
+  check(
+    '301-redirect-generator',
+    'Nginx snippet uses exact-match location block with return 301',
+    nginx.includes('location = /old-page') && nginx.includes('return 301 https://example.com/new-page;'),
+    nginx
+  );
+
+  const php = rcgBuildPhp(source, dest);
+  check(
+    '301-redirect-generator',
+    'PHP snippet uses header() Location with 301 and exit',
+    php.includes('header("Location: https://example.com/new-page", true, 301);') && php.includes('exit;'),
+    php
+  );
+
+  const maliciousDest = 'https://example.com/"); system("rm -rf /"); //';
+  const escapedPhp = rcgBuildPhp(source, maliciousDest);
+  const quoteCount = (escapedPhp.match(/(?<!\\)"/g) || []).length;
+  check(
+    '301-redirect-generator',
+    'edge case: destination URL containing quotes is escaped so it cannot break out of the PHP string literal',
+    escapedPhp.includes('\\"') && quoteCount === 2,
+    escapedPhp
+  );
+}
+
 describe('Generators', async () => {
   await qrTests();
 

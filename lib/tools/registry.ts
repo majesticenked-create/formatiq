@@ -213,6 +213,8 @@ import HexToRgbaConverter from '@/components/tools/HexToRgbaConverter';
 import HexToUtf8Converter from '@/components/tools/HexToUtf8Converter';
 import OctalToBase64Converter from '@/components/tools/OctalToBase64Converter';
 import Mp3ToBase64Converter from '@/components/tools/Mp3ToBase64Converter';
+import Utf8AsciiConverter from '@/components/tools/Utf8AsciiConverter';
+import RedirectCodeGenerator from '@/components/tools/RedirectCodeGenerator';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -12539,6 +12541,149 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: Mp3ToBase64Converter,
+  },
+  {
+    slug: 'utf8-to-ascii-converter',
+    category: 'encoders-decoders',
+    isNew: true,
+    title: 'UTF-8 to ASCII Converter',
+    shortDescription: 'Validate that text is strict 7-bit ASCII (code points 0-127), and see exactly which characters aren\'t if not.',
+    longDescription:
+      'Check whether a piece of text is representable in strict 7-bit ASCII - the original 128-character set (code points 0-127) covering unaccented English letters, digits, and basic punctuation - and if it isn\'t, see exactly which character fails, at what position, and its actual Unicode code point, rather than getting a silently mangled or truncated result. This tool deliberately does not offer a "convert anyway" mode: there is no lossless way to turn "café" or "€" into ASCII, since ASCII has no representation for é or €, and the two common approaches for forcing the conversion - transliterating accented letters to their unaccented equivalent (café → cafe) or escaping non-ASCII characters as \\uXXXX sequences - either silently discard information or produce something that is not actually ASCII text, just an escaped representation of the original. Both would risk giving false confidence that lossy or non-ASCII output is safe to treat as ASCII, so this tool only validates and reports, it never silently rewrites. This is a genuinely different check from text-ascii-converter, which converts text to/from Unicode code points of any size (including values well above 127) rather than validating ASCII-compatibility specifically. Useful for confirming a string is safe to write into a strict ASCII-only file format, protocol field, or legacy system before it reaches production and fails there instead. Runs entirely client-side.',
+    metaTitle: 'UTF-8 to ASCII Converter - Strict ASCII Validator | Formatiq',
+    metaDescription:
+      'Check if text is valid 7-bit ASCII online for free. Non-ASCII characters are clearly flagged with their position and code point, never silently stripped. Runs in your browser.',
+    keywords: ['utf8 to ascii converter', 'ascii validator', 'is this ascii', 'check text is ascii', 'non-ascii character finder'],
+    useCase: 'Confirming a string is safe to write into a strict ASCII-only file format or legacy system before it fails in production',
+    howItWorks: [
+      {
+        title: 'Paste your text',
+        description: 'Any UTF-8 text - plain ASCII or text containing accented letters, symbols, or emoji.',
+      },
+      {
+        title: 'Every character is checked',
+        description: 'Each character\'s Unicode code point is checked against the 0-127 ASCII range.',
+      },
+      {
+        title: 'See a pass or a precise failure',
+        description: 'If everything is ASCII, the text is echoed back as valid. If not, every offending character is listed with its position and code point.',
+      },
+      {
+        title: 'Fix and recheck',
+        description: 'Edit the flagged characters and the check re-runs instantly.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Strict, honest validation',
+        description: 'No transliteration or lossy "best effort" conversion mode - a character is either valid ASCII or it\'s clearly reported as not.',
+      },
+      {
+        title: 'Exact failure location',
+        description: 'Each non-ASCII character is shown with its character index and Unicode code point (hex and decimal), not just a generic "invalid" message.',
+      },
+      {
+        title: 'Nothing silently dropped',
+        description: 'Non-ASCII characters are never stripped, replaced, or escaped automatically - you always see exactly what would be lost.',
+      },
+      {
+        title: 'Distinct from code-point conversion',
+        description: 'Unlike text-ascii-converter, this specifically validates ASCII-compatibility rather than converting to arbitrary Unicode code points.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why doesn\'t this tool just strip or replace non-ASCII characters automatically?',
+        answer:
+          'Because there\'s no single correct way to do it. Stripping "café" to "caf" silently loses the last letter; transliterating it to "cafe" is a reasonable guess for one accented letter but wrong or ambiguous for many others (and outright impossible for symbols like "€", which has no ASCII equivalent at all). Silently guessing risks corrupting data without any indication it happened - this tool would rather clearly tell you what isn\'t ASCII so you can decide how to handle it yourself.',
+      },
+      {
+        question: 'What counts as "ASCII" here?',
+        answer:
+          'Strict 7-bit ASCII: Unicode code points 0 through 127, covering unaccented basic Latin letters (A-Z, a-z), digits (0-9), common punctuation, and control characters. Anything with a code point of 128 or higher - accented letters, symbols like "€" or "£", emoji, and most non-Latin scripts - is flagged as non-ASCII.',
+      },
+      {
+        question: 'How is this different from the Text to ASCII Converter?',
+        answer:
+          'Text to ASCII Converter converts any text to its Unicode code points, including large ones well above 127 - it\'s a code-point converter, not an ASCII validator. This tool instead answers a narrower, specific question: is this text entirely within the original 128-character ASCII range, and if not, exactly which characters aren\'t?',
+      },
+      {
+        question: 'What happens to an emoji or a "€" symbol?',
+        answer:
+          'Both are reported as non-ASCII characters, each with its own code point (e.g. "€" is U+20AC / decimal 8364). Neither is silently dropped or approximated - you see precisely what\'s outside the ASCII range.',
+      },
+    ],
+    relatedSlugs: ['text-ascii-converter', 'utf8-encoder-decoder', 'text-binary-converter'],
+    Component: Utf8AsciiConverter,
+  },
+  {
+    slug: '301-redirect-generator',
+    category: 'generators',
+    isNew: true,
+    title: '301 Redirect Code Generator',
+    shortDescription: 'Generate a real, server-side HTTP 301 permanent redirect snippet for Apache, Nginx, or PHP.',
+    longDescription:
+      'Enter a source path and a destination URL and get a ready-to-use HTTP 301 (permanent redirect) snippet for Apache (.htaccess), Nginx, or PHP - the three most common places a server-side redirect actually needs to be written by hand. The Apache snippet uses the simple `Redirect` directive rather than a `RewriteRule`, since a single exact-path redirect doesn\'t need mod_rewrite\'s pattern-matching complexity. The Nginx snippet uses an exact-match `location =` block with a `return 301`, the idiomatic way to redirect one specific path without the regex engine mod_rewrite users often reach for out of habit. The PHP snippet uses `header("Location: ...", true, 301)` followed by `exit`, which is the correct way to issue a real HTTP 301 from application code without letting execution continue afterward. This tool deliberately does not generate a client-side redirect (a `<meta http-equiv="refresh">` tag or a JavaScript `window.location` assignment) as an alternative option, because those are a fundamentally different mechanism - they run after the page has already loaded in the browser, are invisible to search engines and other automated clients as an actual HTTP status code, and mislabeling one as a "301" would be actively misleading. Source paths and destination URLs are validated and safely interpolated into each snippet - the PHP output specifically escapes quote and backslash characters so a crafted destination URL can\'t break out of the generated string literal. Useful for migrating a page to a new URL, consolidating duplicate content, or fixing a broken link without needing to look up each server\'s exact redirect syntax from scratch. Runs entirely client-side - nothing is sent anywhere.',
+    metaTitle: '301 Redirect Code Generator (Apache, Nginx, PHP) | Formatiq',
+    metaDescription:
+      'Generate a real HTTP 301 permanent redirect snippet for Apache, Nginx, or PHP online for free. No client-side meta-refresh tricks. Runs in your browser.',
+    keywords: ['301 redirect generator', 'htaccess redirect generator', 'nginx redirect generator', 'php 301 redirect', 'permanent redirect code'],
+    useCase: 'Migrating a page to a new URL or fixing a broken link without looking up each server\'s exact redirect syntax',
+    howItWorks: [
+      {
+        title: 'Enter the source path',
+        description: 'The old path being redirected from, e.g. /old-page.',
+      },
+      {
+        title: 'Enter the destination URL',
+        description: 'The full URL to redirect to, e.g. https://example.com/new-page.',
+      },
+      {
+        title: 'Pick a platform',
+        description: 'Apache, Nginx, or PHP - each has its own correct 301 syntax.',
+      },
+      {
+        title: 'Copy the snippet',
+        description: 'Paste it directly into your .htaccess file, Nginx server block, or PHP script.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Real HTTP 301s only',
+        description: 'No meta-refresh or JavaScript redirect option that could be mistaken for a genuine server-side permanent redirect.',
+      },
+      {
+        title: 'Idiomatic syntax per platform',
+        description: 'Simple Redirect directive for Apache and an exact-match location block for Nginx - not needlessly complex RewriteRule/regex patterns for a single exact path.',
+      },
+      {
+        title: 'Safe interpolation',
+        description: 'Inputs are validated and the PHP snippet escapes quotes and backslashes so a crafted URL can\'t break out of the generated string.',
+      },
+      {
+        title: 'Three platforms, one tool',
+        description: 'Covers the three most common places a server-side redirect actually needs to be hand-written.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why isn\'t there a meta-refresh or JavaScript redirect option?',
+        answer:
+          'Those are client-side redirects - they only happen after a browser has already fully loaded the old page, and search engines and other automated HTTP clients don\'t see them as a real 301 status code at all. Labeling one as a "301 redirect" would be inaccurate and could mislead an SEO migration into thinking search engines will treat it as a proper permanent redirect, when they won\'t.',
+      },
+      {
+        question: 'Why does the Apache snippet use Redirect instead of RewriteRule?',
+        answer:
+          'For a single exact-path redirect, the plain `Redirect` directive (from mod_alias) does exactly the same job as a `RewriteRule` (from mod_rewrite) with far less syntax and no regex to get wrong. RewriteRule earns its complexity when you need pattern matching, conditions, or multiple related rules - not for one fixed path.',
+      },
+      {
+        question: 'Is my source path or destination URL safe to paste in directly?',
+        answer:
+          'Inputs are validated (a source path must start with "/" and neither field may contain whitespace) before being interpolated into any snippet, and the PHP snippet specifically escapes quote and backslash characters so a crafted destination URL can\'t break out of the generated string literal.',
+      },
+    ],
+    relatedSlugs: ['http-status-code-lookup', 'url-encoder-decoder', 'meta-tag-generator'],
+    Component: RedirectCodeGenerator,
   },
 ];
 

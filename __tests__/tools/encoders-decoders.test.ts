@@ -236,6 +236,43 @@ import { byteListToText, textToByteList } from '@/lib/tools/byte-string-utils';
   );
 }
 
+// ---------- utf8-to-ascii-converter ----------
+function utaCheckAscii(input: string) {
+  if (!input) return { ok: false as const, offenders: [] as { char: string; index: number; codePoint: number }[] };
+  const offenders: { char: string; index: number; codePoint: number }[] = [];
+  let index = 0;
+  for (const ch of input) {
+    const cp = ch.codePointAt(0) ?? 0;
+    if (cp > 127) offenders.push({ char: ch, index, codePoint: cp });
+    index += ch.length;
+  }
+  if (offenders.length > 0) return { ok: false as const, offenders };
+  return { ok: true as const, output: input, offenders };
+}
+{
+  const hello = utaCheckAscii('Hello');
+  check('utf8-to-ascii-converter', '"Hello" is valid strict ASCII', hello.ok === true && hello.output === 'Hello', JSON.stringify(hello));
+
+  const cafe = utaCheckAscii('café');
+  check(
+    'utf8-to-ascii-converter',
+    '"café" reports the non-ASCII "é" clearly, not silently stripped',
+    cafe.ok === false && cafe.offenders.length === 1 && cafe.offenders[0].char === 'é' && cafe.offenders[0].codePoint === 233,
+    JSON.stringify(cafe)
+  );
+
+  const euro = utaCheckAscii('€');
+  check(
+    'utf8-to-ascii-converter',
+    '"€" reports the non-ASCII character with its code point (U+20AC / 8364)',
+    euro.ok === false && euro.offenders.length === 1 && euro.offenders[0].codePoint === 8364,
+    JSON.stringify(euro)
+  );
+
+  const empty = utaCheckAscii('');
+  check('utf8-to-ascii-converter', 'empty input -> not ok, not crash', empty.ok === false);
+}
+
 describe('Encoders/Decoders', async () => {
   await hashTests();
 
