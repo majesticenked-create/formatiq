@@ -563,6 +563,123 @@ function formatJavaForTest(input: string): string {
   check('java-formatter', 'text blocks are rejected rather than mangled', threw);
 }
 
+// ---------- json5-validator ----------
+import JSON5 from 'json5';
+
+function json5Validate(input: string) {
+  try {
+    const parsed = JSON5.parse(input);
+    return { ok: true as const, output: JSON.stringify(parsed, null, 2) };
+  } catch (err) {
+    return { ok: false as const, message: err instanceof Error ? err.message : 'Invalid JSON5' };
+  }
+}
+{
+  const comments = json5Validate('{\n  // a comment\n  a: 1,\n}');
+  check('json5-validator', 'comments and trailing commas are accepted', comments.ok === true, JSON.stringify(comments));
+
+  const unquoted = json5Validate("{a:1, b:'two', c:[1,2,3,]}");
+  check('json5-validator', 'unquoted keys and single-quoted strings are accepted', unquoted.ok === true, JSON.stringify(unquoted));
+  check(
+    'json5-validator',
+    'parses to the correct strict-JSON equivalent',
+    unquoted.ok === true && unquoted.output.includes('"b": "two"'),
+    unquoted.ok ? unquoted.output : ''
+  );
+
+  const invalid = json5Validate('{a: 1,,}');
+  check('json5-validator', 'genuinely invalid JSON5 is rejected, not a crash', invalid.ok === false, JSON.stringify(invalid));
+
+  const strictJson = json5Validate('{"a":1,"b":[1,2,3]}');
+  check('json5-validator', 'plain strict JSON is also valid JSON5', strictJson.ok === true, JSON.stringify(strictJson));
+}
+
+// ---------- less-compiler ----------
+import less from 'less';
+
+{
+  const simple = await less.render('@c: red; .x { color: @c; }', { syncImport: false }).then(
+    (r) => ({ ok: true as const, css: r.css }),
+    (err: unknown) => ({ ok: false as const, message: String(err) })
+  );
+  check('less-compiler', 'variable resolves to a plain CSS value', simple.ok === true && simple.css.includes('color: red'), JSON.stringify(simple));
+
+  const nested = await less
+    .render('.a { .b { color: blue; } }', { syncImport: false })
+    .then((r) => ({ ok: true as const, css: r.css }), (err: unknown) => ({ ok: false as const, message: String(err) }));
+  check(
+    'less-compiler',
+    'nested selectors are flattened into plain CSS',
+    nested.ok === true && nested.css.includes('.a .b') && nested.css.includes('color: blue'),
+    JSON.stringify(nested)
+  );
+
+  const invalid = await less
+    .render('.a { color: red;', { syncImport: false })
+    .then((r) => ({ ok: true as const, css: r.css }), (err: unknown) => ({ ok: false as const, message: String(err) }));
+  check('less-compiler', 'invalid LESS produces a clear error, not a crash', invalid.ok === false, JSON.stringify(invalid));
+}
+
+// ---------- less-formatter ----------
+import { css_beautify } from 'js-beautify';
+
+{
+  const out = css_beautify('@primary:#333;.box{color:@primary;.child{margin:10px;}}', { indent_size: 2 });
+  check('less-formatter', 'reformats without throwing', typeof out === 'string' && out.length > 0, out);
+  check('less-formatter', 'preserves @variable syntax as literal text', out.includes('@primary'), out);
+  check('less-formatter', 'preserves nested rule structure', out.includes('.child'), out);
+}
+
+// ---------- markdown-editor ----------
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
+import { JSDOM } from 'jsdom';
+
+{
+  const dom = new JSDOM('<!DOCTYPE html>');
+  const purify = DOMPurify(dom.window as unknown as Window & typeof globalThis);
+
+  function renderSanitized(markdown: string): string {
+    const rawHtml = marked.parse(markdown, { async: false }) as string;
+    return purify.sanitize(rawHtml, {
+      FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form'],
+      FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'style'],
+    });
+  }
+
+  const scriptInjection = renderSanitized('Hello\n\n<script>alert(1)</script>\n\nWorld');
+  check(
+    'markdown-editor',
+    'embedded <script> tag does not survive sanitization',
+    !scriptInjection.includes('<script') && !scriptInjection.includes('alert(1)'),
+    scriptInjection
+  );
+
+  const jsLink = renderSanitized('[click me](javascript:alert(1))');
+  check(
+    'markdown-editor',
+    'javascript: link protocol is neutralized',
+    !jsLink.includes('javascript:alert'),
+    jsLink
+  );
+
+  const normal = renderSanitized('# Title\n\n**bold** and *italic* text with a [link](https://example.com).');
+  check(
+    'markdown-editor',
+    'normal markdown renders expected HTML',
+    normal.includes('<h1') && normal.includes('<strong>bold</strong>') && normal.includes('href="https://example.com"'),
+    normal
+  );
+
+  const codeFence = renderSanitized('```js\nconst x = "<script>bad()</script>";\n```');
+  check(
+    'markdown-editor',
+    'code fence content is escaped, not executed',
+    codeFence.includes('&lt;script&gt;') && !codeFence.includes('<script>bad'),
+    codeFence
+  );
+}
+
 // Print results
 
 describe('Formatters', () => {

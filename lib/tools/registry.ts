@@ -1,4 +1,8 @@
 import JsonFormatter from '@/components/tools/JsonFormatter';
+import Json5Validator from '@/components/tools/Json5Validator';
+import LessCompiler from '@/components/tools/LessCompiler';
+import LessFormatter from '@/components/tools/LessFormatter';
+import MarkdownEditor from '@/components/tools/MarkdownEditor';
 import GraphqlFormatter from '@/components/tools/GraphqlFormatter';
 import JavascriptTester from '@/components/tools/JavascriptTester';
 import JsonValidator from '@/components/tools/JsonValidator';
@@ -10555,6 +10559,189 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: JavascriptTester,
+  },
+  {
+    slug: 'json5-validator',
+    category: 'formatters',
+    relatedSlugs: ['json-validator', 'json-formatter', 'json-repair'],
+    isNew: true,
+    title: 'JSON5 Validator',
+    shortDescription: 'Validate JSON5 - comments, trailing commas, unquoted keys, single-quoted strings - and see the equivalent strict JSON.',
+    longDescription:
+      'JSON5 relaxes JSON’s strict grammar for the sake of hand-written config files: it allows line and block comments, trailing commas in objects and arrays, unquoted (or single-quoted) object keys, single-quoted strings, and a handful of other conveniences that a strict JSON.parse would reject outright. This tool validates against the real JSON5 grammar using the JSON5 library rather than approximating it, so a config file with comments and trailing commas gets an honest pass/fail verdict instead of a false "invalid JSON" error from a parser that was never built to accept it. Valid input is also shown re-serialized as strict, standard JSON, so you can see exactly what a downstream JSON.parse-only consumer would receive. Runs entirely client-side; nothing you paste is ever uploaded.',
+    metaTitle: 'JSON5 Validator - Comments, Trailing Commas, Unquoted Keys | Formatiq',
+    metaDescription:
+      'Validate JSON5 syntax for free - comments, trailing commas, unquoted keys, and single-quoted strings all supported. See the equivalent strict JSON output instantly.',
+    keywords: ['json5 validator', 'json5 parser', 'validate json5', 'json5 online', 'json5 to json'],
+    useCase: 'Validating a hand-written JSON5 config file that uses comments and trailing commas',
+    howItWorks: [
+      {
+        title: 'Paste JSON5',
+        description: 'Comments, trailing commas, unquoted keys, and single-quoted strings are all accepted.',
+      },
+      {
+        title: 'Get a real verdict',
+        description: 'Parsed with the JSON5 grammar, not a strict JSON.parse that would reject valid JSON5.',
+      },
+      {
+        title: 'See the strict-JSON equivalent',
+        description: 'Valid input is re-serialized as standard JSON so you know what a plain JSON.parse consumer would see.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is JSON5 the same as JSON with comments (JSONC)?',
+        answer:
+          'They overlap but aren’t identical. JSON5 allows comments plus several other relaxations (trailing commas, unquoted keys, single-quoted strings, hex numbers, leading decimal points); JSONC as used by some tools (like VS Code’s settings files) typically only adds comments and trailing commas on top of JSON. This tool validates specifically against the JSON5 grammar.',
+      },
+      {
+        question: 'Why not just use JSON.parse and ignore the comments?',
+        answer:
+          'Strict JSON.parse has no concept of comments, trailing commas, or unquoted keys at all - it throws a syntax error the moment it hits any of them. There’s no way to "ignore" that syntax with the standard parser; you need a parser that actually understands the JSON5 grammar, which is what this tool uses.',
+      },
+      {
+        question: 'Does this tool reformat or minify my JSON5?',
+        answer:
+          'It validates and shows the strict-JSON equivalent of valid input, but it doesn’t reformat the original JSON5 source itself (which would require deciding how to preserve or restructure comments). For pretty-printing plain JSON, use the JSON Formatter.',
+      },
+    ],
+    Component: Json5Validator,
+  },
+  {
+    slug: 'less-compiler',
+    category: 'formatters',
+    relatedSlugs: ['less-formatter', 'css-formatter', 'css-minifier'],
+    isNew: true,
+    title: 'LESS Compiler',
+    shortDescription: 'Compile LESS (variables, nesting, mixins) into plain CSS instantly in your browser.',
+    longDescription:
+      'Paste LESS source - variables, nested rules, mixins - and get back plain, browser-ready CSS. This uses the official less package’s compiler running entirely client-side: no filename is given to the renderer and imports are never resolved against a filesystem or network address, so an @import that can’t be resolved in-memory simply fails with a clear compile error rather than attempting to fetch anything. That matters because this tool never sends what you paste anywhere - compilation happens fully in your browser. Useful for quickly checking what a LESS snippet actually compiles to, or converting a small LESS file to CSS without wiring up a build step.',
+    metaTitle: 'LESS Compiler - LESS to CSS, Free & Client-Side | Formatiq',
+    metaDescription:
+      'Compile LESS to CSS online for free. Variables, nesting, and mixins all supported. Runs entirely in your browser - nothing is uploaded.',
+    keywords: ['less compiler', 'less to css', 'compile less online', 'less css converter', 'less preprocessor'],
+    useCase: 'Checking what a LESS snippet compiles to without a build step',
+    howItWorks: [
+      {
+        title: 'Paste LESS',
+        description: 'Variables, nested selectors, and mixins are all supported.',
+      },
+      {
+        title: 'Compiled instantly',
+        description: 'The official less package compiles your source to plain CSS in your browser.',
+      },
+      {
+        title: 'Copy the CSS',
+        description: 'Copy the compiled output directly, or fix any reported error and recompile.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this tool send my LESS anywhere?',
+        answer:
+          'No. Compilation runs entirely in your browser using the less package’s JavaScript compiler - nothing you paste is uploaded to a server.',
+      },
+      {
+        question: 'What happens if my LESS has an @import statement?',
+        answer:
+          'Since no filename or import path is provided to the compiler, an @import can’t resolve against any local file or remote URL. If your LESS depends on an external import, compilation will fail with a clear error rather than silently succeeding or attempting a network request.',
+      },
+      {
+        question: 'How is this different from the LESS Formatter?',
+        answer:
+          'This tool compiles LESS down to plain CSS - variables get resolved, nesting gets flattened. The LESS Formatter instead re-indents LESS source while keeping it as LESS, for when you want to clean up formatting without changing the language.',
+      },
+    ],
+    Component: LessCompiler,
+  },
+  {
+    slug: 'less-formatter',
+    category: 'formatters',
+    relatedSlugs: ['less-compiler', 'css-formatter', 'css-minifier'],
+    isNew: true,
+    title: 'LESS Formatter',
+    shortDescription: 'Reformat LESS source for readability - indentation and brace placement - while keeping it as LESS.',
+    longDescription:
+      'Cleans up the indentation and brace placement of LESS source without compiling it - @variables, mixins, and nested rules all pass through untouched as literal text, because this only adjusts whitespace rather than interpreting LESS syntax. That’s a different job from compiling: if you want @variables resolved and nested rules flattened into plain CSS, use the LESS Compiler instead. This tool is for the more common day-to-day case of just wanting a messy or minified LESS file to read clearly again before you edit it. Runs entirely client-side; nothing you paste is ever uploaded.',
+    metaTitle: 'LESS Formatter - Reformat LESS Source, Free | Formatiq',
+    metaDescription:
+      'Reformat and re-indent LESS source for free, keeping variables, mixins, and nesting intact. Runs entirely in your browser.',
+    keywords: ['less formatter', 'less beautifier', 'format less online', 'less pretty print', 'less indent'],
+    useCase: 'Cleaning up a messy or minified LESS file before editing it',
+    howItWorks: [
+      {
+        title: 'Paste LESS',
+        description: 'Minified or inconsistently indented LESS source works fine.',
+      },
+      {
+        title: 'Reformatted instantly',
+        description: 'Braces, selectors, and declarations are reformatted for readability - LESS syntax stays intact.',
+      },
+      {
+        title: 'Copy the result',
+        description: 'Copy the cleaned-up LESS, still valid LESS, not compiled CSS.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Will this resolve my @variables or flatten nested mixins?',
+        answer:
+          'No - that’s compilation, not formatting. This tool only touches whitespace and brace placement; @variables, mixin calls, and nested rules are left exactly as written. For variable resolution and flattening, use the LESS Compiler.',
+      },
+      {
+        question: 'Is the output guaranteed to be valid CSS?',
+        answer:
+          'The output is reformatted LESS, not CSS - it can still contain @variables and nested rules that aren’t valid plain CSS on their own. If you need browser-ready CSS, compile it first with the LESS Compiler.',
+      },
+    ],
+    Component: LessFormatter,
+  },
+  {
+    slug: 'markdown-editor',
+    category: 'formatters',
+    relatedSlugs: ['markdown-html-converter', 'json-formatter'],
+    isNew: true,
+    title: 'Markdown Editor',
+    shortDescription: 'Write Markdown with a live, sanitized HTML preview side by side.',
+    longDescription:
+      'A split-pane Markdown editor: write on one side, see a rendered preview on the other, updated as you type. Markdown is parsed with the marked library and every bit of resulting HTML is run through DOMPurify before it’s displayed, so raw <script> tags, inline event handlers, and javascript: links embedded in Markdown input are stripped rather than executed - useful reassurance if you’re previewing Markdown from an untrusted source (a PR description, a scraped README, a pasted email) rather than only your own writing. Runs entirely client-side; nothing you write is uploaded anywhere.',
+    metaTitle: 'Markdown Editor - Live Sanitized Preview | Formatiq',
+    metaDescription:
+      'Write Markdown with a live, sanitized HTML preview, free and in your browser. Embedded scripts and javascript: links are stripped, not executed.',
+    keywords: ['markdown editor', 'markdown preview', 'markdown live preview', 'markdown to html online', 'safe markdown renderer'],
+    useCase: 'Previewing a README or PR description with a live, safe rendered view',
+    howItWorks: [
+      {
+        title: 'Write Markdown',
+        description: 'Headers, lists, links, fenced code blocks, and more.',
+      },
+      {
+        title: 'See a live preview',
+        description: 'Rendered with marked and updated as you type.',
+      },
+      {
+        title: 'Sanitized automatically',
+        description: 'Every render is cleaned with DOMPurify - embedded scripts and dangerous links never execute.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is it safe to preview Markdown from an untrusted source here?',
+        answer:
+          'The rendered HTML is sanitized with DOMPurify before display, and raw <script>, <iframe>, <object>, and <form> tags plus inline event-handler attributes are explicitly stripped, along with dangerous URL schemes like javascript: in links. That covers the standard XSS vectors people worry about when previewing untrusted Markdown, though as with any client-side sanitizer, this tool is not a substitute for a security review of a system that renders Markdown at scale.',
+      },
+      {
+        question: 'Does this tool upload what I write?',
+        answer:
+          'No - parsing, sanitizing, and rendering all happen in your browser. Nothing you type is sent anywhere.',
+      },
+      {
+        question: 'How is this different from the Markdown ⇄ HTML Converter?',
+        answer:
+          'The converter is a lightweight regex-based tool for converting Markdown to HTML text (or back) that you’d copy elsewhere - it doesn’t render a live preview. This editor uses a real Markdown parser and shows an actual rendered, sanitized preview side by side with the source as you type.',
+      },
+    ],
+    Component: MarkdownEditor,
   },
 ];
 
