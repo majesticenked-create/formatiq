@@ -1620,6 +1620,216 @@ textarea.mono,
   border-bottom: none;
 }
 
+/* Tool action bar (helpful/not-helpful vote, feedback, share, embed) */
+.tool-action-bar-wrap {
+  padding: 20px 24px;
+}
+
+.tool-action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.tool-action-vote {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 240px;
+}
+
+.tool-action-vote-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.tool-action-vote-buttons,
+.tool-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tool-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, transform 120ms var(--ease-out);
+}
+
+.tool-action-btn:hover {
+  border-color: var(--text-secondary);
+}
+
+.tool-action-btn:active {
+  transform: scale(0.97);
+}
+
+.tool-action-vote-btn.is-helpful {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.tool-action-vote-btn.is-not-helpful {
+  background: var(--surface);
+  border-color: var(--text-secondary);
+}
+
+.tool-action-ack {
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 420px;
+}
+
+.tool-action-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tool-action-reason-chip {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.tool-action-reason-chip.is-selected {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  background: var(--accent-soft);
+}
+
+.tool-action-embed {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.tool-action-embed-hint {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 10px;
+}
+
+.tool-action-embed-code {
+  overflow-x: auto;
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+  margin: 0 0 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.tool-action-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 100;
+}
+
+.tool-action-dialog {
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tool-action-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tool-action-dialog-header h2 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.tool-action-dialog-close {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.tool-action-dialog-note {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.tool-action-dialog textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.tool-action-dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .tool-action-dialog-actions .btn {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}
+
 /* Related tools */
 .related-tools {
   padding: 32px 0;

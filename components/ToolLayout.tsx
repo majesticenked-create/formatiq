@@ -7,6 +7,7 @@ import RelatedTools from './RelatedTools';
 import FaqAccordion from './FaqAccordion';
 import CopyLinkButton from './CopyLinkButton';
 import ToolCta from './ToolCta';
+import ToolActionBar from './ToolActionBar';
 
 export default function ToolLayout({ tool, children }: { tool: ToolDefinition; children: ReactNode }) {
   const category = getCategory(tool.category);
@@ -115,6 +116,8 @@ export default function ToolLayout({ tool, children }: { tool: ToolDefinition; c
         {children}
         <AdSlot label="In-content" />
       </div>
+
+      <ToolActionBar toolTitle={tool.title} category={tool.category} slug={tool.slug} />
 
       <div className="container seo-content">
         <h2>About this tool</h2>
