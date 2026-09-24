@@ -1,18 +1,12 @@
 import Link from 'next/link';
-import { categories } from '@/lib/tools/registry';
+import { categories, tools } from '@/lib/tools/registry';
 import ThemeToggle from './ThemeToggle';
-
-const POPULAR_TOOLS = [
-  { category: 'formatters', slug: 'json-formatter', title: 'JSON Formatter' },
-  { category: 'encoders-decoders', slug: 'hash-generator', title: 'Hash Generator' },
-  { category: 'generators', slug: 'uuid-generator', title: 'UUID Generator' },
-  { category: 'converters', slug: 'timestamp-converter', title: 'Timestamp Converter' },
-  { category: 'text-tools', slug: 'regex-tester', title: 'Regex Tester' },
-  { category: 'calculators', slug: 'bmi-calculator', title: 'BMI Calculator' },
-];
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  // Sourced from the registry's isPopular flag rather than a hardcoded list,
+  // so this column can never drift out of sync with real tool data.
+  const popularTools = tools.filter((t) => t.isPopular).slice(0, 6);
 
   return (
     <footer className="site-footer">
@@ -31,18 +25,23 @@ export default function Footer() {
           <div className="footer-column">
             <h2>Categories</h2>
             <ul>
-              {categories.map((category) => (
-                <li key={category.slug}>
-                  <Link href={`/tools/${category.slug}`}>{category.title}</Link>
-                </li>
-              ))}
+              {categories.map((category) => {
+                const count = tools.filter((t) => t.category === category.slug).length;
+                return (
+                  <li key={category.slug}>
+                    <Link href={`/tools/${category.slug}`}>
+                      {category.title} <span style={{ color: 'var(--text-tertiary)' }}>({count})</span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
           <div className="footer-column">
             <h2>Popular tools</h2>
             <ul>
-              {POPULAR_TOOLS.map((tool) => (
+              {popularTools.map((tool) => (
                 <li key={tool.slug}>
                   <Link href={`/tools/${tool.category}/${tool.slug}`}>{tool.title}</Link>
                 </li>

@@ -2,43 +2,14 @@ import Link from 'next/link';
 import HeroDemo from '@/components/HeroDemo';
 import ToolSearch from '@/components/ToolSearch';
 import ScrollReveal from '@/components/ScrollReveal';
-import { categories, getToolsByCategory, tools } from '@/lib/tools/registry';
+import CategoryDirectory from '@/components/home/CategoryDirectory';
+import TrustSection from '@/components/home/TrustSection';
+import ToolCardRow from '@/components/home/ToolCardRow';
+import NewToolsList from '@/components/home/NewToolsList';
+import { categories, tools } from '@/lib/tools/registry';
 import type { ToolDefinition } from '@/lib/tools/types';
 
-const MAX_TOOL_TAGS = 4;
 const BASE_URL = 'https://formatiq.tools';
-
-function ToolCardRow({ items }: { items: ToolDefinition[] }) {
-  return (
-    <div className="tool-card-row">
-      {items.map((tool) => (
-        <Link key={`${tool.category}-${tool.slug}`} href={`/tools/${tool.category}/${tool.slug}`} className="tool-card-compact">
-          <h3>{tool.title}</h3>
-          <p>{tool.shortDescription}</p>
-        </Link>
-      ))}
-    </div>
-  );
-}
-
-// Deliberately distinct from ToolCardRow's horizontal-scroll layout - three
-// consecutive sections all using the same card-row pattern reads as repetitive.
-// A compact 2-column list (1-column on mobile) breaks that up in the middle.
-function NewToolsList({ items }: { items: ToolDefinition[] }) {
-  return (
-    <div className="new-tools-list">
-      {items.map((tool) => (
-        <Link key={`${tool.category}-${tool.slug}`} href={`/tools/${tool.category}/${tool.slug}`} className="new-tool-row">
-          <div className="new-tool-row-text">
-            <h3>{tool.title}</h3>
-            <p>{tool.shortDescription}</p>
-          </div>
-          <span className="new-tool-badge">New</span>
-        </Link>
-      ))}
-    </div>
-  );
-}
 
 // TODO: once real analytics (e.g. GA4 pageview data) exists, replace this
 // pseudo-random selection with actual most-viewed-this-week logic from real
@@ -62,13 +33,6 @@ function getTrendingTools(allTools: ToolDefinition[], count: number): ToolDefini
 }
 
 export default function HomePage() {
-  const stats = [
-    { value: String(tools.length), label: `tool${tools.length === 1 ? '' : 's'}` },
-    { value: String(categories.length), label: `categor${categories.length === 1 ? 'y' : 'ies'}` },
-    { value: '100%', label: 'client-side' },
-    { value: '$0', label: 'cost' },
-  ];
-
   // Excluded from the homepage's rotating "Trending" pool: BMI and loan calculators
   // are YMYL topics (medical/financial) dominated by authority sites we have no
   // realistic shot at outranking, and are off-brand for a dev-tools site — they stay
@@ -76,7 +40,7 @@ export default function HomePage() {
   const TRENDING_EXCLUDED_SLUGS = new Set(['bmi-calculator', 'loan-calculator']);
 
   const popularTools = tools.filter((t) => t.isPopular);
-  const newTools = tools.filter((t) => t.isNew).slice(0, 6);
+  const newTools = tools.filter((t) => t.isNew).slice(0, 8);
   const trendingTools = getTrendingTools(
     tools.filter((t) => !TRENDING_EXCLUDED_SLUGS.has(t.slug)),
     6
@@ -91,6 +55,11 @@ export default function HomePage() {
         url: BASE_URL,
         description:
           'Free formatters, converters, validators, and generators for developers. Everything runs in your browser.',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: `${BASE_URL}/sitemap-page?q={search_term_string}`,
+          'query-input': 'required name=search_term_string',
+        },
       },
       {
         '@type': 'ItemList',
@@ -113,36 +82,33 @@ export default function HomePage() {
       <div className="container">
         <section className="hero">
           <div>
-            <div className="eyebrow">100% client-side · no sign-up</div>
-            <h1>Format, convert, and validate - without leaving your browser.</h1>
+            <div className="eyebrow">100% free · no sign-up</div>
+            <h1>
+              {tools.length} developer tools, ready in your browser - no account, no upload.
+            </h1>
             <p className="lede">
-              Formatiq is a growing collection of free developer tools: formatters, converters, validators, and
-              generators. Nothing you paste leaves your browser.
+              Formatiq is a growing collection of free formatters, converters, validators, and generators. Search
+              for what you need below, or browse by category.
             </p>
+            <div className="hero-actions">
+              <ToolSearch />
+            </div>
             <div className="hero-actions">
               <Link href="/tools/formatters/json-formatter" className="btn btn-primary">
                 Try the JSON formatter
               </Link>
-              <Link href="/tools/formatters" className="btn btn-secondary">
+              <Link href="/sitemap-page" className="btn btn-secondary">
                 Browse all tools
               </Link>
             </div>
           </div>
           <HeroDemo />
         </section>
+      </div>
 
-        <section className="stats-bar">
-          {stats.map((stat) => (
-            <div key={stat.label} className="stat-block">
-              <div className="stat-value">{stat.value}</div>
-              <div className="stat-label">{stat.label}</div>
-            </div>
-          ))}
-        </section>
-
-        <section className="search-section">
-          <ToolSearch />
-        </section>
+      <div className="container">
+        <CategoryDirectory />
+        <TrustSection />
       </div>
 
       {popularTools.length > 0 && (
@@ -150,8 +116,8 @@ export default function HomePage() {
           <div className="container">
             <ScrollReveal>
               <div className="home-section-header">
-                <h2 className="section-title">Popular Tools</h2>
-                <p>The most reached-for tools on Formatiq, based on real-world search demand.</p>
+                <h2 className="section-title">Popular tools</h2>
+                <p>A hand-picked set of the tools people reach for most - JSON, Base64, UUIDs, hashes, and more.</p>
               </div>
             </ScrollReveal>
             <ToolCardRow items={popularTools} />
@@ -159,12 +125,33 @@ export default function HomePage() {
         </section>
       )}
 
+      <div className="container">
+        <section style={{ marginBottom: 40 }}>
+          <ScrollReveal>
+            <h2 className="section-title">About Formatiq</h2>
+            <p style={{ color: 'var(--text-secondary)', maxWidth: '70ch' }}>
+              Formatiq exists because most day-to-day developer tasks - reformatting a JSON blob, decoding a JWT,
+              checking whether an email address is even valid - don’t need an account, a subscription, or a round
+              trip to a server. Most tools here run entirely in your browser: nothing you paste, encode, validate,
+              or convert is uploaded anywhere, which matters more than it sounds when what you’re working with is a
+              real API response, a production config file, or a token you’d rather not hand to an unfamiliar site.
+              New tools get added as real gaps show up, not on a release schedule, and every one of them stays free.
+            </p>
+            <p style={{ marginTop: 12 }}>
+              <Link href="/about" className="btn btn-secondary">
+                More about Formatiq
+              </Link>
+            </p>
+          </ScrollReveal>
+        </section>
+      </div>
+
       {newTools.length > 0 && (
         <section className="home-section home-section-alt">
           <div className="container">
             <ScrollReveal>
               <div className="home-section-header">
-                <h2 className="section-title">New Additions</h2>
+                <h2 className="section-title">Recently added</h2>
                 <p>The latest tools added to Formatiq.</p>
               </div>
             </ScrollReveal>
@@ -178,7 +165,7 @@ export default function HomePage() {
           <div className="container">
             <ScrollReveal>
               <div className="home-section-header">
-                <h2 className="section-title">Trending This Week</h2>
+                <h2 className="section-title">Trending this week</h2>
                 <p>A rotating pick of tools worth checking out, refreshed weekly.</p>
               </div>
             </ScrollReveal>
@@ -186,61 +173,6 @@ export default function HomePage() {
           </div>
         </section>
       )}
-
-      <div className="container">
-        <section style={{ marginBottom: 40 }}>
-          <ScrollReveal>
-            <p style={{ color: 'var(--text-secondary)', maxWidth: '70ch' }}>
-              Formatiq exists because most day-to-day developer tasks - reformatting a JSON blob, decoding a JWT, checking
-              whether an email address is even valid - don’t need an account, a subscription, or a round trip to a
-              server. Every tool here runs entirely in your browser: nothing you paste, encode, validate, or convert is
-              ever uploaded anywhere, which matters more than it sounds when what you’re working with is a real API
-              response, a production config file, or a token you’d rather not hand to an unfamiliar site. New tools get
-              added as real gaps show up, not on a release schedule, and every one of them stays free.
-            </p>
-          </ScrollReveal>
-        </section>
-
-        <section>
-          <ScrollReveal>
-            <h2 className="section-title">Browse by category</h2>
-          </ScrollReveal>
-          <div className="category-grid">
-            {categories.map((category) => {
-              const categoryTools = getToolsByCategory(category.slug);
-              const shown = categoryTools.slice(0, MAX_TOOL_TAGS);
-              const remaining = categoryTools.length - shown.length;
-
-              return (
-                <div key={category.slug} className="category-card">
-                  <Link href={`/tools/${category.slug}`} className="category-card-link">
-                    <h3>{category.title}</h3>
-                    <p>{category.description}</p>
-                  </Link>
-                  {shown.length > 0 && (
-                    <div className="category-tool-tags">
-                      {shown.map((tool) => (
-                        <Link
-                          key={tool.slug}
-                          href={`/tools/${category.slug}/${tool.slug}`}
-                          className="tool-tag"
-                        >
-                          {tool.title}
-                        </Link>
-                      ))}
-                      {remaining > 0 && (
-                        <Link href={`/tools/${category.slug}`} className="tool-tag tool-tag-more">
-                          +{remaining} more
-                        </Link>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      </div>
     </>
   );
 }
