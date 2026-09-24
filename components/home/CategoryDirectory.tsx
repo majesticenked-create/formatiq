@@ -1,15 +1,6 @@
 import Link from 'next/link';
 import { categories, tools } from '@/lib/tools/registry';
-
-/**
- * No icon library is used here on purpose (the project doesn't depend on one -
- * see package.json), so each category gets a small monogram badge built from
- * its own initial, styled with the site's existing --accent tokens instead of
- * a borrowed icon set.
- */
-function categoryMonogram(title: string): string {
-  return title.trim().charAt(0).toUpperCase();
-}
+import { getCategoryIcon } from '@/components/icons/CategoryIcons';
 
 export default function CategoryDirectory() {
   const cards = categories
@@ -25,14 +16,16 @@ export default function CategoryDirectory() {
     <section>
       <h2 className="section-title">Browse by category</h2>
       <div className="category-directory-grid">
-        {cards.map(({ category, count }) => (
+        {cards.map(({ category, count }) => {
+          const Icon = getCategoryIcon(category.slug);
+          return (
           <Link
             key={category.slug}
             href={`/tools/${category.slug}`}
             className="category-directory-card"
           >
             <span className="category-directory-icon" aria-hidden="true">
-              {categoryMonogram(category.title)}
+              <Icon />
             </span>
             <h3>{category.title}</h3>
             <p>{category.description}</p>
@@ -40,7 +33,8 @@ export default function CategoryDirectory() {
               {count} tool{count === 1 ? '' : 's'}
             </span>
           </Link>
-        ))}
+          );
+        })}
 
         <Link
           href="/sitemap-page"

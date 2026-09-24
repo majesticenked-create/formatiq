@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { categories, tools } from '../lib/tools/registry';
 import { filterTools } from '../lib/tools/search';
+import { getCategoryIcon } from '../components/icons/CategoryIcons';
 
 describe('Homepage — category directory counts', () => {
   categories.forEach((category) => {
@@ -80,5 +81,25 @@ describe('Homepage search — filterTools', () => {
   it('caps results at maxResults', () => {
     const results = filterTools(tools, 'e', 3);
     expect(results.length).toBeLessThanOrEqual(3);
+  });
+});
+
+describe('Homepage — category directory icons', () => {
+  it('every real category resolves to a distinct icon component (not the generic fallback)', () => {
+    const seen = new Set<unknown>();
+    categories.forEach((category) => {
+      const Icon = getCategoryIcon(category.slug);
+      expect(Icon, `category ${category.slug} should resolve to an icon`).toBeDefined();
+      seen.add(Icon);
+    });
+    // Every current category has its own explicit icon, so none of them should collapse onto
+    // the same (fallback) component.
+    expect(seen.size).toBe(categories.length);
+  });
+
+  it('an unmapped/future category slug falls back gracefully instead of throwing', () => {
+    expect(() => getCategoryIcon('some-future-category-not-yet-mapped')).not.toThrow();
+    const Fallback = getCategoryIcon('some-future-category-not-yet-mapped');
+    expect(Fallback).toBeDefined();
   });
 });

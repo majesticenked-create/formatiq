@@ -942,14 +942,12 @@ textarea.mono,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius);
   background: var(--accent-soft);
   color: var(--accent);
-  font-family: var(--font-mono);
-  font-weight: 600;
-  font-size: 14px;
+  flex-shrink: 0;
 }
 
 .category-directory-card h3 {
