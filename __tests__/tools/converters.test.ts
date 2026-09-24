@@ -744,6 +744,77 @@ import { hexToUtf8, hexToBytes, textToHex } from '@/lib/tools/hex-utf8-utils';
   check('hex-to-utf8', 'round trip: text -> hex -> text', roundTrip.ok === true && roundTrip.text === 'Café ☕', JSON.stringify(roundTrip));
 }
 
+// ---------- octal-to-ip-converter (batch 016) ----------
+function parseOctalIp(input: string) {
+  const trimmed = input.trim();
+  if (!trimmed) return { ok: false as const, message: 'empty' };
+  const parts = trimmed.split('.');
+  if (parts.length !== 4) return { ok: false as const, message: `Expected 4, got ${parts.length}` };
+  const perOctet: { octal: string; decimal: number }[] = [];
+  for (const part of parts) {
+    if (part === '' || !/^[0-7]+$/.test(part)) return { ok: false as const, message: `bad octet ${part}` };
+    const decimal = parseInt(part, 8);
+    if (decimal > 255) return { ok: false as const, message: `out of range ${part}` };
+    perOctet.push({ octal: part, decimal });
+  }
+  return { ok: true as const, ip: perOctet.map((o) => o.decimal).join('.'), perOctet };
+}
+{
+  const good = parseOctalIp('300.250.001.001');
+  check('octal-to-ip-converter', '300.250.001.001 -> 192.168.1.1', good.ok === true && good.ip === '192.168.1.1', JSON.stringify(good));
+
+  const badRange = parseOctalIp('400.1.1.1');
+  check('octal-to-ip-converter', 'reject 400.1.1.1 (decodes to 256, out of range)', badRange.ok === false, JSON.stringify(badRange));
+
+  const badDigit = parseOctalIp('308.1.1.1');
+  check('octal-to-ip-converter', 'reject 308.1.1.1 (8 is not a valid octal digit)', badDigit.ok === false, JSON.stringify(badDigit));
+
+  const roundTrip = parseOctalIp('300.250.1.1');
+  check('octal-to-ip-converter', '300.250.1.1 (unpadded) -> 192.168.1.1, exact inverse of ip-to-octal-converter', roundTrip.ok === true && roundTrip.ip === '192.168.1.1', JSON.stringify(roundTrip));
+}
+
+// ---------- binary-to-base64-converter (batch 016) ----------
+import { binaryStringToBytes } from '@/lib/tools/binary-utils';
+{
+  const a = binaryStringToBytes('01000001');
+  check('binary-to-base64-converter', '01000001 -> bytes -> Base64 QQ==', a.ok === true && bytesToBase64(a.bytes) === 'QQ==', JSON.stringify(a));
+
+  const hi = binaryStringToBytes('01001000 01101001');
+  check('binary-to-base64-converter', '01001000 01101001 -> Base64 SGk=', hi.ok === true && bytesToBase64(hi.bytes) === 'SGk=', JSON.stringify(hi));
+
+  const badBits = binaryStringToBytes('0100100');
+  check('binary-to-base64-converter', 'reject non-multiple-of-8 bit count', badBits.ok === false, JSON.stringify(badBits));
+
+  const badChars = binaryStringToBytes('0100100X');
+  check('binary-to-base64-converter', 'reject non 0/1 characters', badChars.ok === false, JSON.stringify(badChars));
+}
+
+// ---------- binary-to-string-converter (batch 016) ----------
+{
+  const helloBits = '01001000 01100101 01101100 01101100 01101111';
+  const parsed = binaryStringToBytes(helloBits);
+  const decoded = parsed.ok ? new TextDecoder('utf-8', { fatal: true }).decode(parsed.bytes) : null;
+  check('binary-to-string-converter', 'Hello binary round-trips to "Hello"', decoded === 'Hello', String(decoded));
+
+  const euroBits = '11100010 10000010 10101100'; // E2 82 AC
+  const euroParsed = binaryStringToBytes(euroBits);
+  const euroDecoded = euroParsed.ok ? new TextDecoder('utf-8', { fatal: true }).decode(euroParsed.bytes) : null;
+  check('binary-to-string-converter', 'multi-byte UTF-8 (€, E2 82 AC) decodes correctly', euroDecoded === '€', String(euroDecoded));
+
+  const textBytes = new TextEncoder().encode('Hello');
+  const textBits = Array.from(textBytes, (b) => b.toString(2).padStart(8, '0')).join(' ');
+  check('binary-to-string-converter', 'text -> binary matches expected bit groups', textBits === helloBits, textBits);
+}
+
+// ---------- string-to-hex-converter (batch 016) ----------
+{
+  const hello = textToHex('Hello');
+  check('string-to-hex-converter', 'Hello -> 48656c6c6f', hello === '48656c6c6f', hello);
+
+  const euro = textToHex('€');
+  check('string-to-hex-converter', '€ -> e282ac (uppercase-insensitive check)', euro.toUpperCase() === 'E282AC', euro);
+}
+
 describe('Converters', () => {
   results.forEach((r) => {
     it(`${r.tool}: ${r.test}`, () => {

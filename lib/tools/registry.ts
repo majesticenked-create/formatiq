@@ -151,6 +151,10 @@ import ApyCalculator from '@/components/tools/ApyCalculator';
 import NandCalculator from '@/components/tools/NandCalculator';
 import NorCalculator from '@/components/tools/NorCalculator';
 import IpToOctalConverter from '@/components/tools/IpToOctalConverter';
+import OctalToIpConverter from '@/components/tools/OctalToIpConverter';
+import BinaryToBase64Converter from '@/components/tools/BinaryToBase64Converter';
+import BinaryToStringConverter from '@/components/tools/BinaryToStringConverter';
+import StringToHexConverter from '@/components/tools/StringToHexConverter';
 import Ipv6ToBinaryConverter from '@/components/tools/Ipv6ToBinaryConverter';
 import XnorCalculator from '@/components/tools/XnorCalculator';
 import BreakEvenCalculator from '@/components/tools/BreakEvenCalculator';
@@ -12047,6 +12051,198 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: HexToUtf8Converter,
+  },
+  {
+    slug: 'octal-to-ip-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['ip-to-octal-converter', 'ip-address-formatter', 'ip-hex-converter', 'binary-to-ip-converter'],
+    title: 'Octal to IP Converter',
+    shortDescription: 'Convert a per-octet octal IPv4 notation (e.g. 300.250.1.1) back to a normal dotted-decimal address.',
+    longDescription:
+      'Enter an IPv4 address written in per-octet octal notation - each of the four octets expressed in base-8 rather than decimal, like "300.250.1.1" - and get back the normal dotted-decimal address, "192.168.1.1". This is the exact inverse of the IP to Octal Converter: each dot-separated token is parsed as an octal number (digits 0-7 only - an "8" or "9" anywhere is rejected immediately, since neither is a valid octal digit) and then checked that its decoded decimal value actually fits in a byte, 0-255. That second check matters because a token can be made entirely of valid octal digits and still be out of range - "400" in octal decodes to 256, one past the maximum a single IPv4 octet can hold, so it is rejected rather than silently clamped or wrapped. Leading zeros on an octet (like "001") are accepted, matching how the octal form is often written. Runs entirely client-side.',
+    metaTitle: 'Octal to IP Converter - Base-8 to IPv4 | Formatiq',
+    metaDescription:
+      'Convert a per-octet octal IPv4 notation back to a normal dotted-decimal IP address online for free. No data leaves your browser.',
+    keywords: ['octal to ip converter', 'octal ip address', 'ipv4 from octal', 'convert octal to ip', 'base 8 to ip address'],
+    useCase: 'Recovering a normal IPv4 address from a legacy or security-review octal notation',
+    howItWorks: [
+      {
+        title: 'Enter octal IPv4 notation',
+        description: 'Four dot-separated octal octets, like 300.250.1.1.',
+      },
+      {
+        title: 'Each octet is validated',
+        description: 'Only digits 0-7 are valid octal, and the decoded value must fit in 0-255.',
+      },
+      {
+        title: 'See the dotted-decimal address',
+        description: 'Every octet is converted back to decimal and joined into a normal IPv4 address.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why would I need to convert from octal back to a normal IP address?',
+        answer:
+          'Some legacy tools, historical Unix utilities, and certain SSRF/validation-bypass techniques present or accept IPv4 octets in octal rather than decimal. If you encounter an address written this way - or you used the IP to Octal Converter and want the reverse - this tool recovers the standard dotted-decimal form.',
+      },
+      {
+        question: 'Why is "400.1.1.1" rejected even though 4, 0, and 0 are all valid octal digits?',
+        answer:
+          'Each digit is individually valid octal (0-7), but the token as a whole decodes to 256 in decimal (4×64), which is one past the maximum value a single IPv4 octet can hold (255). Octal-digit validity and range validity are two separate checks, and both have to pass.',
+      },
+      {
+        question: 'Does this handle leading zeros like "001"?',
+        answer:
+          'Yes - a leading zero on an octal octet is accepted and simply parsed as the same octal number ("001" decodes to 1), matching how per-octet octal notation is commonly written.',
+      },
+    ],
+    Component: OctalToIpConverter,
+  },
+  {
+    slug: 'binary-to-base64-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['binary-to-ip-converter', 'base64-to-binary', 'base64-encoder-decoder', 'binary-to-string-converter'],
+    title: 'Binary to Base64 Converter',
+    shortDescription: 'Convert a binary bit string into Base64, by decoding it to bytes first - not encoding the bit text itself.',
+    longDescription:
+      'Enter a binary value as a string of bits (e.g. "01001000 01101001") and get its Base64 encoding. Critically, the bits are first grouped 8 at a time into the actual bytes they represent, and those bytes are what gets Base64-encoded - the literal characters "0" and "1" that make up the input text are never themselves encoded. That distinction matters: Base64-encoding the ASCII text "01001000" directly would produce a completely different, meaningless result compared to decoding those bits into the single byte 0x48 and encoding that byte. Whitespace between groups of bits is optional and stripped automatically, but the total number of bits must be a multiple of 8 (one full byte) - a stray or missing bit is rejected with a specific error rather than silently truncated or padded. Runs entirely client-side.',
+    metaTitle: 'Binary to Base64 Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert binary (bits) to Base64 online for free - decodes the bits to their actual bytes first, then Base64-encodes those bytes. Runs in your browser.',
+    keywords: ['binary to base64 converter', 'binary to base64', 'convert bits to base64', 'binary encoder', 'bits to base64 online'],
+    useCase: 'Encoding a raw binary bit sequence (from a protocol dump or bitmask) into Base64 for transport',
+    howItWorks: [
+      {
+        title: 'Enter your binary bits',
+        description: 'A string of 0s and 1s, optionally grouped with spaces, e.g. 01001000 01101001.',
+      },
+      {
+        title: 'Bits become bytes',
+        description: 'Every 8 bits is read as one raw byte - not eight separate characters.',
+      },
+      {
+        title: 'Bytes are Base64-encoded',
+        description: 'The assembled byte array is encoded to Base64, exactly like any other binary data.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this Base64-encode the text "01001000" itself?',
+        answer:
+          'No - that would produce a meaningless result. The bits are first decoded into the single byte they represent (0x48 in this example), and Base64 encoding is applied to that byte, not to the literal digit characters of the input.',
+      },
+      {
+        question: 'What happens if the number of bits isn\'t a multiple of 8?',
+        answer:
+          'It\'s rejected with a specific error stating the bit count found. A byte is always exactly 8 bits, so a bit count that doesn\'t divide evenly by 8 means the input is incomplete or malformed, and guessing how to pad it would risk encoding the wrong bytes.',
+      },
+      {
+        question: 'Is whitespace between bytes required?',
+        answer:
+          'No - it\'s entirely optional and stripped before parsing, so both "01001000 01101001" and "0100100001101001" are accepted and produce the same result.',
+      },
+    ],
+    Component: BinaryToBase64Converter,
+  },
+  {
+    slug: 'binary-to-string-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['binary-to-base64-converter', 'byte-to-string-converter', 'hex-to-utf8', 'binary-to-ip-converter'],
+    title: 'Binary to String Converter',
+    shortDescription: 'Decode a binary bit string into UTF-8 text, or the reverse - correctly handles multi-byte characters.',
+    longDescription:
+      'Decode a binary bit string (e.g. "01001000 01100101 01101100 01101100 01101111") into readable text, or run the reverse and encode text into binary. Bits are grouped 8 at a time into raw bytes - the same shared parsing used by the Binary to Base64 Converter - and that byte array is then decoded through the browser\'s native `TextDecoder` in strict UTF-8 mode, never by converting each 8-bit group to a character on its own. That distinction is what makes multi-byte characters work correctly: the euro sign "€" is three bytes in UTF-8 (E2 82 AC, i.e. three separate 8-bit groups), and treating each byte as its own character would produce mojibake instead of the single intended symbol. Invalid bit strings (a stray character other than 0/1, or a bit count that isn\'t a multiple of 8) and valid-bits-but-invalid-UTF-8 byte sequences are both reported with specific errors. Runs entirely client-side.',
+    metaTitle: 'Binary to String Converter - Free Online Tool | Formatiq',
+    metaDescription:
+      'Convert binary to text online for free, or text to binary - correctly handles multi-byte UTF-8 characters like emoji and accented letters. Runs in your browser.',
+    keywords: ['binary to string converter', 'binary to text', 'convert binary to text online', 'binary decoder', 'text to binary'],
+    useCase: 'Decoding a raw binary bit dump back into readable text',
+    howItWorks: [
+      {
+        title: 'Choose a direction',
+        description: 'Binary to text, or text to binary.',
+      },
+      {
+        title: 'Enter your bits or text',
+        description: 'Whitespace between byte-groups is optional and stripped automatically.',
+      },
+      {
+        title: 'Bits are grouped into bytes',
+        description: 'Every 8 bits becomes one raw byte before any text decoding happens.',
+      },
+      {
+        title: 'The byte array is decoded as UTF-8',
+        description: 'The full sequence is decoded together, so multi-byte characters come out correctly.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How is this different from Byte to String Converter?',
+        answer:
+          'Byte to String Converter takes a list of decimal byte values (like "72 101"). This tool takes the same bytes expressed as raw binary bits instead (like "01001000 01100101") - same underlying byte-to-UTF-8 decoding, different input notation.',
+      },
+      {
+        question: 'What happens with a multi-byte character like the euro sign?',
+        answer:
+          '"€" encodes to the three bytes E2, 82, AC - as binary, three 8-bit groups. All three are decoded together through `TextDecoder`, which understands UTF-8\'s variable-width encoding, producing the single correct character rather than three separate garbled ones.',
+      },
+      {
+        question: 'What input gets rejected?',
+        answer:
+          'Any character other than 0 or 1, a total bit count that isn\'t a multiple of 8, and a valid byte sequence that isn\'t valid UTF-8 once assembled - each produces a specific error rather than a silent, incorrect result.',
+      },
+    ],
+    Component: BinaryToStringConverter,
+  },
+  {
+    slug: 'string-to-hex-converter',
+    category: 'converters',
+    isNew: true,
+    relatedSlugs: ['hex-to-utf8', 'text-ascii-converter', 'byte-to-string-converter', 'binary-to-string-converter'],
+    title: 'String to Hex Converter',
+    shortDescription: 'Encode text into a contiguous hex string, using its raw UTF-8 bytes - a focused, one-direction landing page.',
+    longDescription:
+      'Encode plain text into hex - each byte of the text\'s UTF-8 encoding rendered as two lowercase hex digits, concatenated into one contiguous string (e.g. "Hello" becomes "48656c6c6f"). The text is first encoded to raw bytes with the browser\'s native `TextEncoder`, never by mapping each character to a hex value with `charCodeAt`, which would silently misencode multi-byte characters - the euro sign "€" is a single character but three UTF-8 bytes ("e282ac"), and a code-point-based approach would produce a wrong, shorter result. This is a focused, single-direction version of the same conversion available inside the bidirectional Hex to UTF-8 Converter, provided as its own dedicated page for anyone specifically looking to go from text to hex without the reverse-direction UI. Runs entirely client-side.',
+    metaTitle: 'String to Hex Converter - Text to Hex Online | Formatiq',
+    metaDescription:
+      'Convert text to a hex string online for free, using correct UTF-8 byte encoding - handles multi-byte characters like emoji properly. Runs in your browser.',
+    keywords: ['string to hex converter', 'text to hex', 'convert string to hex online', 'ascii to hex', 'utf-8 to hex'],
+    useCase: 'Encoding a piece of text into hex bytes for a hex-based protocol, log, or config value',
+    howItWorks: [
+      {
+        title: 'Type or paste your text',
+        description: 'Any text, including multi-byte Unicode characters.',
+      },
+      {
+        title: 'Text becomes UTF-8 bytes',
+        description: 'The browser\'s TextEncoder produces the exact byte sequence the text represents.',
+      },
+      {
+        title: 'Each byte becomes two hex digits',
+        description: 'The bytes are rendered as a contiguous lowercase hex string, ready to copy.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Why does "€" produce 6 hex characters instead of 2?',
+        answer:
+          '"€" is a single character, but its UTF-8 encoding is three separate bytes (e2, 82, ac) - each byte becomes two hex digits, so the full character is represented by 6 hex characters ("e282ac"). A code-point-based approach (using the character\'s single Unicode number, 8364) would produce a different, incorrect result.',
+      },
+      {
+        question: 'How is this different from the Hex to UTF-8 Converter?',
+        answer:
+          'They share the same underlying text-to-hex logic. This page is a focused, single-direction version for anyone who only wants text-to-hex without a mode toggle; the Hex to UTF-8 Converter additionally supports the reverse direction (hex back to text) in one combined tool.',
+      },
+      {
+        question: 'Is uppercase hex output available?',
+        answer:
+          'Output is lowercase (e.g. "e282ac") to match this site\'s other hex-encoding tools - most consumers of hex text (including this site\'s own Hex to UTF-8 Converter) accept either case interchangeably.',
+      },
+    ],
+    Component: StringToHexConverter,
   },
 ];
 
