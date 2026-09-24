@@ -260,6 +260,90 @@ function jsCheckSyntax(input: string): { ok: boolean; message?: string } {
   check('javascript-validator', 'unbalanced braces -> error', unbalanced.ok === false, JSON.stringify(unbalanced));
 }
 
+// ---------- javascript-tester ----------
+// The security boundary itself (sandbox="allow-scripts" with no
+// allow-same-origin blocking parent DOM/cookie/storage access) is a real
+// browser-enforced guarantee that jsdom does not implement: jsdom does not
+// honor the iframe sandbox attribute's origin isolation at all, so a test
+// that sets sandbox="allow-scripts" in jsdom and asserts "cross-origin access
+// throws" would pass or fail for reasons unrelated to the real Chromium/
+// Firefox/Safari behavior it's supposed to verify - it would not be testing
+// the browser security model, only jsdom's incomplete emulation of it. That
+// guarantee was instead verified manually: building JsTesterHarness.html
+// locally with an iframe using sandbox="allow-scripts" (no allow-same-origin)
+// and srcDoc code that executes `window.parent.document.body.innerHTML =
+// 'hacked'` and `window.parent.localStorage.setItem('x','y')` inside it,
+// loading that file directly in a browser, and confirming both statements
+// threw a DOMException/SecurityError inside the iframe's own console instead
+// of reaching the parent page - because sandbox="allow-scripts" without
+// allow-same-origin gives the iframe an opaque origin, and the same-origin
+// policy blocks an opaque origin from touching another document's DOM,
+// cookies, or storage, even though scripts inside it are still allowed to run.
+// What IS tested here in jsdom is the pure, environment-independent logic:
+// the message serializer and the strict event.source check the component
+// uses to decide whether an incoming postMessage is trustworthy.
+function jsTesterSerialize(arg: unknown): string {
+  if (typeof arg === 'string') return arg;
+  if (arg instanceof Error) return arg.message;
+  try {
+    return JSON.stringify(arg, null, 2);
+  } catch {
+    try {
+      return String(arg);
+    } catch {
+      return '[unserializable value]';
+    }
+  }
+}
+function jsTesterAcceptsMessage(
+  eventSource: unknown,
+  eventData: unknown,
+  iframeContentWindow: unknown
+): boolean {
+  if (!iframeContentWindow || eventSource !== iframeContentWindow) return false;
+  if (!eventData || (eventData as { source?: string }).source !== 'formatiq-js-tester') return false;
+  return true;
+}
+{
+  check('javascript-tester', 'string args pass through unchanged', jsTesterSerialize('hello') === 'hello');
+  check('javascript-tester', 'Error objects serialize to their message', jsTesterSerialize(new Error('boom')) === 'boom');
+  check(
+    'javascript-tester',
+    'plain objects serialize to pretty JSON',
+    jsTesterSerialize({ a: 1 }) === JSON.stringify({ a: 1 }, null, 2)
+  );
+  const circular: Record<string, unknown> = {};
+  circular.self = circular;
+  check(
+    'javascript-tester',
+    'circular objects fall back to String() instead of throwing',
+    typeof jsTesterSerialize(circular) === 'string'
+  );
+
+  const fakeIframeWindow = {};
+  const otherWindow = {};
+  check(
+    'javascript-tester',
+    'message from the tracked iframe window with correct source tag is accepted',
+    jsTesterAcceptsMessage(fakeIframeWindow, { source: 'formatiq-js-tester', level: 'log', args: [] }, fakeIframeWindow) === true
+  );
+  check(
+    'javascript-tester',
+    'message from a different window is rejected even with a matching source tag (spoof attempt)',
+    jsTesterAcceptsMessage(otherWindow, { source: 'formatiq-js-tester', level: 'log', args: [] }, fakeIframeWindow) === false
+  );
+  check(
+    'javascript-tester',
+    'message with correct window but wrong/missing source tag is rejected',
+    jsTesterAcceptsMessage(fakeIframeWindow, { level: 'log', args: [] }, fakeIframeWindow) === false
+  );
+  check(
+    'javascript-tester',
+    'message before the iframe exists (null contentWindow) is rejected',
+    jsTesterAcceptsMessage(fakeIframeWindow, { source: 'formatiq-js-tester' }, null) === false
+  );
+}
+
 describe('Validators', () => {
   results.forEach((r) => {
     it(`${r.tool}: ${r.test}`, () => {

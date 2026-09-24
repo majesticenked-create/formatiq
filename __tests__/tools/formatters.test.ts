@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { parse as graphqlParse, print as graphqlPrint, GraphQLError } from 'graphql';
 
 // Logic copied verbatim from the corresponding component file(s) in components/tools/
 // to test in isolation without modifying the real components (many tools embed their
@@ -11,6 +12,58 @@ import { describe, it, expect } from 'vitest';
 const results: { tool: string; test: string; pass: boolean; detail?: string }[] = [];
 function check(tool: string, test: string, pass: boolean, detail?: string) {
   results.push({ tool, test, pass, detail });
+}
+
+// ---------- graphql-formatter ----------
+// This exercises the real `graphql` package (parse + print), same as the
+// component, rather than copied logic - the component is a thin wrapper
+// around it.
+function graphqlTryFormat(input: string) {
+  if (!input.trim()) {
+    return { ok: false as const, message: 'Paste a GraphQL query, mutation, or schema to format.' };
+  }
+  try {
+    const ast = graphqlParse(input);
+    return { ok: true as const, output: graphqlPrint(ast) };
+  } catch (err) {
+    if (err instanceof GraphQLError) {
+      const loc = err.locations?.[0];
+      const where = loc ? ` (line ${loc.line}, column ${loc.column})` : '';
+      return { ok: false as const, message: `${err.message}${where}` };
+    }
+    return { ok: false as const, message: err instanceof Error ? err.message : 'Could not parse this GraphQL document.' };
+  }
+}
+{
+  const validQuery = graphqlTryFormat('query GetUser($id:ID!){user(id:$id){id name}}');
+  check('graphql-formatter', 'valid query is parsed and printed', validQuery.ok === true, JSON.stringify(validQuery));
+  check(
+    'graphql-formatter',
+    'printed output preserves field selection',
+    validQuery.ok === true && validQuery.output.includes('user(id: $id)') && validQuery.output.includes('name'),
+    validQuery.ok ? validQuery.output : ''
+  );
+
+  const invalidQuery = graphqlTryFormat('query { user( }');
+  check('graphql-formatter', 'invalid syntax -> error, not a crash', invalidQuery.ok === false, JSON.stringify(invalidQuery));
+  check(
+    'graphql-formatter',
+    'invalid syntax error includes a location',
+    invalidQuery.ok === false && /line \d+, column \d+/.test(invalidQuery.message),
+    invalidQuery.ok === false ? invalidQuery.message : ''
+  );
+
+  const empty = graphqlTryFormat('');
+  check('graphql-formatter', 'empty input -> friendly message, not a parser error', empty.ok === false, JSON.stringify(empty));
+
+  const mutation = graphqlTryFormat('mutation{createPost(input:{title:"Hi"}){id}}');
+  check('graphql-formatter', 'mutation with input object is parsed', mutation.ok === true, JSON.stringify(mutation));
+
+  const schema = graphqlTryFormat('type Query { user(id: ID!): User } type User { id: ID! name: String }');
+  check('graphql-formatter', 'schema definition language (SDL) is parsed', schema.ok === true, JSON.stringify(schema));
+
+  const fragment = graphqlTryFormat('query { user { ...UserFields } } fragment UserFields on User { id name }');
+  check('graphql-formatter', 'query with fragment is parsed', fragment.ok === true, JSON.stringify(fragment));
 }
 
 // ---------- json-formatter ----------

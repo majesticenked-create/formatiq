@@ -1,4 +1,6 @@
 import JsonFormatter from '@/components/tools/JsonFormatter';
+import GraphqlFormatter from '@/components/tools/GraphqlFormatter';
+import JavascriptTester from '@/components/tools/JavascriptTester';
 import JsonValidator from '@/components/tools/JsonValidator';
 import JsonRepair from '@/components/tools/JsonRepair';
 import PhpFormatter from '@/components/tools/PhpFormatter';
@@ -10405,6 +10407,154 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: JsValidator,
+  },
+  {
+    slug: 'graphql-formatter',
+    category: 'formatters',
+    isNew: true,
+    relatedSlugs: ['json-formatter', 'xml-formatter', 'json-validator'],
+    title: 'GraphQL Formatter',
+    shortDescription: 'Format and validate GraphQL queries, mutations, and schemas.',
+    longDescription:
+      'Paste a GraphQL query, mutation, subscription, or schema definition and get it parsed and printed back out with consistent, canonical formatting - indentation, brace placement, and argument layout all normalized. Formatting is powered by the official graphql reference library\'s parse() and print() functions: your document is parsed into a full AST and printed back out, so the result is always structurally valid GraphQL, not a best-effort regex reformat. Because parsing happens for real, this also catches genuine syntax errors - a missing brace, an unterminated string, an invalid token - and reports them with the exact line and column. Nothing is executed and no request is ever sent to a GraphQL endpoint; this only parses and prints the document you paste.',
+    metaTitle: 'GraphQL Formatter & Validator - Free, Client-Side | Formatiq',
+    metaDescription:
+      'Format and validate GraphQL queries, mutations, and schemas online for free. Powered by the official graphql library - parses and prints, never executes.',
+    keywords: ['graphql formatter', 'graphql beautifier', 'format graphql query', 'graphql validator', 'graphql pretty print'],
+    useCase: 'Cleaning up a GraphQL query copied from browser dev tools or an API log before reviewing it',
+    howItWorks: [
+      {
+        title: 'Paste a GraphQL document',
+        description: 'A query, mutation, subscription, fragment, or schema definition.',
+      },
+      {
+        title: 'The document is parsed into an AST',
+        description: 'The graphql library\'s parse() builds a real syntax tree, catching genuine syntax errors.',
+      },
+      {
+        title: 'The AST is printed back out',
+        description: 'print() renders the tree with canonical, consistent indentation and spacing.',
+      },
+      {
+        title: 'Copy the formatted result',
+        description: 'The output is guaranteed structurally valid GraphQL, not a guessed reformat.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Real parsing, not regex',
+        description: 'Uses the official graphql npm package\'s parser, the same one GraphQL servers and tools rely on.',
+      },
+      {
+        title: 'Catches real syntax errors',
+        description: 'A malformed document is rejected with a precise line and column, not silently mangled.',
+      },
+      {
+        title: 'Never executes or sends anything',
+        description: 'Only parse() and print() are used - no query is ever sent to any endpoint.',
+      },
+      {
+        title: 'Fully client-side',
+        description: 'Parsing and printing both happen in your browser; nothing you paste is uploaded.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this run my query against a server?',
+        answer:
+          'No. This tool only parses your document into a syntax tree and prints it back out with consistent formatting. It never connects to any GraphQL endpoint and never executes an operation.',
+      },
+      {
+        question: 'What happens if my GraphQL has a syntax error?',
+        answer:
+          'Parsing fails and the tool reports the error message along with the line and column where it was found, using the same parser errors a GraphQL server would produce.',
+      },
+      {
+        question: 'Can I format a schema definition (SDL), not just a query?',
+        answer:
+          'Yes - the graphql library\'s parser handles the full GraphQL language, including type definitions, interfaces, and directives, not just executable queries and mutations.',
+      },
+      {
+        question: 'Is this different from the JSON Formatter?',
+        answer:
+          'Yes - GraphQL and JSON are different languages with different grammars. This tool parses and prints GraphQL\'s own query language; use the JSON Formatter for JSON request/response bodies.',
+      },
+    ],
+    Component: GraphqlFormatter,
+  },
+  {
+    slug: 'javascript-tester',
+    category: 'validators',
+    isNew: true,
+    relatedSlugs: ['javascript-validator', 'js-formatter', 'html-viewer'],
+    title: 'JavaScript Tester with Console',
+    shortDescription: 'Run JavaScript in a sandboxed iframe and see console.log/warn/error output.',
+    longDescription:
+      'Paste a JavaScript snippet, click Run, and see exactly what it logs - not just whether it parses. Unlike the JavaScript Validator, which only checks syntax without ever executing anything, this tool actually runs your code and streams console.log, console.warn, and console.error output back to a console panel. Execution happens inside an iframe locked down with sandbox="allow-scripts" and, critically, no allow-same-origin - that combination gives the iframe an opaque origin, which the browser treats as unable to access this page\'s DOM, cookies, or localStorage, and unable to navigate the parent page, even though the code inside it can still run. A runtime error is caught and shown as a console message instead of crashing the page. A fresh iframe is created for every run, so nothing carries over between runs.',
+    metaTitle: 'JavaScript Tester with Console - Sandboxed, Free | Formatiq',
+    metaDescription:
+      'Run JavaScript online and see console output in a sandboxed iframe. No account, nothing installed, and the sandbox can\'t touch this page\'s cookies or storage.',
+    keywords: ['javascript tester', 'run javascript online', 'js console online', 'javascript sandbox', 'test js code online'],
+    useCase: 'Quickly checking what a pasted function actually logs or throws, without opening dev tools',
+    howItWorks: [
+      {
+        title: 'Paste JavaScript and click Run code',
+        description: 'Nothing executes until you explicitly run it.',
+      },
+      {
+        title: 'Code runs inside a sandboxed iframe',
+        description: 'sandbox="allow-scripts" with no allow-same-origin gives it an opaque origin.',
+      },
+      {
+        title: 'console.* output streams back via postMessage',
+        description: 'Only messages from that exact iframe window are accepted and rendered.',
+      },
+      {
+        title: 'Errors are caught, not crashed',
+        description: 'A thrown error or unhandled rejection shows up as a console message instead of breaking the page.',
+      },
+    ],
+    benefits: [
+      {
+        title: 'Actually executes, unlike the Validator',
+        description: 'See real console output and runtime errors, not just a syntax check.',
+      },
+      {
+        title: 'Opaque-origin sandbox',
+        description: 'No allow-same-origin means the code can\'t reach this page\'s DOM, cookies, or storage.',
+      },
+      {
+        title: 'Fresh iframe every run',
+        description: 'Each run gets a brand-new global scope, so state never leaks between runs.',
+      },
+      {
+        title: 'Nothing installed, nothing uploaded',
+        description: 'Runs entirely in your browser - no server ever sees the code you paste.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can my code access this website\'s cookies or localStorage?',
+        answer:
+          'No. The iframe is sandboxed with sandbox="allow-scripts" and no allow-same-origin, which gives it an opaque, unique origin. Browsers block an opaque-origin frame from reading this page\'s DOM, cookies, or storage, and from navigating the parent page - scripts can run, but they run isolated.',
+      },
+      {
+        question: 'How is this different from the JavaScript Validator?',
+        answer:
+          'The Validator only checks that your code parses as valid syntax and never runs it. This tool actually executes the code in a sandboxed iframe and shows you its real console output and any runtime errors.',
+      },
+      {
+        question: 'What happens if my code throws an error?',
+        answer:
+          'It\'s caught and shown as a console message in the output panel, along with any error surfaced by the window\'s error or unhandledrejection listeners - it won\'t crash the tool or this page.',
+      },
+      {
+        question: 'Does this support async code and Promises?',
+        answer:
+          'Yes - top-level async code, timers, and Promises all run normally inside the sandbox, and any console output they produce (even after the initial synchronous run) is still streamed back and rendered.',
+      },
+    ],
+    Component: JavascriptTester,
   },
 ];
 
