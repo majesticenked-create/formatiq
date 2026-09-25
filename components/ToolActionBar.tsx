@@ -193,7 +193,7 @@ export default function ToolActionBar({
           {vote === 'helpful' && <p className="tool-action-ack">Thanks for the feedback.</p>}
           {vote === 'not-helpful' && (
             <div className="tool-action-ack">
-              <p>Thanks — tell us what we could improve.</p>
+              <p>Thanks - tell us what we could improve.</p>
               <div className="tool-action-reasons" role="group" aria-label="What could be improved">
                 {IMPROVEMENT_REASONS.map((r) => (
                   <button

@@ -251,7 +251,7 @@ export const categories: CategoryDefinition[] = [
     slug: 'generators',
     title: 'Generators',
     navLabel: 'Generators',
-    description: 'Free online generators for passwords, UUIDs, QR codes, fake data, favicons, and more — instant results, 100% private in your browser.',
+    description: 'Free online generators for passwords, UUIDs, QR codes, fake data, favicons, and more - instant results, 100% private in your browser.',
     intro:
       'Sometimes you don’t have real data yet and you just need something plausible to work with: a UUID for a new database record, a strong password before an account exists to attach it to, a block of Lorem Ipsum to fill a layout, or a QR code to test a scanning flow. This category covers exactly that - on-demand values generated instantly in your browser, using proper randomness where it matters (like passwords and UUIDs) rather than predictable patterns. Nothing here depends on a server round-trip, so generating a batch of values is as fast as clicking the button, and nothing you generate is logged or stored anywhere outside your own session.',
   },
@@ -267,7 +267,7 @@ export const categories: CategoryDefinition[] = [
     slug: 'converters',
     title: 'Converters',
     navLabel: 'Converters',
-    description: 'Free online converters for JSON, CSV, timestamps, colors, and units — fast, accurate, and 100% private in your browser.',
+    description: 'Free online converters for JSON, CSV, timestamps, colors, and units - fast, accurate, and 100% private in your browser.',
     intro:
       'Data rarely stays in one format for long - a config file needs to move from YAML to JSON, a spreadsheet export needs to become CSV, an API response needs restructuring into something a different system expects. This category handles those format-to-format conversions directly in your browser, preserving the actual structure and values of what you paste rather than approximating it. Each converter is built around the specific mismatches that break naive conversions - nested objects that don’t map cleanly, type differences between formats, encoding edge cases - so the output is something you can trust and use immediately, not just a quick approximation to double-check by hand.',
   },

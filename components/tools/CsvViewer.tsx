@@ -117,7 +117,7 @@ export default function CsvViewer() {
                           color: 'var(--text-primary)',
                         }}
                       >
-                        {h || <span style={{ color: 'var(--text-secondary)' }}>—</span>}
+                        {h || <span style={{ color: 'var(--text-secondary)' }}>-</span>}
                       </th>
                     ))}
                   </tr>

@@ -64,7 +64,7 @@ export default function HomePage() {
                 <TagIcon size={16} /> Free to use
               </li>
             </ul>
-            <h1>Format, convert, and validate — without leaving your browser.</h1>
+            <h1>Format, convert, and validate - without leaving your browser.</h1>
             <p className="lede">
               {tools.length} free developer tools - formatters, converters, validators, and generators. Most run
               entirely in your browser, with no account needed.
