@@ -230,6 +230,13 @@ import Crc16Checksum from '@/components/tools/Crc16Checksum';
 import CronExpressionGenerator from '@/components/tools/CronExpressionGenerator';
 import CircleTextGenerator from '@/components/tools/CircleTextGenerator';
 import CorruptedTextGenerator from '@/components/tools/CorruptedTextGenerator';
+import CssBoxResizeGenerator from '@/components/tools/CssBoxResizeGenerator';
+import CssButtonGenerator from '@/components/tools/CssButtonGenerator';
+import CssGlassmorphismGenerator from '@/components/tools/CssGlassmorphismGenerator';
+import CubicBezierGenerator from '@/components/tools/CubicBezierGenerator';
+import CultistNameGenerator from '@/components/tools/CultistNameGenerator';
+import CursiveTextGenerator from '@/components/tools/CursiveTextGenerator';
+import DoughnutChartMaker from '@/components/tools/DoughnutChartMaker';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -5367,9 +5374,9 @@ export const tools: ToolDefinition[] = [
     category: 'generators',
     isNew: true,
     title: 'CSS Border Generator',
-    shortDescription: 'Pick a width, style, and color to build a border CSS shorthand declaration, with a live preview.',
+    shortDescription: 'Pick a width, style, and color to build a border CSS shorthand declaration, with a live preview and per-corner radius control.',
     longDescription:
-      'Set a border width (in pixels), a style from the full standard set (solid, dashed, dotted, double, groove, ridge, inset, outset, or none), and a color via picker or HEX, and get the matching border shorthand declaration with a live preview box. An optional uniform corner-radius field is included for the common case of a simple rounded border - it\'s a single value applied to all four corners, not a full per-corner editor. Width is validated as a number in a sensible range and an invalid value is flagged rather than silently clamped. Runs entirely client-side.',
+      'Set a border width (in pixels), a style from the full standard set (solid, dashed, dotted, double, groove, ridge, inset, outset, or none), and a color via picker or HEX, and get the matching border shorthand declaration with a live preview box. A uniform corner-radius field covers the common case of a simple rounded border, and a separate "Link all corners" toggle switches to independent top-left, top-right, bottom-right, and bottom-left radius fields when you need an asymmetric shape - the output automatically switches between a single border-radius value and the four-value form depending on which mode is active. Width is validated as a number in a sensible range and an invalid value is flagged rather than silently clamped. Runs entirely client-side.',
     metaTitle: 'CSS Border Generator - Free Online Tool | Formatiq',
     metaDescription:
       'Generate a CSS border shorthand declaration online for free by picking a width, style, and color, with a live preview and one-click copy.',
@@ -5389,7 +5396,7 @@ export const tools: ToolDefinition[] = [
       {
         question: 'Does this tool also do per-corner border-radius?',
         answer:
-          'No - the optional corner-radius field here applies one value to all four corners for the common simple case. It\'s not a replacement for a dedicated per-corner radius editor if you need independent control of each corner.',
+          'Yes - turn off "Link all corners" in the per-corner radius panel to set the top-left, top-right, bottom-right, and bottom-left radius independently. Leave corners linked for the simpler uniform case, which keeps using the single "Corner radius" field.',
       },
       {
         question: 'Why is my width rejected?',
@@ -13380,7 +13387,7 @@ export const tools: ToolDefinition[] = [
     metaTitle: 'Corrupted Text Generator - Glitch / Zalgo-Style Text | Formatiq',
     metaDescription:
       'Generate corrupted, glitchy Unicode text online for free with a capped intensity level, using combining diacritical marks. See the original text side by side.',
-    keywords: ['corrupted text generator', 'zalgo text generator', 'glitch text generator', 'creepy text generator', 'weird text generator'],
+    keywords: ['corrupted text generator', 'zalgo text generator', 'glitch text generator', 'creepy text generator', 'weird text generator', 'cursed text generator', 'cursed text', 'glitch text'],
     useCase: 'Creating glitch-style or "creepy" text for creative writing, social posts, or design mockups',
     howItWorks: [
       {
@@ -13412,9 +13419,263 @@ export const tools: ToolDefinition[] = [
         answer:
           'Yes - the tool always displays your original (possibly truncated) input directly above the corrupted output, so you can compare exactly what changed.',
       },
+      {
+        question: 'Is this the same thing as a "cursed text" or "glitch text" generator?',
+        answer:
+          'Yes - this tool is sometimes also called a cursed text generator or glitch text generator elsewhere; it is the same combining-marks technique described above, just under a different common name.',
+      },
     ],
     relatedSlugs: ['aesthetic-emoji-generator', 'aesthetic-username-generator'],
     Component: CorruptedTextGenerator,
+  },
+  {
+    slug: 'css-box-resize-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'CSS Box Resize Generator',
+    shortDescription: 'Pick a resize and overflow value and get a real, draggable resize handle in the live preview.',
+    longDescription:
+      'Choose a CSS `resize` value (none, both, horizontal, or vertical) and an `overflow` value (auto, hidden, or scroll), then drag the live preview box directly using the browser\'s own native resize handle - the preview is not a JavaScript drag simulation, it is the real `resize` CSS property doing the resizing. The `resize` property only has a visible effect on an element whose `overflow` is set to something other than the default `visible`, so this tool pairs the two controls together and calls that out explicitly rather than leaving overflow untouched and leaving you to wonder why the handle never appears. Useful for building a resizable textarea, panel, or card without needing JavaScript. Runs entirely client-side.',
+    metaTitle: 'CSS Box Resize Generator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Generate CSS resize and overflow values online for free, with a live preview using a real native resize handle - no JavaScript required.',
+    keywords: ['css resize generator', 'css box resize', 'resizable div css', 'css overflow resize generator'],
+    useCase: 'Making a textarea, panel, or card user-resizable without writing JavaScript',
+    howItWorks: [
+      { title: 'Pick a resize direction', description: 'none, both, horizontal, or vertical.' },
+      { title: 'Pick an overflow value', description: 'resize only works when overflow is not the default visible.' },
+      { title: 'Drag the real handle', description: 'The preview box uses the actual CSS resize property - drag it directly.' },
+    ],
+    faqs: [
+      {
+        question: 'Why doesn\'t my resize handle show up?',
+        answer:
+          'The CSS `resize` property requires `overflow` to be something other than its default `visible` value. Set overflow to auto, hidden, or scroll and the handle will appear.',
+      },
+      {
+        question: 'Is the preview resizing done with JavaScript?',
+        answer:
+          'No - the preview box uses the real, native CSS `resize` property. Dragging its handle is native browser behavior, not a simulated drag handler.',
+      },
+    ],
+    relatedSlugs: ['css-border-generator', 'css-box-shadow-generator'],
+    Component: CssBoxResizeGenerator,
+  },
+  {
+    slug: 'css-button-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'CSS Button Generator',
+    shortDescription: 'Design a button\'s colors, border, padding, shadow, and hover state, then copy ready-to-use CSS and HTML.',
+    longDescription:
+      'Build a complete button style - label text, font size and weight, text and background color, border width/style/color/radius, vertical and horizontal padding, and an optional multi-value box-shadow - with a live preview you can actually hover over to see the real hover transition, not just a static mockup. Hover styling (background and text color) is optional and only appears in the generated CSS when you\'ve actually customized it, keeping the output minimal rather than padding it with an identical, pointless `:hover` block. Copy the CSS and the matching HTML snippet separately, since you\'ll often want to drop the HTML into a template while keeping the CSS in a stylesheet. Runs entirely client-side.',
+    metaTitle: 'CSS Button Generator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Generate CSS button styles online for free: colors, border, padding, box-shadow, and a real hover preview. Copy ready-to-use CSS and HTML.',
+    keywords: ['css button generator', 'button css generator', 'css button maker', 'button hover css generator'],
+    useCase: 'Prototyping a button style with a real hover preview before pasting CSS into a stylesheet',
+    howItWorks: [
+      { title: 'Set label, colors, and sizing', description: 'Font size/weight, text and background color, padding.' },
+      { title: 'Add border, radius, and shadow', description: 'All optional, each with its own controls.' },
+      { title: 'Customize the hover state', description: 'Hover over the live preview to see it - only appears in the CSS output if changed from the base state.' },
+      { title: 'Copy CSS and HTML separately', description: 'Two separate copy buttons for the two separate things you\'ll paste.' },
+    ],
+    faqs: [
+      {
+        question: 'Does the live preview actually respond to a real mouse hover?',
+        answer:
+          'Yes - hovering the preview button triggers the same hover color change the generated CSS `:hover` block will produce, using the component\'s own hover state rather than requiring a click.',
+      },
+      {
+        question: 'Will the CSS output always include a :hover block?',
+        answer:
+          'No - the `:hover` block only appears when the hover background or hover text color is actually different from the base state, so the output stays minimal instead of including a no-op hover rule.',
+      },
+    ],
+    relatedSlugs: ['css-border-generator', 'css-box-shadow-generator', 'css-gradient-generator'],
+    Component: CssButtonGenerator,
+  },
+  {
+    slug: 'css-glassmorphism-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'CSS Glassmorphism Generator',
+    shortDescription: 'Build a frosted-glass panel effect with backdrop-filter blur, previewed against a busy background.',
+    longDescription:
+      'Build the "frosted glass" panel look using `backdrop-filter: blur()` combined with a semi-transparent background color, adjustable border opacity and width, border radius, and an optional drop shadow. The live preview sits on top of a busy gradient-and-pattern background specifically because a glass panel rendered over a flat color looks identical whether or not the blur is actually working - you need visual texture behind it to see the effect at all. Output includes both the unprefixed `backdrop-filter` and the `-webkit-backdrop-filter` fallback, since Safari has historically required the prefixed version, along with a note on browser support and on checking text contrast against whatever sits behind the panel. Runs entirely client-side.',
+    metaTitle: 'CSS Glassmorphism Generator - Frosted Glass Effect | Formatiq',
+    metaDescription:
+      'Generate a CSS glassmorphism frosted-glass effect online for free with backdrop-filter blur, adjustable opacity, border, and shadow. Copy the CSS.',
+    keywords: ['css glassmorphism generator', 'frosted glass css', 'backdrop-filter generator', 'glass effect css generator'],
+    useCase: 'Building a frosted-glass card or panel effect for a modern UI design',
+    howItWorks: [
+      { title: 'Set background color and opacity', description: 'Controls the semi-transparent base of the glass panel.' },
+      { title: 'Adjust blur, border, and radius', description: 'Blur amount, border opacity/width, and corner radius.' },
+      { title: 'Copy the CSS', description: 'Includes both backdrop-filter and the -webkit- prefixed fallback.' },
+    ],
+    faqs: [
+      {
+        question: 'Why is the preview shown over a gradient instead of a plain background?',
+        answer:
+          'Because backdrop-filter blur only becomes visible when there\'s something behind the glass panel worth blurring - over a flat, solid color, a blurred panel and a non-blurred panel look identical. The busy gradient-and-pattern background makes the blur effect actually visible.',
+      },
+      {
+        question: 'Does every browser support backdrop-filter?',
+        answer:
+          'Support is broad in current browsers but not universal, and Safari has historically needed the `-webkit-backdrop-filter` prefix, which is why both are included in the generated CSS. Always check text contrast against the real background behind your glass panel, since low background opacity combined with low-contrast text can hurt readability.',
+      },
+    ],
+    relatedSlugs: ['css-box-shadow-generator', 'css-gradient-generator', 'css-border-generator'],
+    Component: CssGlassmorphismGenerator,
+  },
+  {
+    slug: 'cubic-bezier-curve-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Cubic Bezier Curve Generator',
+    shortDescription: 'Design a cubic-bezier() timing function visually, with overshoot support and an animated preview.',
+    longDescription:
+      'Set the four control-point numbers (x1, y1, x2, y2) of a CSS `cubic-bezier()` timing function and see the resulting curve drawn on an SVG graph from (0,0) to (1,1), alongside an animated block that actually moves using the generated timing function so you can feel the easing, not just see its shape. The x1 and x2 values are control-point X coordinates and are validated to the 0-1 range the CSS spec requires; y1 and y2 are deliberately NOT restricted to that range, since Y values outside 0-1 are what produce a legitimate, commonly-used "overshoot" or bounce curve - clamping them would silently break that valid case. Five standard presets (ease, ease-in, ease-out, ease-in-out, and linear) are included with their exact spec values, and linear is clearly called out as not actually being a cubic-bezier() form at all - it\'s CSS\'s own separate keyword for a straight-line timing function. The animated preview checks and respects your system\'s "prefers-reduced-motion" setting and disables itself when that preference is on. Runs entirely client-side.',
+    metaTitle: 'Cubic Bezier Curve Generator - CSS Easing Tool | Formatiq',
+    metaDescription:
+      'Design a CSS cubic-bezier() timing function online for free with an SVG curve graph, overshoot support, standard presets, and an animated preview.',
+    keywords: ['cubic bezier generator', 'css easing generator', 'cubic-bezier curve generator', 'css transition timing function generator'],
+    useCase: 'Designing a custom CSS transition or animation easing curve, including bounce/overshoot effects',
+    howItWorks: [
+      { title: 'Pick a preset or set control points', description: 'x1/x2 are clamped to 0-1; y1/y2 can go outside 0-1 for overshoot.' },
+      { title: 'Read the curve graph', description: 'The SVG graph shows the curve shape and both control points.' },
+      { title: 'Watch the animated preview', description: 'A block animates using the exact generated timing function; respects prefers-reduced-motion.' },
+      { title: 'Copy the CSS', description: 'Grab the finished transition-timing-function declaration.' },
+    ],
+    faqs: [
+      {
+        question: 'Why are x1/x2 restricted to 0-1 but not y1/y2?',
+        answer:
+          'That asymmetry comes directly from the CSS spec: x represents time/progress and must stay within the 0-1 range for cubic-bezier() to be valid, while y represents the animated value and is explicitly allowed outside 0-1 - that is exactly what produces an overshoot or bounce curve. Clamping y would make that legitimate effect impossible to create here.',
+      },
+      {
+        question: 'Is "linear" the same thing as cubic-bezier(0, 0, 1, 1)?',
+        answer:
+          'Visually similar but not the same thing technically - "linear" is its own distinct CSS timing-function keyword for a constant-rate straight line, not a cubic-bezier() function call. This tool keeps that distinction explicit rather than presenting linear as a disguised bezier preset.',
+      },
+      {
+        question: 'Does the animated preview respect reduced-motion settings?',
+        answer:
+          'Yes - it checks the "prefers-reduced-motion" system setting and disables the moving block animation entirely when that preference is on, while still showing the static curve graph and generated CSS.',
+      },
+    ],
+    relatedSlugs: ['css-border-generator', 'css-box-shadow-generator'],
+    Component: CubicBezierGenerator,
+  },
+  {
+    slug: 'cultist-name-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Cultist Name Generator',
+    shortDescription: 'Generate original dark-fantasy character and fictional-order names for creative writing.',
+    longDescription:
+      'Generate invented, dark-fantasy-flavored names for fiction writing, tabletop role-playing games, or worldbuilding - either an individual character name paired with a fictional honorific (like "the Hollow-Eyed" or "of the Last Ember"), or a fictional order/group name (like "Order of the Ashen Veil"). Every syllable fragment, title, and order name used here was invented specifically for this tool; none of it is drawn from any real-world religion, faith, ethnic group, extremist or criminal organization, or existing copyrighted franchise, and there is no ritual, recruitment, or how-to content - this generates name strings only, for use as placeholder names in creative fiction. Results are seeded, so the same seed reproduces the same batch of names. Runs entirely client-side.',
+    metaTitle: 'Cultist Name Generator - Dark Fantasy Names for Fiction | Formatiq',
+    metaDescription:
+      'Generate original dark-fantasy cultist and fictional-order names online for free, for creative writing and tabletop games. 100% invented names.',
+    keywords: ['cultist name generator', 'dark fantasy name generator', 'cult name generator fiction', 'fantasy order name generator'],
+    useCase: 'Generating placeholder dark-fantasy character or faction names for fiction or tabletop games',
+    howItWorks: [
+      { title: 'Choose individual or order names', description: 'An individual name with a fictional title, or a fictional order/group name.' },
+      { title: 'Set how many to generate', description: 'Up to 30 at once.' },
+      { title: 'Copy the results', description: 'Copy the whole generated list at once.' },
+    ],
+    faqs: [
+      {
+        question: 'Are these based on any real religion or organization?',
+        answer:
+          'No - every name, title, and order-name component is an invented word or phrase created specifically for this tool. Nothing references a real-world faith, ethnic group, extremist or criminal organization, or any existing franchise.',
+      },
+      {
+        question: 'Does this tool include any ritual or recruitment content?',
+        answer:
+          'No - it generates name strings only, intended as placeholder names for fiction, tabletop games, or worldbuilding. There is no instructional, ritual, or recruitment content of any kind.',
+      },
+    ],
+    relatedSlugs: ['character-trait-generator', 'book-title-generator'],
+    Component: CultistNameGenerator,
+  },
+  {
+    slug: 'cursive-text-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Cursive Text Generator',
+    shortDescription: 'Convert text to real Unicode Mathematical Bold, Italic, and Script characters - not a font change.',
+    longDescription:
+      'Convert plain text into Mathematical Bold, Mathematical Italic, and Mathematical Script (cursive-style) Unicode characters, using explicit, individually-verified per-letter lookup tables rather than a simple character-code offset formula. That distinction matters because the Mathematical Script range genuinely isn\'t contiguous: eight uppercase letters (B, E, F, H, I, L, M, R) and three lowercase letters (e, g, o) have no codepoint in the Mathematical Alphanumeric Symbols block at all - Unicode instead reuses older, pre-existing Letterlike Symbols codepoints for those specific letters, and Mathematical Italic has its own single gap at lowercase "h". A formulaic offset would silently produce wrong or unassigned characters for exactly those letters; this tool maps every A-Z and a-z explicitly instead. Digits, punctuation, and non-Latin characters have no mapping in these variants and pass through completely unchanged rather than being guessed at. Because these are genuinely different Unicode characters rather than a font or CSS style, appearance depends on the viewer\'s font and platform, copy-pasted search may not match plain text, and plain, unstyled text remains the better choice anywhere accessibility matters. Runs entirely client-side.',
+    metaTitle: 'Cursive Text Generator - Unicode Bold, Italic & Script | Formatiq',
+    metaDescription:
+      'Convert text to real Unicode Mathematical Bold, Italic, and Script characters online for free, with accurate per-letter mapping - not a font change.',
+    keywords: ['cursive text generator', 'unicode script text generator', 'fancy text generator', 'mathematical script text'],
+    useCase: 'Styling text for social media bios or captions using real Unicode character variants',
+    howItWorks: [
+      { title: 'Type your text', description: 'Only A-Z and a-z are converted; everything else passes through unchanged.' },
+      { title: 'See all three variants at once', description: 'Bold, Italic, and Script results are shown together.' },
+      { title: 'Copy the one you want', description: 'Each variant has its own copy button.' },
+    ],
+    faqs: [
+      {
+        question: 'Is this actually changing the font, or are these different characters?',
+        answer:
+          'These are different Unicode characters entirely, not a font or CSS style applied to the same letters. That is why appearance can vary across devices and why pasting this text into a search box may not match the plain-text version of the same word.',
+      },
+      {
+        question: 'Why do a few script letters look different in style from the rest?',
+        answer:
+          'Because the Mathematical Script Unicode range has real gaps - eight uppercase letters and three lowercase letters were never assigned a codepoint in that range, since equivalent older characters already existed in the Letterlike Symbols block, so Unicode reused those instead. This tool maps those specific letters to their correct, real substitute codepoints rather than guessing.',
+      },
+      {
+        question: 'What happens to numbers and punctuation?',
+        answer:
+          'They pass through completely unchanged - there is no real Mathematical Bold/Italic/Script codepoint mapping implemented here for digits or punctuation in this tool, so nothing is invented for them.',
+      },
+    ],
+    relatedSlugs: ['circle-text-generator', 'corrupted-text-generator'],
+    Component: CursiveTextGenerator,
+  },
+  {
+    slug: 'doughnut-chart-maker',
+    category: 'generators',
+    isNew: true,
+    title: 'Doughnut Chart Maker',
+    shortDescription: 'Build a doughnut chart from an editable label/value table, with a legend and accessible data table.',
+    longDescription:
+      'Enter labels and values in an editable table (add or remove rows freely) and get a doughnut chart rendered as real SVG, drawn with `stroke-dasharray`/`stroke-dashoffset` on concentric circle segments rather than a canvas bitmap. Non-numeric, negative, or non-finite values are treated as zero and flagged explicitly rather than silently breaking the chart, and if every value ends up zero, the chart area shows a clear empty-state message instead of rendering a meaningless blank ring. The hole size ("inner radius") is adjustable but constrained to a 40-80% range to keep the result recognizably a doughnut rather than either a solid pie or an unreadably thin ring. Each segment has an editable color starting from an accessible, visually distinct default palette, and a legend lists every segment\'s label, value, and percentage as text - never relying on color alone to distinguish segments. The same values are also repeated in a plain data table below the chart, so the information doesn\'t depend on perceiving the SVG at all. Download the finished chart as a standalone SVG file. Runs entirely client-side.',
+    metaTitle: 'Doughnut Chart Maker - Free Online SVG Chart Tool | Formatiq',
+    metaDescription:
+      'Build a doughnut chart online for free from an editable data table, with adjustable hole size, a legend, accessible data table, and SVG download.',
+    keywords: ['doughnut chart maker', 'donut chart generator', 'svg doughnut chart', 'pie chart maker online'],
+    useCase: 'Turning a small label/value dataset into a shareable doughnut chart without a spreadsheet app',
+    howItWorks: [
+      { title: 'Enter labels and values', description: 'Add or remove rows freely; invalid values are flagged and treated as zero.' },
+      { title: 'Adjust the hole size', description: 'Constrained to 40-80% to stay a readable doughnut shape.' },
+      { title: 'Pick segment colors', description: 'Starts from an accessible default palette; each segment is independently editable.' },
+      { title: 'Download the SVG', description: 'Export the finished chart as a standalone .svg file.' },
+    ],
+    faqs: [
+      {
+        question: 'What happens if all my values are zero?',
+        answer:
+          'The chart area shows an explicit empty-state message instead of rendering a blank or broken ring - enter at least one positive value to see the chart.',
+      },
+      {
+        question: 'Does the chart rely on color alone to show which segment is which?',
+        answer:
+          'No - the legend lists every segment\'s label, value, and percentage as text next to its color swatch, and the same data is repeated in a plain table below the chart, so the information doesn\'t depend on distinguishing colors.',
+      },
+      {
+        question: 'Why is the hole size limited to 40-80%?',
+        answer:
+          'Below 40% the shape stops reading as a doughnut and starts looking like a pie chart; above 80% the ring becomes too thin to color or label clearly. The 40-80% range keeps the result recognizable and usable at both ends.',
+      },
+    ],
+    relatedSlugs: ['bar-graph-maker', 'percentage-calculator'],
+    Component: DoughnutChartMaker,
   },
 ];
 

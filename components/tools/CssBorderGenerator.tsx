@@ -7,11 +7,33 @@ const STYLE_OPTIONS = ['solid', 'dashed', 'dotted', 'double', 'groove', 'ridge',
 const MIN_WIDTH = 0;
 const MAX_WIDTH = 50;
 
+type Corner = 'topLeft' | 'topRight' | 'bottomRight' | 'bottomLeft';
+
+const CORNER_LABELS: Record<Corner, string> = {
+  topLeft: 'Top-left',
+  topRight: 'Top-right',
+  bottomRight: 'Bottom-right',
+  bottomLeft: 'Bottom-left',
+};
+
+function parseCornerValue(value: string): number {
+  const n = Number(value);
+  if (value.trim() === '' || !/^\d+(\.\d+)?$/.test(value.trim()) || n < 0) return 0;
+  return n;
+}
+
 export default function CssBorderGenerator() {
   const [widthInput, setWidthInput] = useState('2');
   const [style, setStyle] = useState<(typeof STYLE_OPTIONS)[number]>('solid');
   const [colorInput, setColorInput] = useState('#3b82f6');
   const [radiusInput, setRadiusInput] = useState('0');
+  const [linkCorners, setLinkCorners] = useState(true);
+  const [cornerInputs, setCornerInputs] = useState<Record<Corner, string>>({
+    topLeft: '0',
+    topRight: '0',
+    bottomRight: '0',
+    bottomLeft: '0',
+  });
   const [copied, setCopied] = useState(false);
 
   const width = Number(widthInput);
@@ -28,16 +50,43 @@ export default function CssBorderGenerator() {
   const safeColor = hex ?? '#3b82f6';
   const safeRadius = radiusError ? 0 : radius || 0;
 
+  const safeCorners: Record<Corner, number> = {
+    topLeft: parseCornerValue(cornerInputs.topLeft),
+    topRight: parseCornerValue(cornerInputs.topRight),
+    bottomRight: parseCornerValue(cornerInputs.bottomRight),
+    bottomLeft: parseCornerValue(cornerInputs.bottomLeft),
+  };
+  const cornersAllEqual =
+    safeCorners.topLeft === safeCorners.topRight &&
+    safeCorners.topRight === safeCorners.bottomRight &&
+    safeCorners.bottomRight === safeCorners.bottomLeft;
+  const perCornerActive = !linkCorners && !cornersAllEqual;
+
+  function setCorner(corner: Corner, value: string) {
+    if (linkCorners) {
+      setCornerInputs({ topLeft: value, topRight: value, bottomRight: value, bottomLeft: value });
+    } else {
+      setCornerInputs((prev) => ({ ...prev, [corner]: value }));
+    }
+  }
+
   const declaration = `border: ${safeWidth}px ${style} ${safeColor};`;
-  const radiusDeclaration = safeRadius > 0 ? `\nborder-radius: ${safeRadius}px;` : '';
+  const radiusDeclaration = perCornerActive
+    ? `\nborder-radius: ${safeCorners.topLeft}px ${safeCorners.topRight}px ${safeCorners.bottomRight}px ${safeCorners.bottomLeft}px;`
+    : safeRadius > 0
+      ? `\nborder-radius: ${safeRadius}px;`
+      : '';
   const css = declaration + radiusDeclaration;
 
   const previewStyle = useMemo(
     () => ({
       border: style === 'none' ? 'none' : `${safeWidth}px ${style} ${safeColor}`,
-      borderRadius: safeRadius,
+      borderRadius: perCornerActive
+        ? `${safeCorners.topLeft}px ${safeCorners.topRight}px ${safeCorners.bottomRight}px ${safeCorners.bottomLeft}px`
+        : safeRadius,
     }),
-    [safeWidth, style, safeColor, safeRadius],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [safeWidth, style, safeColor, safeRadius, perCornerActive, safeCorners.topLeft, safeCorners.topRight, safeCorners.bottomRight, safeCorners.bottomLeft],
   );
 
   function copy() {
@@ -51,6 +100,8 @@ export default function CssBorderGenerator() {
     setStyle('solid');
     setColorInput('#3b82f6');
     setRadiusInput('0');
+    setLinkCorners(true);
+    setCornerInputs({ topLeft: '0', topRight: '0', bottomRight: '0', bottomLeft: '0' });
   }
 
   return (
@@ -121,9 +172,39 @@ export default function CssBorderGenerator() {
           {colorError && <div className="status-line status-invalid">✗ Invalid HEX color. Use 3 or 6 hex digits, e.g. #3b82f6.</div>}
           {radiusError && <div className="status-line status-invalid">✗ Corner radius must be a non-negative number.</div>}
           <div className="status-line status-neutral">
-            Corner radius here is a single uniform value applied to all four corners - handy for a quick rounded
-            border without needing a separate tool.
+            Use the uniform &quot;Corner radius&quot; field above for a quick rounded border on all four corners, or turn off
+            &quot;Link all corners&quot; below to set each corner independently.
           </div>
+        </div>
+      </div>
+
+      <div className="panel" style={{ marginTop: 16 }}>
+        <div className="panel-bar">
+          <span>Per-corner radius</span>
+          <div className="panel-actions">
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
+              <input type="checkbox" checked={linkCorners} onChange={(e) => setLinkCorners(e.target.checked)} />
+              Link all corners
+            </label>
+          </div>
+        </div>
+        <div style={{ padding: 12, display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+          {(Object.keys(CORNER_LABELS) as Corner[]).map((corner) => (
+            <label key={corner}>
+              {CORNER_LABELS[corner]} (px){' '}
+              <input
+                className="mono"
+                value={cornerInputs[corner]}
+                onChange={(e) => setCorner(corner, e.target.value)}
+                style={{ width: 70, padding: '6px 8px' }}
+              />
+            </label>
+          ))}
+        </div>
+        <div className="status-line status-neutral">
+          {linkCorners
+            ? 'Corners are linked - editing any one corner applies the same value to all four, equivalent to the uniform "Corner radius" field above.'
+            : 'Corners are independent - each can have its own radius, producing a four-value border-radius declaration.'}
         </div>
       </div>
 
