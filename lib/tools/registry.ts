@@ -92,6 +92,9 @@ import DateDifferenceCalculator from '@/components/tools/DateDifferenceCalculato
 import LoanCalculator from '@/components/tools/LoanCalculator';
 import JsonDiffChecker from '@/components/tools/JsonDiffChecker';
 import CssGradientGenerator from '@/components/tools/CssGradientGenerator';
+import CssBackgroundColorGenerator from '@/components/tools/CssBackgroundColorGenerator';
+import CssBackgroundImageGenerator from '@/components/tools/CssBackgroundImageGenerator';
+import CssBorderGenerator from '@/components/tools/CssBorderGenerator';
 import RemPxConverter from '@/components/tools/RemPxConverter';
 import NumberSorter from '@/components/tools/NumberSorter';
 import BitwiseCalculator from '@/components/tools/BitwiseCalculator';
@@ -223,6 +226,10 @@ import AestheticUsernameGenerator from '@/components/tools/AestheticUsernameGene
 import AnimalFusionGenerator from '@/components/tools/AnimalFusionGenerator';
 import BookTitleGenerator from '@/components/tools/BookTitleGenerator';
 import CharacterTraitGenerator from '@/components/tools/CharacterTraitGenerator';
+import Crc16Checksum from '@/components/tools/Crc16Checksum';
+import CronExpressionGenerator from '@/components/tools/CronExpressionGenerator';
+import CircleTextGenerator from '@/components/tools/CircleTextGenerator';
+import CorruptedTextGenerator from '@/components/tools/CorruptedTextGenerator';
 import type { CategoryDefinition, ToolDefinition } from './types';
 
 /**
@@ -5280,6 +5287,117 @@ export const tools: ToolDefinition[] = [
       },
     ],
     Component: CssGradientGenerator,
+  },
+  {
+    slug: 'css-background-color-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'CSS Background Color Generator',
+    shortDescription: 'Pick a color via HEX or RGB and get a ready-to-paste background-color CSS declaration.',
+    longDescription:
+      'Pick a background color with a native color picker, or type it directly as a HEX code or an RGB value - the two stay in sync, so editing either one updates the other and the live rectangular preview. The output is always the explicit background-color property (not the background shorthand), so it never silently overrides other background settings like an image or gradient you might add separately. HEX is validated as exactly 3 or 6 hex digits and RGB as three integers from 0-255 - an invalid value is flagged with a clear message rather than being silently clamped into range. Pairs naturally with the CSS Background Image Generator when a page needs both a fallback color and an image or gradient layered on top. Runs entirely client-side.',
+    metaTitle: 'CSS Background Color Generator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Generate a CSS background-color declaration online for free from a HEX or RGB color, with a live preview and one-click copy.',
+    keywords: ['css background color generator', 'background-color css', 'hex to css background', 'css color picker'],
+    useCase: 'Getting a validated background-color declaration without hand-typing and double-checking a hex code',
+    howItWorks: [
+      { title: 'Pick a color', description: 'Use the color picker, or type a HEX or RGB value directly.' },
+      { title: 'Stay in sync', description: 'Editing HEX updates RGB and vice versa, with the preview updating live.' },
+      { title: 'Copy the CSS', description: 'Grab the finished background-color declaration, ready to paste.' },
+    ],
+    benefits: [
+      { title: 'HEX and RGB stay synced', description: 'Edit either format and the other updates automatically, with no manual conversion.' },
+      { title: 'Clear validation', description: 'An out-of-range RGB channel or malformed HEX is flagged explicitly, never silently clamped.' },
+      { title: 'Explicit property name', description: 'Always outputs background-color, never the background shorthand, so it stays predictable alongside other background rules.' },
+    ],
+    faqs: [
+      {
+        question: 'Why background-color instead of the background shorthand?',
+        answer:
+          'The background shorthand resets every background sub-property it doesn\'t mention - image, position, repeat, and so on - back to its default. Outputting background-color specifically means this declaration only ever sets the color, leaving any image or gradient you\'ve set elsewhere untouched.',
+      },
+      {
+        question: 'What happens if I type an invalid color?',
+        answer:
+          'The tool tells you exactly what\'s wrong - a HEX value that isn\'t 3 or 6 hex digits, or an RGB channel outside 0-255 - rather than guessing at what you meant or clamping the value into range silently.',
+      },
+    ],
+    Component: CssBackgroundColorGenerator,
+  },
+  {
+    slug: 'css-background-image-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'CSS Background Image Generator',
+    shortDescription: 'Build a background-image CSS rule from an image URL or a linear/radial gradient, with sizing and position options.',
+    longDescription:
+      'Build a complete background-image rule two ways: point it at an image URL and dial in background-size (auto, cover, or contain), background-position (center, top, bottom, left, or right), background-repeat (no-repeat, repeat, repeat-x, or repeat-y), and background-attachment (scroll or fixed) - or switch to a linear or radial gradient mode and pick an angle (linear) and two colors. The live preview renders the URL purely as a CSS background value in the browser\'s own normal image-loading path - no server-side fetch of the URL is ever made, and the URL is never used to construct raw HTML. In the generated CSS text, the URL is safely wrapped in url("...") with any embedded quote characters escaped. Runs entirely client-side.',
+    metaTitle: 'CSS Background Image Generator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Generate a CSS background-image rule online for free from an image URL or a linear/radial gradient, with size, position, repeat, and attachment options.',
+    keywords: ['css background image generator', 'background-image css', 'css gradient background generator', 'background-size generator'],
+    useCase: 'Building a full background-image declaration with sizing and positioning without memorizing the property names',
+    howItWorks: [
+      { title: 'Choose a mode', description: 'Image URL, linear gradient, or radial gradient.' },
+      { title: 'Adjust the settings', description: 'Size, position, repeat, and attachment for images; angle and colors for gradients.' },
+      { title: 'Copy the CSS', description: 'Grab the full, ready-to-paste background-image rule (and related properties for image mode).' },
+    ],
+    benefits: [
+      { title: 'Image and gradient in one tool', description: 'Switch between an image URL and a linear or radial gradient without starting over.' },
+      { title: 'All the common sizing options', description: 'Size, position, repeat, and attachment are covered without memorizing each property\'s exact values.' },
+      { title: 'Safe URL handling', description: 'The URL is only ever used as a CSS value for preview and output - never fetched server-side or injected as raw HTML.' },
+    ],
+    faqs: [
+      {
+        question: 'Does this tool ever fetch my image URL from a server?',
+        answer:
+          'No - the URL is only ever handed to the browser as a standard CSS background-image value for the live preview, the same as the browser would do with any stylesheet. Nothing about the URL is sent to or processed by a server.',
+      },
+      {
+        question: 'How are special characters in the URL handled in the generated CSS?',
+        answer:
+          'The URL is wrapped in url("...") with any double quote inside it escaped, so the generated CSS text stays valid even if the URL itself happens to contain a quote character.',
+      },
+    ],
+    Component: CssBackgroundImageGenerator,
+  },
+  {
+    slug: 'css-border-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'CSS Border Generator',
+    shortDescription: 'Pick a width, style, and color to build a border CSS shorthand declaration, with a live preview.',
+    longDescription:
+      'Set a border width (in pixels), a style from the full standard set (solid, dashed, dotted, double, groove, ridge, inset, outset, or none), and a color via picker or HEX, and get the matching border shorthand declaration with a live preview box. An optional uniform corner-radius field is included for the common case of a simple rounded border - it\'s a single value applied to all four corners, not a full per-corner editor. Width is validated as a number in a sensible range and an invalid value is flagged rather than silently clamped. Runs entirely client-side.',
+    metaTitle: 'CSS Border Generator - Free Online Tool | Formatiq',
+    metaDescription:
+      'Generate a CSS border shorthand declaration online for free by picking a width, style, and color, with a live preview and one-click copy.',
+    keywords: ['css border generator', 'border css generator', 'css border style generator', 'border shorthand css'],
+    useCase: 'Previewing a border style, width, and color combination before pasting the CSS into a stylesheet',
+    howItWorks: [
+      { title: 'Set width, style, and color', description: 'Pick from the full standard border-style keyword set and a color via picker or HEX.' },
+      { title: 'Optionally round the corners', description: 'Add a single uniform corner radius if needed.' },
+      { title: 'Copy the CSS', description: 'Grab the finished border shorthand declaration, ready to paste.' },
+    ],
+    benefits: [
+      { title: 'Live preview box', description: 'See the exact border rendered before committing it to a stylesheet.' },
+      { title: 'Full style keyword set', description: 'All nine standard border-style values are available, not just solid and dashed.' },
+      { title: 'Clear width validation', description: 'An invalid or out-of-range width is flagged explicitly rather than silently clamped.' },
+    ],
+    faqs: [
+      {
+        question: 'Does this tool also do per-corner border-radius?',
+        answer:
+          'No - the optional corner-radius field here applies one value to all four corners for the common simple case. It\'s not a replacement for a dedicated per-corner radius editor if you need independent control of each corner.',
+      },
+      {
+        question: 'Why is my width rejected?',
+        answer:
+          'Width must be a plain non-negative number up to 50 pixels - anything non-numeric, negative, or outside that range is flagged with a specific message instead of being silently clamped into range.',
+      },
+    ],
+    Component: CssBorderGenerator,
   },
   {
     slug: 'favicon-generator',
@@ -13109,6 +13227,194 @@ export const tools: ToolDefinition[] = [
     ],
     relatedSlugs: ['book-title-generator', 'animal-fusion-generator', 'aesthetic-username-generator'],
     Component: CharacterTraitGenerator,
+  },
+  {
+    slug: 'crc16-checksum',
+    category: 'encoders-decoders',
+    isNew: true,
+    title: 'CRC-16 Checksum Calculator',
+    shortDescription: 'Compute a CRC-16 checksum (ARC, CCITT-FALSE, or XMODEM) for text, for accidental-corruption detection.',
+    longDescription:
+      'Compute a CRC-16 checksum of typed text using one of three well-documented, precisely-specified variants: CRC-16/ARC (used by ARC/LHA archives and some Modbus-style protocols, with reflected input and output), CRC-16/CCITT-FALSE (a common CCITT-derived variant used in firmware and protocol checksums, non-reflected), and CRC-16/XMODEM (used by the classic XMODEM file transfer protocol, non-reflected with a zero initial value). Each variant uses its own exact polynomial, initial value, input/output reflection, and XOR-out parameters, and this tool clearly labels which variant is selected and shows those parameters alongside the result, since getting even one of them wrong silently produces a wrong-but-plausible-looking checksum. Like CRC-32, CRC-16 is explicitly a checksum for catching accidental data corruption - a flipped bit, a truncated transfer, a bad disk sector - not a cryptographic hash: it offers no resistance to a deliberate attacker constructing different data with the same checksum, so it should never be used for passwords, digital signatures, or protecting data against intentional tampering. Runs entirely client-side.',
+    metaTitle: 'CRC-16 Checksum Calculator (ARC, CCITT-FALSE, XMODEM) | Formatiq',
+    metaDescription:
+      'Compute a CRC-16 checksum online for free using the ARC, CCITT-FALSE, or XMODEM variant, for accidental-corruption detection - not a cryptographic hash.',
+    keywords: ['crc16 calculator', 'crc-16 checksum', 'crc16 arc', 'crc16 ccitt', 'crc16 xmodem'],
+    useCase: 'Matching a CRC-16 checksum embedded in a legacy protocol or file format',
+    howItWorks: [
+      {
+        title: 'Choose a variant',
+        description: 'Pick CRC-16/ARC, CRC-16/CCITT-FALSE, or CRC-16/XMODEM, each with its own exact parameters shown below the result.',
+      },
+      {
+        title: 'Enter text',
+        description: 'The checksum recalculates instantly as you type.',
+      },
+      {
+        title: 'Copy the result',
+        description: 'Copy the 4-digit hex checksum for comparison against a known value.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Which CRC-16 variant should I use?',
+        answer:
+          'Whichever one the system you\'re matching against specifies - CRC-16 variants are not interchangeable even though they share the same 16-bit output size, because each uses a different polynomial, initial value, and input/output reflection. Check the target protocol or file format\'s documentation for the exact variant name (ARC, CCITT-FALSE, XMODEM, or another), then select the matching one here.',
+      },
+      {
+        question: 'Is CRC-16 secure enough for verifying a download or a password?',
+        answer:
+          'No - CRC-16 (like CRC-32) is designed purely for detecting accidental corruption, not for security. It has no resistance to a deliberate attacker constructing different data with the same checksum, and 16 bits of output makes accidental collisions far more likely than a cryptographic hash. Use a proper hash function such as SHA-256 (see Hash Generator) for anything where intentional tampering is a concern.',
+      },
+      {
+        question: 'How were these variant parameters verified?',
+        answer:
+          'Each variant\'s polynomial, initial value, reflection settings, and XOR-out value were checked against the standard CRC RevEng catalogue and verified by computing the CRC of the ASCII test string "123456789" and confirming it matches that variant\'s published "check" value (0xBB3D for ARC, 0x29B1 for CCITT-FALSE, 0x31C3 for XMODEM).',
+      },
+    ],
+    relatedSlugs: ['crc32-checksum', 'hash-generator'],
+    Component: Crc16Checksum,
+  },
+  {
+    slug: 'cron-expression-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Cron Expression Generator',
+    shortDescription: 'Build a standard 5-field Unix cron expression from presets or individual field controls.',
+    longDescription:
+      'Build a standard Unix cron expression (5 fields: minute, hour, day of month, month, day of week - not the 6-7 field Quartz dialect some job schedulers use) either by picking a built-in preset - every minute, every 5/15/30 minutes, every hour, every hour on the hour, every day, every day at midnight, every weekday, every week, or every month - or by editing each field directly with support for "*", single numbers, "*/N" steps, comma-separated lists, and "a-b" ranges. Each field is validated against its real allowed range (minute 0-59, hour 0-23, day of month 1-31, month 1-12, day of week 0-7 where both 0 and 7 conventionally mean Sunday) and a plain-English description is generated for common patterns - the built-in presets plus simple single-value, step, range, and list combinations - without claiming to perfectly parse every exotic combination a cron field could theoretically express. The finished expression is copyable text only; this tool never executes anything or asks for credentials, and a clear note reminds you that the schedule runs according to the timezone configured by the system actually executing the cron job, not any timezone chosen here. Runs entirely client-side.',
+    metaTitle: 'Cron Expression Generator - Unix 5-Field Cron | Formatiq',
+    metaDescription:
+      'Generate a standard 5-field Unix cron expression online for free from presets or individual field controls, with validation and a plain-English description.',
+    keywords: ['cron expression generator', 'crontab generator', 'cron schedule builder', 'unix cron generator', 'cron syntax generator'],
+    useCase: 'Building a deployment or task-scheduler cron schedule without memorizing field syntax',
+    howItWorks: [
+      {
+        title: 'Pick a preset or edit fields',
+        description: 'Start from a common preset, or set minute/hour/day-of-month/month/day-of-week directly.',
+      },
+      {
+        title: 'Check the validation',
+        description: 'Out-of-range or malformed field values are flagged immediately, naming the specific field.',
+      },
+      {
+        title: 'Copy the expression',
+        description: 'Copy the finished 5-field cron expression, with a plain-English description of common patterns shown alongside it.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Does this support Quartz-style 6 or 7 field cron expressions?',
+        answer:
+          'No - this generates the standard Unix 5-field cron format (minute, hour, day of month, month, day of week), which is what cron itself and most job schedulers use. Quartz-style schedulers that add a seconds field (and sometimes a year field) use a different, incompatible syntax that this tool doesn\'t generate.',
+      },
+      {
+        question: 'What timezone does the generated schedule run in?',
+        answer:
+          'Cron expressions don\'t carry their own timezone - the schedule runs according to the timezone configured by the system executing the cron job (the server\'s local timezone, or a timezone your scheduler platform lets you configure separately). Always confirm that setting on the system that will actually run the job.',
+      },
+      {
+        question: 'Does the plain-English description cover every possible expression?',
+        answer:
+          'It reliably covers the built-in presets plus simple single-value, step ("*/N"), range ("a-b"), and list combinations for each field. More exotic or deeply combined field values are shown as their raw field values rather than a guessed description, so you\'re never given a plain-English summary that might not accurately reflect an unusual expression.',
+      },
+    ],
+    relatedSlugs: ['cron-validator'],
+    Component: CronExpressionGenerator,
+  },
+  {
+    slug: 'circle-text-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Circle Text Generator',
+    shortDescription: 'Curve text around a circle as live-editable SVG, with radius, spacing, and direction controls.',
+    longDescription:
+      'Curve a line of text along the top or bottom arc of a circle using native SVG text-on-a-path (a circular `<path>` paired with `<textPath>`), rather than rendering to a canvas and exporting a flat image. Controls cover the circle\'s radius, the font size and letter spacing of the curved text, a start-offset percentage for rotating where the text begins along the arc, which half of the circle it follows (top arc or bottom arc), and which way it reads around the circle (clockwise or counter-clockwise). Because the output stays as real SVG markup, it scales to any size without pixelation, the underlying text remains selectable and accessible rather than baked into a bitmap, and the exact markup is shown as plain, escaped text for you to copy or download as a standalone .svg file - never dropped into the page unsanitized. Useful for circular logos, badge or stamp designs, album art text, or any circular layout that needs curved lettering without opening a full design tool. Runs entirely client-side.',
+    metaTitle: 'Circle Text Generator - Curved SVG Text | Formatiq',
+    metaDescription:
+      'Generate curved, circular text as SVG online for free, with controls for radius, font size, letter spacing, arc, and direction. Copy or download the SVG.',
+    keywords: ['circle text generator', 'curved text generator', 'text on a circle', 'circular text svg', 'text path generator'],
+    useCase: 'Creating curved text for a circular logo, badge, or stamp design',
+    howItWorks: [
+      {
+        title: 'Type your text',
+        description: 'Enter the text you want curved around a circle.',
+      },
+      {
+        title: 'Adjust radius, spacing, and arc',
+        description: 'Set the circle\'s radius, font size, letter spacing, start offset, arc half, and direction with live preview.',
+      },
+      {
+        title: 'Copy or download the SVG',
+        description: 'Copy the raw SVG markup, or download it as a standalone .svg file.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is the output an image or real SVG markup?',
+        answer:
+          'Real SVG markup - a circular `<path>` element with the text following it via `<textPath>`. That means it scales to any size without pixelating, the text stays selectable rather than being baked into a bitmap, and you can copy the exact markup or download it as a standalone .svg file rather than a flat PNG.',
+      },
+      {
+        question: 'Can the text run around the bottom of the circle instead of the top?',
+        answer:
+          'Yes - toggle between "Top arc" and "Bottom arc" to choose which half of the circle the text follows, and between "Clockwise" and "Counter-clockwise" to control which way it reads along that arc.',
+      },
+      {
+        question: 'Is my typed text safely handled in the generated SVG?',
+        answer:
+          'Yes - the live preview renders your text through React\'s own SVG text rendering, which always escapes it, and the copyable SVG markup shown below the preview has the same escaping applied. Your text is never inserted as raw, unescaped markup.',
+      },
+    ],
+    relatedSlugs: ['blob-generator', 'bar-graph-maker'],
+    Component: CircleTextGenerator,
+  },
+  {
+    slug: 'corrupted-text-generator',
+    category: 'generators',
+    isNew: true,
+    title: 'Corrupted Text Generator',
+    shortDescription: 'Add "glitchy" Unicode combining marks to text, with an intensity level hard-capped in code.',
+    longDescription:
+      'Turn plain text into "corrupted" or glitch-style text by layering Unicode combining diacritical marks (the U+0300-U+036F range) above, below, and through each character. Three intensity levels control how many marks are added per character - Low adds 1-2 marks, Medium adds 2-4, and High adds 4-7 - and that range is enforced as an actual numeric cap in the underlying generation code, not just suggested by the interface, so output can never exceed a bounded number of marks per character regardless of what\'s typed. Input is separately capped at a few hundred characters, which keeps the corrupted output from ballooning into an unreadable, page-breaking wall of text even at the highest intensity. The original input is always shown alongside the corrupted output so you can compare them directly, and the corrupted text itself is never used as a button label, navigation item, or accessibility label anywhere in the tool\'s own interface. Runs entirely client-side.',
+    metaTitle: 'Corrupted Text Generator - Glitch / Zalgo-Style Text | Formatiq',
+    metaDescription:
+      'Generate corrupted, glitchy Unicode text online for free with a capped intensity level, using combining diacritical marks. See the original text side by side.',
+    keywords: ['corrupted text generator', 'zalgo text generator', 'glitch text generator', 'creepy text generator', 'weird text generator'],
+    useCase: 'Creating glitch-style or "creepy" text for creative writing, social posts, or design mockups',
+    howItWorks: [
+      {
+        title: 'Type your text',
+        description: 'Enter up to a few hundred characters of plain text.',
+      },
+      {
+        title: 'Pick an intensity',
+        description: 'Low, Medium, or High controls how many combining marks are layered onto each character, each with a hard cap enforced in code.',
+      },
+      {
+        title: 'Copy the result',
+        description: 'Compare the original and corrupted text side by side, then copy the corrupted output.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is the intensity cap just a suggestion in the interface, or is it enforced?',
+        answer:
+          'It\'s enforced in the generation code itself, with an independent absolute ceiling as a second safeguard - Low is capped at 1-2 marks per character, Medium at 2-4, and High at 4-7, and no input can push the output past those bounds regardless of length or content.',
+      },
+      {
+        question: 'Why is there a maximum input length?',
+        answer:
+          'Combining marks stack per character, so uncapped input at high intensity could otherwise produce an extremely long, page-breaking string. Capping input at a few hundred characters keeps the corrupted output at a size that stays usable and shareable.',
+      },
+      {
+        question: 'Can I see the original text next to the corrupted version?',
+        answer:
+          'Yes - the tool always displays your original (possibly truncated) input directly above the corrupted output, so you can compare exactly what changed.',
+      },
+    ],
+    relatedSlugs: ['aesthetic-emoji-generator', 'aesthetic-username-generator'],
+    Component: CorruptedTextGenerator,
   },
 ];
 
